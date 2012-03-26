@@ -1,0 +1,304 @@
+% \VignetteIndexEntry{categoryCompare: High-throughput data meta-analysis using gene annotations}
+% \VignetteDepends{Biobase, categoryCompare, GO.db, KEGG.db, affy, hgu95av2.db, genefilter, estrogen, limma}
+% \VignetteKeyword{categoryCompare, meta-analysis, gene ontology, kegg}
+% \VignettePackage{categoryCompare}
+
+\documentclass[11pt]{article}
+
+\usepackage{times}
+\usepackage[bookmarks=true]{hyperref}
+\usepackage{enumerate}
+\usepackage{graphicx}
+% \usepackage[authoryear,round]{natbib}
+\usepackage{times}
+% \usepackage{comment}
+
+\textwidth=6.2in
+\textheight=8.5in
+%\parskip=.3cm
+\oddsidemargin=.1in
+\evensidemargin=.1in
+\headheight=-.3in
+
+
+\newlength{\smallfigwidth}
+\setlength{\smallfigwidth}{6cm}
+
+\newcommand{\scscst}{\scriptscriptstyle}
+\newcommand{\scst}{\scriptstyle}
+
+\newcommand{\Rfunction}[1]{{\texttt{#1}}}
+\newcommand{\Robject}[1]{{\texttt{#1}}}
+\newcommand{\Rpackage}[1]{{\textsf{#1}}}
+\newcommand{\Rclass}[1]{{\textit{#1}}}
+
+\newcommand{\MAT}[1]{{\bf #1}}
+\newcommand{\VEC}[1]{{\bf #1}}
+
+\newcommand{\Amat}{{\MAT{A}}}
+
+%%notationally this is going to break
+\newcommand{\Emat}{{\MAT{E}}}
+\newcommand{\Xmat}{{\MAT{X}}}
+\newcommand{\Xvec}{{\VEC{X}}}
+\newcommand{\xvec}{{\VEC{x}}}
+
+
+\newcommand{\Zvec}{{\VEC{Z}}}
+\newcommand{\zvec}{{\VEC{z}}}
+
+\newcommand{\calG}{\mbox{${\cal G}$}}
+
+% \bibliographystyle{plainnat}
+
+\title{categoryCompare: High-throughput data meta-analysis using feature annotations}
+\author{R.M. Flight\\
+	\texttt{rflight79@gmail.com}
+	}
+
+\begin{document}
+
+\maketitle
+
+<<echo=FALSE>>=
+options(width=60, continue=" ")
+@
+
+\section{Introduction}
+\label{sec:introduction}
+
+Current high-throughput molecular biology experiments are generating larger and larger amounts of data. Although there are many different methods to analyze individual experiments, methods that allow the comparison of different data sets are sorely lacking. This is important due to the number of experiments that have been carried out on biological systems that may be amenable to either fusion or comparison. Most of the current tools available focus on finding those genes in experiments that are listed as the same, or that can be shown statistically that it is significant that the gene was listed in the results of both experiments. 
+
+However, what many of these tools do not do is consider the similarities (and just as importantly, the differences) between experimental results at the categorical level. Categoical data includes any gene annotation, such as Gene Ontologies, KEGG pathways, chromosome location, etc. categoryCompare has been developed to allow the comparison of high-throughput experiments at a categorical level, and to explore those results in an intuitive fashion.
+
+
+\section{Sample Data}
+\label{sec:sampledata}
+
+To make the concept more concrete, we will examine data from the microarray data set \Rpackage{estrogen} available from Bioconductor. This data set contains 8 samples, with 2 levels of estrogen therapy (present vs absent), and two time points (10 and 48 hours). A pre-processed version of the data is available with this package, the commands used to generate it are below. Note: the preprocessed one keeps only the top 100 genes, if you use it the results will be slightly different than those shown in the vignette.
+
+<<loadPackages, results=hide>>=
+library("affy")
+library("hgu95av2.db")
+library("genefilter")
+library("estrogen")
+library("limma")
+@
+<<setupData>>=
+datadir <- system.file("extdata", package = "estrogen")
+pd <- read.AnnotatedDataFrame(file.path(datadir,"estrogen.txt"), 
+		header = TRUE, sep = "", row.names = 1)
+pData(pd)
+@
+Here you can see the descriptions for each of the arrays. First, we will read in the cel files, and then normalize the data using RMA.
+
+<<normalizeArrays>>=
+currDir <- getwd()
+setwd(datadir)
+a <- ReadAffy(filenames=rownames(pData(pd)), phenoData = pd, verbose = TRUE)
+eData <- rma(a)
+setwd(currDir)
+@
+
+To make it easier to conceptualize, we will split the data up into two eSet objects by time, and perform all of the manipulations for calculating significantly differentially expressed genes on each eSet object.
+
+So for the 10 hour samples:
+
+<<eset10>>=
+e10 <- eData[, eData$time.h == 10]
+e10 <- nsFilter(e10, remove.dupEntrez=TRUE, var.filter=FALSE, 
+	      feature.exclude="^AFFX")$eset
+
+e10$estrogen <- factor(e10$estrogen)
+d10 <- model.matrix(~0 + e10$estrogen)
+colnames(d10) <- unique(e10$estrogen)
+fit10 <- lmFit(e10, d10)
+c10 <- makeContrasts(present - absent, levels=d10)
+fit10_2 <- contrasts.fit(fit10, c10)
+eB10 <- eBayes(fit10_2)
+table10 <- topTable(eB10, number=nrow(e10), p.value=1, adjust.method="BH")
+table10$Entrez <- unlist(mget(table10$ID, hgu95av2ENTREZID, ifnotfound=NA))
+@
+
+And the 48 hour samples we do the same thing:
+
+<<eset48>>=
+e48 <- eData[, eData$time.h == 48]
+e48 <- nsFilter(e48, remove.dupEntrez=TRUE, var.filter=FALSE, 
+	      feature.exclude="^AFFX" )$eset
+
+e48$estrogen <- factor(e48$estrogen)
+d48 <- model.matrix(~0 + e48$estrogen)
+colnames(d48) <- unique(e48$estrogen)
+fit48 <- lmFit(e48, d48)
+c48 <- makeContrasts(present - absent, levels=d48)
+fit48_2 <- contrasts.fit(fit48, c48)
+eB48 <- eBayes(fit48_2)
+table48 <- topTable(eB48, number=nrow(e48), p.value=1, adjust.method="BH")
+table48$Entrez <- unlist(mget(table48$ID, hgu95av2ENTREZID, ifnotfound=NA))
+@
+
+And grab all the genes on the array to have a background set.
+<<universe>>=
+gUniverse <- unique(union(table10$Entrez, table48$Entrez))
+@
+
+For both time points we have generated a list of genes that are differentially expressed in the present vs absent samples. To compare the time-points, we could find the common and discordant genes from both experiments, and then try to interpret those lists. This is commonly done in many meta-analysis studies that attempt to combine the results of many different experiments. 
+
+An alternative approach, used in \Rpackage{categoryCompare}, would be to compare the significantly enriched categories from the two gene lists. Currently the package supports two category classes, Gene Ontology, and KEGG pathways. Both are used below.
+
+Note 1: I am not proposing that this is the best way to analyse \textbf{this} particular data, as it is a sample data set that merely serves to illustrate the functionality of this package. However, there are many different experiments where this type of approach is definitely appropriate, and it is up to the user to determine if their data fits the analytical paradigm advocated here.
+
+Note 2: If you are viewing this document as a vignette, some of  the commands below are not actually evaluated (specifically those involving passing data to Cytoscape), however the commands themselves will work if used in an R session.
+
+\section{Create Gene List}
+\label{sec:geneList}
+<<geneList>>=
+library("categoryCompare")
+library("GO.db")
+library("KEGG.db")
+
+# load the saved data with the package
+# data(ccData)
+
+g10 <- unique(table10$Entrez[table10$adj.P.Val < 0.05])
+g48 <- unique(table48$Entrez[table48$adj.P.Val < 0.05])
+@
+
+For each list the genes of interest, and a background must be defined. Here we are using those genes with an adjusted P-value of less than 0.05 as the genes of interest, and all of the genes on the chip as the background.
+
+<<compList>>=
+list10 <- list(genes=g10, universe=gUniverse, annotation='org.Hs.eg.db')
+list48 <- list(genes=g48, universe=gUniverse, annotation='org.Hs.eg.db')
+
+geneLists <- list(T10=list10, T48=list48)
+geneLists <- new("ccGeneList", geneLists, ccType=c("BP","KEGG"))
+fdr(geneLists) <- 0 # this speeds up the calculations for demonstration
+geneLists
+@
+
+\section{Annotation Enrichment}
+\label{sec:annotEnrich}
+Now run the enrichment calculations on each list. In this case enrichment will be performed using the biological process (BP) Gene Ontology, and KEGG Pathways.
+
+<<enrichList>>=
+enrichLists <- ccEnrich(geneLists)
+enrichLists
+@
+
+There are a lot of GO BP processes enriched using the p-value cutoff of 0.05, so lets make that more stringent. This is done here merely for speed, in a usual analysis you should choose this number, and the type of cutoff (p-value or fdr) carefully.
+
+<<pvalAdjust>>=
+pvalueCutoff(enrichLists$BP) <- 0.001
+enrichLists
+@
+
+Currently you can see that for T10, there are 141 processes enriched, and 123 for T48. For KEGG, there are much smaller numbers of pathways enriched.
+
+To see which processes and pathways are enriched, and to compare them, we will run \Rfunction{ccCompare}, after generating a \textbf{ccOptions} object to tell the software exactly which comparisons to do.
+
+<<ccOptions>>=
+ccOpts <- new("ccOptions", listNames=names(geneLists), outType='none')
+ccOpts
+@
+
+<<ccResults>>=
+ccResults <- ccCompare(enrichLists,ccOpts)
+ccResults
+@
+The \Rfunction{ccResults} is a list object where for each type of category (Gene Ontologies, KEGG pathways, etc) there are \textbf{ccCompareResult} objects containing various pieces, including the output of the enrichments in table form (mainTable) with a designation as to which of the geneLists they originated from, a graph that shows how the annotations are connected to each other (mainGraph), and which genes belong to which annotation, and which list they originated from (allAnnotation).
+
+\section{Visualization}
+\label{sec:visualization}
+Currently the easiest way to visualize and interact with this data is by using Cytoscape and the \Rfunction{RCytoscape} package. To set up \Rfunction{RCytoscape}, see the \Rfunction{\href{http://rcytoscape.systemsbiology.net/versions/current/index.html}{RCytoscape}} website.
+
+Once you have \href{http://cytoscape.org}{Cytoscape} up and running with the CytoscapeRPC plugin running, then we can examine the results from each category of annotations. First up, GO Biological Process.
+
+<<ExamineResultsBP>>=
+cw.BP <- ccOutCyt(ccResults$BP,ccOpts)
+@
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics{allEdges}
+	\caption{Cytoscape output of the GO BP results}
+	\label{allEdges}
+\end{figure}
+
+You should now see something in Cytoscape that somewhat resembles the Fig.~\ref{allEdges}. Reddish nodes came from T10, green from T48, and the blue ones from both. The edges determine that some of the genes are shared between annotations (nodes), and are weighted by how many genes are shared. The graph is layed out using a `force-directed' layout, and the force on the edges is determined by the number of shared genes. Right now there are a few groupings of nodes, that are probably functionally related. However, there is also a large mass of interconnected nodes in the middle, due to the shared genes in the annotation. We may get a better picture of this if we ``break'' the edges between nodes that share lower numbers of genes. This layout is based on the work of Bader and co-workers
+
+<<breakEdges>>=
+breakEdges(cw.BP,0.2)
+breakEdges(cw.BP,0.4)
+breakEdges(cw.BP,0.6)
+breakEdges(cw.BP,0.8)
+@
+<<echo=FALSE>>=
+RCytoscape::deleteWindow(cw.BP)
+@
+\begin{figure}[ht]
+	\centering
+	\includegraphics{BP_8}
+	\caption{After breaking edges having a weight less than 0.8}
+	\label{BP_8}	
+\end{figure}
+
+
+By the time you get to breaking any edges with a weight less than 0.8, you should see some very distinct groups of nodes (see Fig.~\ref{BP_8}). Because the numbers of genes shared between these nodes is high, it is likely that these groups of nodes describe a functional "theme" that will hopefully tell you something about the genes involved in the biological process that you are examining. This view also shows that even if there are no nodes that explicitly show up in both lists, if there are a series of annotations from each list in a well connected group, then perhaps there is still some similarity between the lists in this area.
+
+To see a description of the nodes and their listMembership, as well as other information about each node, you can use the ``Data Panel'' in Cytoscape, and select the node attributes that you want listed when you select a node. To discover the ``theme'' of a group of nodes, select all the nodes that belong to a group.
+
+To view the GO nodes in the GO directed-acyclic graph (DAG) hierarchy, we need to change the graph type and re-run \Rfunction{ccCompare} function. The output is shown in Fig.~\ref{BPHier}.
+<<GOHierarchical>>=
+graphType(enrichLists$BP) <- "hierarchical"
+ccResultsBPHier <- ccCompare(enrichLists$BP, ccOpts)
+@
+<<>>=
+ccResultsBPHier
+@
+<<>>=
+cw.BP2 <- ccOutCyt(ccResultsBPHier, ccOpts, "BPHier")
+@
+<<echo=FALSE>>=
+RCytoscape::deleteWindow(cw.BP2)
+@
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics{BP2}
+	\caption{GO BP results using the hierarchical layout}
+	\label{BPHier}	
+\end{figure}
+
+
+
+Note that the current hierarchical layout in Cytoscape does not seem to generate layouts that are easy to follow. This layout should only be used when there are small numbers of GO annotations.
+
+We can do a similar process for the KEGG pathways as well (Fig.~\ref{KEGG}).
+
+<<>>=
+cw.KEGG <- ccOutCyt(ccResults$KEGG,ccOpts)
+@
+<<echo=FALSE>>=
+RCytoscape::deleteWindow(cw.KEGG)
+@
+\begin{figure}[ht]
+	\centering
+	\includegraphics{KEGG}
+	\caption{KEGG pathway results}  
+	\label{KEGG}	
+\end{figure}
+
+
+If you don't feel that there are enough nodes to work with the data, you may want to change the P-value cutoff used using \Rfunction{pvalueCutoff}, or even the type of P-value, using \Rfunction{pvalueType}.
+
+\section{Acknowledgements}
+This package depends heavily on classes and functionality from \Rpackage{Category}, \Rpackage{graph}, and the interactive network visualization capabilities enabled by \Rpackage{RCytoscape}. 
+
+\section{References}
+Flight RM, Petruska JC, Harrison BJ, Mohammed F, Rouchka EC "categoryCompare: Meta-analysis of high-throughput experiments using feature annotations", in preparation
+<<>>=
+sessionInfo()
+@
+\end{document}
+

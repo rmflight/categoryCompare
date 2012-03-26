@@ -1,0 +1,4 @@
+0.99.0 First review in Bioconductor
+0.7.8 Updated the vignette. Removed long lines, added links to figures, fixed some errors
+0.7.4 changed category in ccCompare to categoryName for GENccEnrichResults-class
+0.7.3 First commit
