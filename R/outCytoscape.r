@@ -209,11 +209,18 @@ setMethod("cytOutData", signature=list(saveObj='list', compareResult="ccCompareR
  		useAnn <- TRUE
  	}
 	
+	whichMem <- grep("listMembership", names(mainTable))
+	mainTable <- .moveTable(mainTable, whichMem, 3)
+	
  	mainTable <- unique(mainTable)
 	fileCon <- file(fileName,open="w+")
  	for (iSave in 1:nSave){
  		useNodes <- saveObj[[iSave]]$nodes
  		keepTable <- mainTable[match(saveObj[[iSave]]$nodes,mainTable$ID,nomatch=0),]
+ 		
+ 		# sort on listMembership
+ 		tableOrder <- order(keepTable$listMembership)
+ 		keepTable <- keepTable[tableOrder,]
  		
  		returnDat[[iSave]] <- list(AnnotationData=keepTable)
  		

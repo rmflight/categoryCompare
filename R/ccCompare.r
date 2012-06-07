@@ -12,6 +12,112 @@ setMethod("ccCompare", signature=list(ccEnrichResult="ccEnrichCollection",ccOpti
 	# apply ccCompare to each sub-object, using the 
   allCompare <- lapply(ccEnrichResult, ccCompare, ccOptions)
   allCompare <- new("ccCompareCollection", allCompare)
+setMethod("ccCompare",
+					signature=list(ccEnrichResult="ANYccEnrichResult",
+												 ccOptions="ccOptions"),
+					function(ccEnrichResult, ccOptions) .ccCompareANY(ccEnrichResult, ccOptions))
+
+.ccCompareANY <- function(ccEnrichResult, ccOptions){
+	hasDesc <- T
+	hasLink <- T
+	useLists <- names(ccEnrichResult)
+	lists <- names(ccEnrichResult)
+	if (sum(lists %in% useLists) == 0){
+		stop('listNames defined in ccOptions do not match any of the names in the ANYccEnrichResult object!')
+	} else {
+		ccEnrichResult <- ccEnrichResult[useLists]
+		lists <- names(ccEnrichResult)
+		nList <- length(lists)
+	}
+	extRes <- .extractRes(ccEnrichResult)
+	allTable <- extRes$allTable
+	allNodes <- extRes$allNodes
+	allRes <- extRes$allRes
+	sigID <- extRes$sigID
+	allCatGene <- extRes$allCatGene
+	
+	allLink <- .extractLinkDesc(ccEnrichResult, "link")
+	allDesc <- .extractLinkDesc(ccEnrichResult, "description")
+	
+	if (is.null(allDesc)){
+		allDesc <- rep("NA", nrow(allTable))
+		names(allDesc) <- allTable$ID
+	}
+	
+	if (is.null(allLink)){
+		allLink <- rep("NA", nrow(allTable))
+		names(allLink) <- allTable$ID
+	}
+	
+	matchDesc <- match(allTable$ID, names(allDesc), nomatch=0)
+	allTable$Desc <- allDesc[matchDesc]
+	matchLink <- match(allTable$ID, names(allLink), nomatch=0) 
+	allTable$Link <- allLink[matchLink]
+	
+	oldIndx <- match(lists,names(allTable))
+	newIndx <- seq(2,2+length(oldIndx)-1,1)
+	allTable <- .moveTable(allTable,oldIndx,newIndx)
+	allTable <- .moveTable(allTable,match("Desc",names(allTable)),2)
+	
+	allAnn <- .annGenesComp(allRes,ccOptions)
+	
+	# generate the graph of results
+	
+	nodeListMem <- lapply(allRes, function(x){x$sigIDs})
+	
+	if (graphType(ccEnrichResult) %in% "overlap") {
+		resCatGene <- allCatGene[(names(allCatGene) %in% sigID)]
+		allGraph <- createGraph2(sigID,resCatGene,"ANY",0,10)
+		allGraph@graphData$layout <- "force-directed"
+		allNodes <- nodes(allGraph)
+	} else {
+		error("Invalid graph type requested!", call.=F)
+	}
+		
+	nodeCompVec <- .compMem(nodeListMem,ccOptions)
+	nodeCompVec <- nodeCompVec[match(allNodes,names(nodeCompVec),nomatch=0)] # and reorder to be in the same order as the nodes in the graph
+	
+	# now that we know which of the lists we belong to, we can set up some attributes
+	allGraph <- .initGraphAtts(allGraph,allTable)
+		
+	nodeData(allGraph, allNodes, attr="Desc") <- allDesc[match(allNodes, names(allDesc), nomatch=0)]
+	
+	nodeData(allGraph, allNodes, attr="fillcolor") <- sapply(nodeCompVec, function(x){compareColors(ccOptions)[x]}) # this is why we are supposed to do the induced graph from each, and then combine them.
+	nodeData(allGraph, allNodes, attr="listMembership") <- sapply(nodeCompVec, function(x){compareNames(ccOptions)[x]})
+	
+	# check fillColor and listMembership, if any are missing, set them to NA
+	tmpMember <- sapply(nodeData(allGraph,allNodes,"listMembership"),length)
+	nodeData(allGraph,names(tmpMember)[tmpMember == 0],"listMembership") <- 'NA'
+	nodeData(allGraph,names(tmpMember)[tmpMember == 0],"fillcolor") <- 'NA'
+	
+	nodeData(allGraph, allNodes, attr="compIndx") <- nodeCompVec # which comparison are we (if we need to access that again)
+	nodeData(allGraph, allNodes[allNodes %in% sigID], attr="isSig") <- as.character(TRUE)
+	nodeData(allGraph, allNodes, attr="toolTip") <- paste(unlist(nodeData(allGraph, allNodes, attr="listMembership")), allNodes,unlist(nodeData(allGraph, allNodes, attr="Desc")), sep=" <br> ")
+
+	returnData <- new("ccCompareResult", mainGraph=allGraph, mainTable=allTable, allAnnotation=allAnn, categoryName="ANY")
+}
+
+.extractLinkDesc <- function(ccEnrichResult, extractSlot){
+	oneLink <- function(allLink){
+		if (class(allLink) == "matrix"){
+			uniqLink <- apply(allLink, 1, unique)
+			uniqLink2 <- lapply(uniqLink, function(x){
+				lenLink <- nchar(x)
+				if (sum(nchar(x) > 0) > 1) {
+					error("Disagreement in link information for features!", call.=F)
+				} else { x[nchar(x) > 0] }
+				
+			})
+			unlist(uniqLink2)
+		}
+	}
+	nLink <- sapply(ccEnrichResult, function(x){length(slot(x, extractSlot))})
+	if (max(nLink) != 0){
+		allLink <- sapply(ccEnrichResult, function(x){slot(x, extractSlot)})
+		allLink <- oneLink(allLink)
+		
+	} else { allLink <- NULL }
+	allLink
 }
 
 setMethod("ccCompare", signature=list(ccEnrichResult="GOccEnrichResult", ccOptions="ccOptions"),
@@ -572,6 +678,14 @@ createGraph <- function(nodeList){
 	sigID <- vector('character',0)
 	allRes <- vector('list', nList)
 	allNodes <- vector('character',0)
+
+	tmpCatGeneNames <- unique(unlist(sapply(ccEnrichResult, function(x){names(x@catToGeneId)})))
+	allCatGene <- vector('list', length(tmpCatGeneNames))
+	names(allCatGene) <- tmpCatGeneNames
+	
+	addGene <- function(catName){
+		unique(c(allCatGene[[catName]], tmpCatGene[[catName]]))
+	}
 	for (iList in 1:nList){
     tmpRes <- vector('list', 4)
     tmpSum <- summary(ccEnrichResult[[iList]])
@@ -586,6 +700,10 @@ createGraph <- function(nodeList){
     sigID <- c(sigID,tmpRes[[1]])
   
     allNodes <- c(allNodes, tmpRes[[1]])
+	
+	tmpCatGene <- ccEnrichResult[[iList]]@catToGeneId
+	allCatGene <- sapply(tmpCatGeneNames, addGene)
+
   }
   names(allRes) <- lists
   allNodes <- unique(allNodes)
@@ -613,7 +731,7 @@ createGraph <- function(nodeList){
 		}
   }
   
-  return(list(allRes=allRes,allNodes=allNodes,allTable=allTable,sigID=sigID))
+  return(list(allRes=allRes,allNodes=allNodes,allTable=allTable,sigID=sigID,allCatGene=allCatGene))
 }
 
 # add attributes to the graph and add on the table data to the graph as well

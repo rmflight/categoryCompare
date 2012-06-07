@@ -1,6 +1,8 @@
 setMethod("hyperGTestCC",
-  signature(p="HyperGParamsCC"),
-  function(p) hyperGTestCat(p))
+					signature(p="HyperGParamsCC"),
+					function(p) hyperGTestCat(p))
+
+setMethod("hyperGTestCC", signature(p="ANYHyperGParamsCC"), function(p) hyperGTestCat(p))
 
 # this function is essentially a modified version of .hyperGTestInternal from the package Category, with the difference that it will do replicate series of calculations using random subsets from the universe list to provide an estimate of the false discovery rate (fdr)
 
@@ -50,26 +52,32 @@ hyperGTestCat <- function(p, className="HyperGResultCC") {
 		# FDR is the average number of times that we found lower pvalues divided by the number of items with an actual lower pvalue
 		fdrVal <- as.numeric(mnCnt / orgCnt)
 	} else { fdrVal <- numeric(length=length(stats$p)) + 1 }
-		
-		# put the identifiers on, and set anything greater than 1 to 1
-		names(fdrVal) <- names(stats$p[ord])
-		fdrVal[fdrVal > 1] <- 1
+	
+	if (className == "ANYHyperGResultCC"){
+		tmpAnnot <- "ANY"
+	} else {
+		tmpAnnot <- p@annotation
+	}
+	
+	# put the identifiers on, and set anything greater than 1 to 1
+	names(fdrVal) <- names(stats$p[ord])
+	fdrVal[fdrVal > 1] <- 1
 	# now spit out our results
-		new(className,
-		pvalues=stats$p[ord],
-		oddsRatios=stats$odds[ord],
-		expectedCounts=stats$expected[ord],
-		catToGeneId=useCat2Entrez[ord],
-		fdr=nFDR,
-		fdrvalues=fdrVal,
-		annotation=annotation(p),
-		geneIds=selected,
-		testName=categoryName(p),
-		pvalueCutoff=pvalueCutoff(p),
-		testDirection=testDirection(p),
-		organism=organism(p),
-		pvalueType=pType,
-		minCount=0)
+	new(className,
+			pvalues=stats$p[ord],
+			oddsRatios=stats$odds[ord],
+			expectedCounts=stats$expected[ord],
+			catToGeneId=useCat2Entrez[ord],
+			fdr=nFDR,
+			fdrvalues=fdrVal,
+			annotation=tmpAnnot,
+			geneIds=selected,
+			testName=categoryName(p),
+			pvalueCutoff=pvalueCutoff(p),
+			testDirection=testDirection(p),
+			organism=organism(p),
+			pvalueType=pType,
+			minCount=0)
 }
 
 whichCat <- function(p,cat2Entrez,geneIds) {

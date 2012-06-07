@@ -11,12 +11,96 @@ setMethod("initialize", "ccGeneList",
   makeValidccLists(.Object)
 })
 
+checkData <- function(inData){
+	needEither <- c("id", "entrez")
+	
+	if (class(inData) != "data.frame"){
+		stop("'data' is not a data frame!", call.=FALSE)
+	}
+	
+	hasHead <- needEither %in% tolower(names(inData))
+	
+	if (sum(hasHead) == 0){
+		stop("'data' does not have an ID or ENTREZ column. One or the other is required!", call.=FALSE)
+	} else {
+		idClass <- sapply(needEither[hasHead], function(x){
+			class(inData[,x])
+		})
+		if (sum(idClass %in% "character") != 0){
+			stop("ID fields need to be 'character'!", call.=FALSE)
+		}
+	}
+	
+}
 
+checkANY <- function(inList){
+	req <- c(annotation="list")
+	nReq <- length(req)
+	opt <- c(description="character", link="character")
+	if (class(inList) != "list"){
+		stop("any.annotation is not a named list!", call.=FALSE)
+	}
+	if (is.null(names(inList))){
+		stop("Entries in 'any.annotation' must have names!", call.=FALSE)
+	}
+	
+	allowedTypes <- lapply(inList, function(x){
+		allowFinal <- TRUE
+		hasReq <- names(req) %in% names(x)
+		if (sum(hasReq) != nReq){
+			missReq <- paste(req[!hasReq], collapse=", ")
+			errMsg <- paste("Missing required fields: ", missReq, sep=" ")
+			warning(errMsg)
+			allowFinal <- F
+		}
+		reqField <- sapply(names(req), function(y){
+			req[y] %in% class(x[[y]])
+		})
+		
+		if (sum(reqField) != nReq){
+			missField <- paste(names(req)[!reqField], req[!reqField], sep=": ")
+			missField <- paste(missField, collapse=", ")
+			errMsg <- paste("These fields require the following classes: ", missField, sep="")
+			warning(errMsg)
+			allowFinal <- F
+		}
+		
+		allOpt <- names(x)
+		keepOpt <- rep(TRUE, length(allOpt))
+		names(keepOpt) <- allOpt
+		hasOpt <- allOpt %in% names(opt)
+		if (sum(hasOpt) > 0){
+			optNames <- allOpt[hasOpt]
+			optType <- sapply(optNames, function(z){
+				opt[z] %in% class(x[[z]])
+			})
+			if (sum(!optType) > 0){
+				missClass <- paste(optNames[!optType], opt[optNames[!optType]], sep=": ")
+				missClass <- paste(missClass, collapse=", ")
+				warnMsg <- paste("These fields are not the proper class: ", missClass, " and will be removed.", sep="")
+				warning(warnMsg)
+				keepOpt[allOpt %in% optNames[!optType]] <- F				
+			}
+		}
+		return(list(keep=allowFinal, keepSub=keepOpt))
+	})
+	inList <- inList[sapply(allowedTypes, function(x){ x$keep })]
+	keepNames <- names(inList)
+	inList <- lapply(keepNames, function(x){
+		tmpList <- inList[[x]]
+		tmpList <- tmpList[allowedTypes[[x]]$keepSub]
+	})
+	names(inList) <- keepNames
+	return(inList)
+}
 
 .makeValidccLists <- function(object){
   reqFields <- c(genes="character",universe="character",annotation="character")
   nReq <- length(reqFields)
-  supFields <- list(data=list(class="data.frame",pos=c("ID","ENTREZ")))
+#   supFields <- list(data=list(class="data.frame",pos=c("ID","ENTREZ")),
+#   									any.annotation=list(class="list",
+#   																			req=list(class="list", pos="annotation"),
+#   																			pos=c("description", "link")))
   
   allowedTypes <- c("BP","MF","CC","KEGG","SPIA") # not using SPIA yet, but will 
  # check and set up the ccGeneList object so that it is useable by later functions
@@ -52,7 +136,8 @@ setMethod("initialize", "ccGeneList",
  
 	
  # check everything out, and stop if there is an error.
- sapply(object, function(x){
+ extraTypes <- sapply(object, function(x){
+ 	 tmpTypes <- vector("character", 0)
    #browser(expr=TRUE)
    subNames <- names(x)
    misNames <- reqNames[!(reqNames %in% subNames)]
@@ -70,27 +155,22 @@ setMethod("initialize", "ccGeneList",
    }
    
    # and now check for optional "data" that will be kept.
-   isSup <- match(names(supFields),subNames, nomatch=0)
-   isSup <- isSup[!(isSup == 0)]
-   nSup <- length(isSup)
-   
-   if (nSup > 0){
-     for (iSup in 1:nSup){
-       # check the class
-       if (class(x[[isSup[iSup]]]) != supFields[[iSup]]$class){
-         stop('Data type mismatch.', call.=FALSE)
-       }
-		 	 if (supFields[[iSup]]$class == "data.frame"){
-		 	 	objNames <- names(x[[isSup[iSup]]])
-				posNames <- supFields[[iSup]]$pos
-				if (sum(tolower(objNames) %in% tolower(posNames)) == 0){
-					stop(paste('Required information missing from the extra entry ', names(supFields)[iSup], collapse=""))
-				}
-		 	 }
-     }
+   if ("data" %in% names(x)){
+   	x$data <- checkData(x$data)
    }
+   
+   if ("any.annotation" %in% names(x)){
+   	
+   	x[["any.annotation"]] <- checkANY(x[["any.annotation"]])
+   	tmpTypes <- names(x[["any.annotation"]])
+   }
+ 	 tmpTypes
+ 	 #browser(expr=TRUE)
  })
- 
+ extraTypes
+ allowedTypes <- c(allowedTypes, paste("ANY.", unique(unlist(extraTypes)), sep=""))
+  
+  
  isAllowed <- ccTypes %in% allowedTypes
  nNot <- sum(!isAllowed)
  if (nNot > 0){

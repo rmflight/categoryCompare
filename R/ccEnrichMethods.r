@@ -8,6 +8,7 @@ setMethod("ccEnrich", "ccGeneList",
 	function(ccGeneList){
 	  goType <- c("BP","MF","CC")
 	  keggType <- "KEGG"
+	  anyType <- "ANY"
 	  annOpt <- annStatus()
 	  
 	  ccNames <- names(ccGeneList)
@@ -24,8 +25,13 @@ setMethod("ccEnrich", "ccGeneList",
 	    stop('KEGG requested, but KEGG.db not loaded. Please load KEGG.db', call.=FALSE)
 	  }
 	  
-	  # get rid of anything else besides GO and KEGG that is in the requested things
-	  testCat <- testCat[(hasGO | hasKEGG)]
+	  anyNames <- sapply(ccGeneList, function(x){
+	  	names(x$any.annotation)
+	  })
+	  anyNames <- paste("ANY.", unique(unlist(anyNames)), sep="")
+	  hasANY <- testCat %in% anyNames
+	  # get rid of anything else besides GO, KEGG and ANY that is in the requested things
+	  testCat <- testCat[(hasGO | hasKEGG | hasANY)]
 	  nCat <- length(testCat)
 	  nList <- length(ccNames)
 	  
@@ -36,10 +42,12 @@ setMethod("ccEnrich", "ccGeneList",
 	  cat("Performing Enrichment Calculations ....\n")
 	  
 	  for (iCat in 1:nCat){
-	    if (testCat[iCat] %in% goType){
+	    if (hasGO[iCat]){
 	      allEnrich[[iCat]] <- .goEnrich(ccGeneList,testCat[iCat])
-	    } else if (testCat[iCat] == "KEGG"){
+	    } else if (hasKEGG[iCat]){
 	      allEnrich[[iCat]] <- .keggEnrich(ccGeneList)
+	    } else if (hasANY[iCat]) {
+	    	allEnrich[[iCat]] <- .anyEnrich(ccGeneList, testCat[iCat])
 	    }
 	  }
 	  
@@ -68,7 +76,7 @@ setMethod("ccEnrich", "ccGeneList",
     
 
 		# keep the user updated on what is going on
-		printStr <- paste(testNames[iTest], ':', testCat, '\n', sep=" ")
+		printStr <- paste("GO ", testCat, ': ', testNames[iTest], '\n', sep=" ")
 		cat(printStr)
 		
     # set the different geneIds, universeIds, and annotation
@@ -96,7 +104,7 @@ setMethod("ccEnrich", "ccGeneList",
         annotation=ccGeneList[[1]]$annotation, testDirection=testDirection(ccGeneList), fdr=fdr(ccGeneList), pvalueCutoff=pvalueCutoff(ccGeneList))
         
   for (iTest in 1:nTest){
-    printStr <- paste(testNames[iTest], ': KEGG \n', sep=" ")
+    printStr <- paste('KEGG: ', testNames[iTest], '\n', sep="")
     cat(printStr)
     
     geneIds(testAnn) <- ccGeneList[[iTest]]$genes
@@ -109,6 +117,40 @@ setMethod("ccEnrich", "ccGeneList",
   
  allAnn <- new("KEGGccEnrichResult", allAnn, fdr=fdr(ccGeneList), pvalueCutoff=pvalueCutoff(ccGeneList), pvalueType=pvalueType(allAnn[[1]]),minCount=0)
  return(allAnn)
+}
+
+.anyEnrich <- function(ccGeneList, testCat){
+	testNames <- names(ccGeneList)
+	nTest <- length(testNames)
+#	allAnn <- vector("list", nTest)
+# 	names(allAnn) <- testNames
+	
+	anyTestCat <- substr(testCat, 5, nchar(testCat)) # assumes "ANY." is the first, but we want the last bit
+	
+	allAnn <- lapply(testNames, function(x){
+		message(testCat,': ', x)
+# 		cat(printStr)
+		testAnn <- new("ANYHyperGParamsCC",
+									 geneIds=ccGeneList[[x]]$genes,
+									 universeGeneIds=ccGeneList[[x]]$universe,
+									 annotation=ccGeneList[[x]]$any.annotation[[anyTestCat]][["annotation"]],
+									 testDirection=testDirection(ccGeneList),
+									 fdr=fdr(ccGeneList),
+									 pvalueCutoff=pvalueCutoff(ccGeneList))
+		tmpAnn <- hyperGTestCC(testAnn)
+		tmpAnn@link <- ccGeneList[[x]]$any.annotation[[anyTestCat]][["link"]]
+		tmpAnn@description <- ccGeneList[[x]]$any.annotation[[anyTestCat]][["description"]]
+		return(tmpAnn)
+	})	
+	
+	names(allAnn) <- testNames
+	
+	allAnn <- new("ANYccEnrichResult", allAnn, 
+								fdr=fdr(ccGeneList), 
+								pvalueCutoff=pvalueCutoff(ccGeneList), 
+								pvalueType=pvalueType(allAnn[[1]]),
+								minCount=0)
+	return(allAnn)
 }
 # this is an example of the Entrez links we want to make:
 # http://www.ncbi.nlm.nih.gov/sites/entrez?cmd=search&db=gene&term=230959[uid]&doptcmdl=Full_Report
