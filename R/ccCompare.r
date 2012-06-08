@@ -16,6 +16,7 @@ setMethod("ccCompare",
 					signature=list(ccEnrichResult="ANYccEnrichResult",
 												 ccOptions="ccOptions"),
 					function(ccEnrichResult, ccOptions) .ccCompareANY(ccEnrichResult, ccOptions))
+}
 
 .ccCompareANY <- function(ccEnrichResult, ccOptions){
 	hasDesc <- T
