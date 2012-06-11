@@ -156,6 +156,9 @@ exportClasses(
 	"ccCompareCollection",
 	"ccSigList",
 	"GENccEnrichResult",
-	"mergedData"
+	"mergedData",
+	"ANYHyperGParamsCC",
+	"ANYHyperGResultCC",
+	"ANYccEnrichResult"
 )
 

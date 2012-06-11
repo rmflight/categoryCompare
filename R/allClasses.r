@@ -62,3 +62,12 @@ setClass("ccSigList", representation=representation(sigID="character",categoryNa
 setClass("GENccEnrichResult", contains="namedList", representation=representation(categoryName="character", ontology="character", geneAnnMapping="namedList",graphType="character"), prototype=prototype(graphType="overlap") )
 
 setClass("mergedData", contains="data.frame", representation=representation(useIDName="character"))
+
+setClass("ANYHyperGParamsCC", representation=representation(fdr="numeric", geneIds="character", universeGeneIds="character", annotation="list", categoryName="character", pvalueCutoff="numeric", testDirection="character", conditional="logical", organism="character"), prototype=prototype(fdr=50, categoryName="ANY", testDirection="over", pvalueCutoff=0.05, conditional=FALSE))
+
+setClass("ANYHyperGResultCC", contains="HyperGResultCC",
+				 representation=representation(link="ANY",
+				 															description="ANY"))
+
+setClass("ANYccEnrichResult", contains="ccEnrichResult",
+				 prototype=prototype(categoryName="ANY", graphType="overlap"))
