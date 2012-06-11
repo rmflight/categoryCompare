@@ -187,6 +187,7 @@ setMethod("categoryName", "ccCompareResult", function(r){
 	r@categoryName
 })
 
+
 ### ccSigList objects
 setMethod("sigID", "ccSigList", function(object) {
 	object@sigID

@@ -59,7 +59,7 @@ pval3 <- hyperGRes3@pvalues
 pval2 <- hyperGRes2@pvalues
 
 pval2 <- pval2[order(names(pval2))]
-pval3 <- pval3[order(names(pval3))] # something fishy here
+pval3 <- pval3[order(names(pval3))]
 
 cat2Gene2 <- hyperGRes2@catToGeneId
 cat2Gene3 <- hyperGRes3@catToGeneId
