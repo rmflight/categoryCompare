@@ -103,7 +103,7 @@ allHsPub <- sapply(allHsPub, function(x){x[!(is.na(x))]}) # make sure to get rid
 
 # take out anything with more than 10 genes (probably a sequencing project?)
 pubLen <- sapply(allHsPub, length)
-allHsPub <- allHsPub[(pubLen <= 10)]
+allHsPub <- allHsPub[(pubLen <= 500)]
 
 pubLink <- paste("http://www.ncbi.nlm.nih.gov/pubmed/", names(allHsPub), sep="")
 names(pubLink) <- names(allHsPub)
