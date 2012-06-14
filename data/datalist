@@ -1,1 +1,1 @@
-ccData: ccOpts ccResults ccResultsBPHier enrichLists gUniverse geneLists gseaRes table10 table48
+ccData: table48 table10 gUniverse hyperGParamT geneLists enrichLists ccOpts ccResults ccResultsHier .sessionInfo .timeDate

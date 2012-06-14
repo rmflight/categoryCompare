@@ -1,0 +1,119 @@
+# Generate test data
+
+This file actually generates the data used in the examples, and for testing. It should be re-run every time packages are updated so that comparison of results are valid. This will be incredibly important with new versions of Bioconductor.
+
+## Set up knitr and R options
+```{r knitrOpts}
+knit_hooks$set(inline = identity)  # sets output for inline resutls nicely
+knit_hooks$set(error = function(x, options) stop(x))  # kills knitr if there
+# is an error, therefore we don't waste time generating error messages
+options(save.defaults = list(compress = "xz"), stringsAsFactors = FALSE)
+```
+
+## Load libraries
+```{r loadLibs}
+library("affy")
+library("hgu95av2.db")
+library("hgu95av2cdf")
+library("genefilter")
+library("estrogen")
+library("limma")
+library("categoryCompare")
+library("GO.db")
+```
+
+```{r readRawData}
+# read in the raw estrogen data
+datadir <- system.file("extdata", package = "estrogen")
+pd <- read.AnnotatedDataFrame(file.path(datadir,"estrogen.txt"), 
+															header = TRUE, sep = "", row.names = 1)
+pData(pd)
+
+a <- ReadAffy(filenames=file.path(datadir,rownames(pData(pd))), phenoData = pd, verbose = TRUE)
+eData <- rma(a)
+```
+
+## Set up time point 10
+```{r t10}
+pCut <- 0.05
+e10 <- eData[, eData$time.h == 10]
+e10 <- nsFilter(e10, remove.dupEntrez=TRUE, var.filter=FALSE, 
+								feature.exclude="^AFFX")$eset
+
+e10$estrogen <- factor(e10$estrogen)
+d10 <- model.matrix(~0 + e10$estrogen)
+colnames(d10) <- unique(e10$estrogen)
+fit10 <- lmFit(e10, d10)
+c10 <- makeContrasts(present - absent, levels=d10)
+fit10_2 <- contrasts.fit(fit10, c10)
+eB10 <- eBayes(fit10_2)
+table10 <- topTable(eB10, number=nrow(e10), p.value=pCut, adjust.method="BH")
+table10$Entrez <- unlist(mget(table10$ID, hgu95av2ENTREZID, ifnotfound=NA))
+```
+
+## Set up time point 48
+```{r t48}
+e48 <- eData[, eData$time.h == 48]
+e48 <- nsFilter(e48, remove.dupEntrez=TRUE, var.filter=FALSE, 
+								feature.exclude="^AFFX" )$eset
+
+e48$estrogen <- factor(e48$estrogen)
+d48 <- model.matrix(~0 + e48$estrogen)
+colnames(d48) <- unique(e48$estrogen)
+fit48 <- lmFit(e48, d48)
+c48 <- makeContrasts(present - absent, levels=d48)
+fit48_2 <- contrasts.fit(fit48, c48)
+eB48 <- eBayes(fit48_2)
+table48 <- topTable(eB48, number=nrow(e48), p.value=pCut, adjust.method="BH")
+table48$Entrez <- unlist(mget(table48$ID, hgu95av2ENTREZID, ifnotfound=NA))
+```
+
+## Gene Universe
+```{r gUniverse}
+gUniverse <- unique(unlist(mget(rownames(as.matrix(exprs(e48))), hgu95av2ENTREZID, ifnotfound=NA)))
+gUniverse <- gUniverse[!(is.na(gUniverse))]
+```
+
+# Basic calculations
+
+Perform some of the basic calculations that are needed so we can make a comparison between the results of test operations and "truth", *i.e.* so that we know what is working. Note, for **ccData**, we only keep the top 100 genes in **T10** and **T48**, this keeps the filesize down and the required time for calculations.
+
+```{r basicCalc}
+table48 <- table48[1:100,]
+table10 <- table10[1:100,]
+
+g10 <- unique(table10$Entrez)
+g10 <- g10[!(is.na(g10))]
+g48 <- unique(table48$Entrez)
+g48 <- g48[!(is.na(g48))]
+
+hyperGParamT <- new("GOHyperGParamsCC", geneIds=g10, universeGeneIds=gUniverse, 
+                   annotation="org.Hs.eg.db", ontology="CC", conditional=FALSE, 
+                   testDirection="over",fdr=0, pvalueCutoff = 0.05)
+
+list10 <- list(genes=g10, universe=gUniverse, annotation='org.Hs.eg.db')
+list48 <- list(genes=g48, universe=gUniverse, annotation='org.Hs.eg.db')
+
+geneLists <- list(T10=list10, T48=list48)
+geneLists <- new("ccGeneList", geneLists, ccType="CC", fdr=0)
+
+enrichLists <- ccEnrich(geneLists)
+ccOpts <- new("ccOptions", listNames=names(geneLists))
+ccResults <- ccCompare(enrichLists, ccOpts)
+graphType(enrichLists$CC) <- "hierarchical"
+ccResultsHier <- ccCompare(enrichLists$CC, ccOpts)
+```
+
+# Save data
+```{r saveData}
+.sessionInfo <- sessionInfo()
+.timeDate <- Sys.time()
+
+saveList <- c("table48", "table10", "gUniverse", "hyperGParamT", "geneLists", "enrichLists",
+						"ccOpts", "ccResults", "ccResultsHier", ".sessionInfo", ".timeDate")
+
+save(list=saveList, file="data/ccData.RData")
+cat("ccData:", saveList, file="data/datalist", sep=" ")
+.sessionInfo
+.timeDate
+```

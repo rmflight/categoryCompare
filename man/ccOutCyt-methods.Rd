@@ -35,8 +35,8 @@ hasCy <- (if (.Platform$OS.type \%in\% "windows") { (length(grep("Cytoscape", sy
 
 if hasCy {
 	
-	ccResults$BP <- breakEdges(ccResults$BP, 0.8)
-	cwObj <- ccOutCyt(ccResults$BP,ccOpts)
+	ccResults$CC <- breakEdges(ccResults$CC, 0.8)
+	cwObj <- ccOutCyt(ccResults$CC,ccOpts)
 	Sys.sleep(10)
 	RCytoscape::deleteWindow(cwObj)
 	}

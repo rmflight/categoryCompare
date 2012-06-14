@@ -57,6 +57,7 @@ Robert M Flight
 \code{\link{ccCompareGeneric}} \code{\link{ccSigList}}
 }
 \examples{
+\dontrun{
 data(ccData)
 locA <- grep("A",gseaRes$Tissues)
 locL <- grep("L",gseaRes$Tissues)
@@ -67,5 +68,6 @@ L <- new("ccSigList",sigID=gseaRes$KEGGID[locL],categoryName="KEGG",annotation="
 M <- new("ccSigList",sigID=gseaRes$KEGGID[locM],categoryName="KEGG",annotation="org.Mm.eg")
 ccEnrichCol <- list(A=A,L=L,M=M)
 ccEnrichCol <- new("GENccEnrichResult", ccEnrichCol, categoryName="KEGG")
+}
 }
 \keyword{classes}

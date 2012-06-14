@@ -66,9 +66,9 @@ data(ccData)
 ccResults
 
 # use the GO hierarchy tree
-graphType(enrichLists$BP) <- "hierarchical"
-# ccResultsBPHier <- ccCompare(enrichLists$BP,ccOpts)
-ccResultsBPHier
+graphType(enrichLists$CC) <- "hierarchical"
+# ccResultsHier <- ccCompare(enrichLists$CC,ccOpts)
+ccResultsHier
 
 
 }

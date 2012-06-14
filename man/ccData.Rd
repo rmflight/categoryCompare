@@ -30,7 +30,7 @@ Processed data from the \code{estrogen} example data set
 	
 	\code{ccResults}{: Apply \code{\link{ccCompare}} to \code{enrichLists}}
 	
-	\code{ccResultsBPHier}{: Modify \code{enrichLists$BP} to use a "hierarchical" layout}
+	\code{ccResultsHier}{: Modify \code{enrichLists$CC} to use a "hierarchical" layout}
 	
 	\code{geneLists}{: a \code{ccGeneList} generated from genes in table10 and table48}
 	

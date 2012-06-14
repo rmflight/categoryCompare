@@ -9,7 +9,7 @@ Depends: R (>= 2.10), Biobase (>= 1.15.29), AnnotationDbi (>= 0.1.15),
         Category
 Suggests: methods, GSEABase, hwriter, colorspace, graph, GO.db,
         KEGG.db, estrogen, org.Hs.eg.db, hgu95av2.db, limma, affy,
-        genefilter
+        genefilter, testthat
 Imports: Biobase (>= 1.15.29), AnnotationDbi (>= 0.1.15), hwriter,
         GSEABase, Category (>= 2.21.2), GOstats, annotate, colorspace,
         graph, RCytoscape (>= 1.5.11)

@@ -1,2 +1,4 @@
 doc/.*[.]png$
 readme.md
+genData.*
+.git/*

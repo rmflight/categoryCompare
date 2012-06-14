@@ -27,8 +27,8 @@ hasCy <- (if (.Platform$OS.type \%in\% "windows") { (length(grep("Cytoscape", sy
 
 if hasCy {
 	data(ccData)
-	ccResults$BP <- breakEdges(ccResults$BP, 0.8)
-	cwObj <- ccOutCyt(ccResults$BP,ccOpts)
+	ccResults$CC <- breakEdges(ccResults$CC, 0.8)
+	cwObj <- ccOutCyt(ccResults$CC,ccOpts)
 	
 	minNodes(cwObj, 5)
 

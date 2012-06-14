@@ -20,8 +20,8 @@ Allows export of currently selected nodes in the Cytoscape window for data expor
 hasCy <- (if (.Platform$OS.type \%in\% "windows") { (length(grep("Cytoscape", system("tasklist", intern=TRUE))) > 0)})
 
 if hasCy {
-	ccResults$BP <- breakEdges(ccResults$BP, 0.8)
-	cwObj <- ccOutCyt(ccResults$BP,ccOpts)
+	ccResults$CC <- breakEdges(ccResults$CC, 0.8)
+	cwObj <- ccOutCyt(ccResults$CC,ccOpts)
 	# user selects some nodes in Cytoscape
 	RCytoscape::selectNodes(cwObj, c("GO:0007017", "GO:0000226", "GO:0007051", "GO:0007052"))
 	savedNodes <- cytOutNodes("random1", cwObj) # save them

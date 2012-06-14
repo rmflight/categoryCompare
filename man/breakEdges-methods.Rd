@@ -30,13 +30,13 @@ Robert M Flight
 data(ccData)
 
 # breaking the edges in a ccCompareResult
-ccResults$BP <- breakEdges(ccResults$BP, 0.8)
+ccResults$CC <- breakEdges(ccResults$CC, 0.8)
 \dontrun{
 hasCy <- (if (.Platform$OS.type \%in\% "windows") { (length(grep("Cytoscape", system("tasklist", intern=TRUE))) > 0)})
 
 if hasCy {
 	
-	cwObj <- ccOutCyt(ccResults$BP,ccOpts)
+	cwObj <- ccOutCyt(ccResults$CC,ccOpts)
 	# now breaking them in the CytoscapeWindow object
 	breakEdges(cwObj, 0.85)
 	Sys.sleep(10)
