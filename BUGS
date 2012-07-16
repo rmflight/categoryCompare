@@ -1,3 +1,4 @@
 Known categoryCompare Bugs
 
-None currently.
+If there are no results, or only single results from the category Enrichment, the
+graph creation will fail with a very unhelpful error.
