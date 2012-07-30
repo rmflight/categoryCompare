@@ -428,32 +428,35 @@ createGraph2 <- function(nodeList,nodeGeneMap,nodeType){
   nodeGeneMap <- nodeGeneMap[keepNodes]
   nNodes <- length(nodeList)
 
-  baseAM <- matrix(data=0, nrow=nNodes, ncol=nNodes)
-  rownames(baseAM) <- colnames(baseAM) <- nodeList
+  graphDat <- new("graphNEL", nodes=nodeList, edgemode="directed") # this is because we will be visualizing in Cytoscape, and really, we don't actually need the dual information.
   
-  for (iNode in 1:(nNodes-1)){
-    n1 <- nodeGeneMap[[iNode]]
-    for (jNode in (iNode+1):nNodes){
-      n2 <- nodeGeneMap[[jNode]]
-      
-      if (useJ){
-        useC <- (length(intersect(n1,n2))) / (length(union(n1,n2)))
-      } else {
-        useC <- (length(intersect(n1,n2))) / (min(c(length(n1),length(n2))))
-      }
-#       if (useC > 0){
-#         baseAM[iNode,jNode] <- 1
-#         baseAM[jNode,iNode] <- 1
-#       }
-			if (useC > 0.1){
-      	baseAM[iNode,jNode] <- useC
-      	baseAM[jNode,iNode] <- useC
-			}
-    }
-  }
+  allComp <- expand.grid(seq(1,nNodes),seq(1,nNodes))
+  allComp <- allComp[(allComp[,2] > allComp[,1]),] # keep only where second is greater than first
+  allComp <- as.matrix(allComp)
   
-  graphDat <- new('graphAM', adjMat=baseAM, values=list(weight=1))
-  as(graphDat,"graphNEL")
+  # now go through allComp, using them as indices into the matrix
+  corAll <- sapply(seq(1,nrow(allComp)), function(x){
+  	doComp <- allComp[x,]
+  	n1 <- nodeGeneMap[[doComp[1]]]
+  	n2 <- nodeGeneMap[[doComp[2]]]
+  	
+  	if (useJ){
+  		useC <- (length(intersect(n1,n2))) / (length(union(n1,n2)))
+  	} else {
+  		useC <- (length(intersect(n1,n2))) / (min(c(length(n1),length(n2))))
+  	}
+  	useC
+  })
+  
+  # get rid of anything that was completely zero
+  notZero <- corAll != 0
+  allComp <- allComp[notZero,]
+  corAll <- jmAll[notZero]
+  fromEdge <- nodeList[allComp[,1]]
+  toEdge <- nodeList[allComp[,2]]
+  
+  graphDat <- addEdge(fromEdge, toEdge, graphDat, corAll)
+  
 }
 
 
