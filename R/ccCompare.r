@@ -422,6 +422,11 @@ createGraph2 <- function(nodeList,nodeGeneMap,nodeType){
     useJ <- FALSE
   }
   
+  if (length(nodeList) == 0){
+  	warning("Created a graph with zero nodes and zero edges!", call.=F)
+  	return(new("graphNEL", nodes=character(0), edgemode="directed"))
+  }
+  
   nGenesNode <- sapply(nodeGeneMap,'length')
   keepNodes <- (nGenesNode >= 10) & (nGenesNode <= 500)
   nodeList <- nodeList[keepNodes]
