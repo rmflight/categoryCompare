@@ -422,9 +422,15 @@ createGraph2 <- function(nodeList,nodeGeneMap,nodeType){
     useJ <- FALSE
   }
   
+  # stop code at the spot where errors may likely creep in.
   if (length(nodeList) == 0){
   	warning("Created a graph with zero nodes and zero edges!", call.=F)
   	return(new("graphNEL", nodes=character(0), edgemode="directed"))
+  }
+  
+  if (length(nodeList) == 1){
+  	warning("Created a graph with one node and zero edges!", call.=F)
+  	return(new("graphNEL", nodes=nodeList, edgemode="directed"))
   }
   
   nGenesNode <- sapply(nodeGeneMap,'length')
