@@ -462,7 +462,7 @@ createGraph2 <- function(nodeList,nodeGeneMap,nodeType){
   # get rid of anything that was completely zero
   notZero <- corAll != 0
   allComp <- allComp[notZero,]
-  corAll <- jmAll[notZero]
+  corAll <- corAll[notZero]
   fromEdge <- nodeList[allComp[,1]]
   toEdge <- nodeList[allComp[,2]]
   
