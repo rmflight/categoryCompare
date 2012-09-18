@@ -1,3 +1,5 @@
+importFrom(BiocGenerics, annotation, "annotation<-")
+
 importMethodsFrom(AnnotationDbi,
 		mget)
 		
