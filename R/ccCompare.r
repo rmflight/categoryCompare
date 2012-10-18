@@ -521,46 +521,60 @@ setMethod("ccCompare", signature=list(ccEnrichResult="GENccEnrichResult", ccOpti
 }
 
 createGraph2 <- function(nodeList,nodeGeneMap,nodeType){
-  # graph creation is based on:
-  # Merico D, Isserlin R, Stueker O, Emili A, Bader GD, 2010 
-  # Enrichment Map: A Network-Based Method for Gene-Set Enrichment Visualization and Interpretation. PLoS ONE 5(11): e13984. doi:10.1371/journal.pone.0013984
-  useJ <- TRUE
-  if ((nodeType == 'GO')){
-    useJ <- FALSE
-  }
-  
-  nGenesNode <- sapply(nodeGeneMap,'length')
-  keepNodes <- (nGenesNode >= 10) & (nGenesNode <= 500)
-  nodeList <- nodeList[keepNodes]
-  nodeGeneMap <- nodeGeneMap[keepNodes]
-  nNodes <- length(nodeList)
-
-  baseAM <- matrix(data=0, nrow=nNodes, ncol=nNodes)
-  rownames(baseAM) <- colnames(baseAM) <- nodeList
-  
-  for (iNode in 1:(nNodes-1)){
-    n1 <- nodeGeneMap[[iNode]]
-    for (jNode in (iNode+1):nNodes){
-      n2 <- nodeGeneMap[[jNode]]
-      
-      if (useJ){
-        useC <- (length(intersect(n1,n2))) / (length(union(n1,n2)))
-      } else {
-        useC <- (length(intersect(n1,n2))) / (min(c(length(n1),length(n2))))
-      }
-#       if (useC > 0){
-#         baseAM[iNode,jNode] <- 1
-#         baseAM[jNode,iNode] <- 1
-#       }
-			if (useC > 0.1){
-      	baseAM[iNode,jNode] <- useC
-      	baseAM[jNode,iNode] <- useC
-			}
-    }
-  }
-  
-  graphDat <- new('graphAM', adjMat=baseAM, values=list(weight=1))
-  as(graphDat,"graphNEL")
+	# graph creation is based on:
+	# Merico D, Isserlin R, Stueker O, Emili A, Bader GD, 2010
+	# Enrichment Map: A Network-Based Method for Gene-Set Enrichment Visualization and Interpretation. PLoS ONE 5(11): e13984. doi:10.1371/journal.pone.0013984
+	useJ <- TRUE
+	if ((nodeType == 'GO')){
+		useJ <- FALSE
+	}
+	
+	# stop code at the spot where errors may likely creep in.
+	if (length(nodeList) == 0){
+		warning("Created a graph with zero nodes and zero edges!", call.=F)
+		return(new("graphNEL", nodes=character(0), edgemode="directed"))
+	}
+	
+	if (length(nodeList) == 1){
+		warning("Created a graph with one node and zero edges!", call.=F)
+		return(new("graphNEL", nodes=nodeList, edgemode="directed"))
+	}
+	
+	nGenesNode <- sapply(nodeGeneMap,'length')
+	keepNodes <- (nGenesNode >= 10) & (nGenesNode <= 500)
+	nodeList <- nodeList[keepNodes]
+	nodeGeneMap <- nodeGeneMap[keepNodes]
+	nNodes <- length(nodeList)
+	
+	graphDat <- new("graphNEL", nodes=nodeList, edgemode="directed") # this is because we will be visualizing in Cytoscape, and really, we don't actually need the dual information.
+	
+	allComp <- expand.grid(seq(1,nNodes),seq(1,nNodes))
+	allComp <- allComp[(allComp[,2] > allComp[,1]),] # keep only where second is greater than first
+	allComp <- as.matrix(allComp)
+	
+	# now go through allComp, using them as indices into the matrix
+	corAll <- sapply(seq(1,nrow(allComp)), function(x){
+		doComp <- allComp[x,]
+		n1 <- nodeGeneMap[[doComp[1]]]
+		n2 <- nodeGeneMap[[doComp[2]]]
+		
+		if (useJ){
+			useC <- (length(intersect(n1,n2))) / (length(union(n1,n2)))
+		} else {
+			useC <- (length(intersect(n1,n2))) / (min(c(length(n1),length(n2))))
+		}
+		useC
+	})
+	
+	# get rid of anything that was completely zero
+	notZero <- corAll != 0
+	allComp <- allComp[notZero,]
+	corAll <- corAll[notZero]
+	fromEdge <- nodeList[allComp[,1]]
+	toEdge <- nodeList[allComp[,2]]
+	
+	graphDat <- addEdge(fromEdge, toEdge, graphDat, corAll)
+	
 }
 
 
