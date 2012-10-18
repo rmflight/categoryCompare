@@ -1,5 +1,5 @@
 % \VignetteIndexEntry{categoryCompare: High-throughput data meta-analysis using gene annotations}
-% \VignetteDepends{Biobase, categoryCompare, GO.db, KEGG.db, affy, hgu95av2.db, genefilter, estrogen, limma}
+% \VignetteDepends{Biobase, categoryCompareANY, GO.db, KEGG.db, affy, hgu95av2.db, genefilter, estrogen, limma}
 % \VignetteKeyword{categoryCompare, meta-analysis, gene ontology, kegg}
 % \VignettePackage{categoryCompare}
 
