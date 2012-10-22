@@ -53,4 +53,11 @@ enrichList <- ccEnrich(geneList)
 
 ccOpts <- new("ccOptions", listNames=names(geneList))
 
+pvalueType(enrichList) <- "pval" # needed to make sure that comparing BP and ANY BP are the exact same
+
 compareList <- ccCompare(enrichList, ccOpts)
+
+# now why does the ANY.GOBP have more than the BP?
+
+tmpBP <- summary(enrichList$BP$g48, p.value=1)
+tmpABP <- summary(enrichList$ANY.GOBP$g48)

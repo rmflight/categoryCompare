@@ -67,7 +67,8 @@ setClass("ANYHyperGParamsCC", representation=representation(fdr="numeric", geneI
 
 setClass("ANYHyperGResultCC", contains="HyperGResultCC",
 				 representation=representation(link="ANY",
-				 															description="ANY"))
+				 															description="ANY",
+				 															ccType="character"))
 
 setClass("ANYccEnrichResult", contains="ccEnrichResult",
 				 prototype=prototype(categoryName="ANY", graphType="overlap"))

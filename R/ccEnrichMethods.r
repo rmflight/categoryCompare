@@ -140,6 +140,7 @@ setMethod("ccEnrich", "ccGeneList",
 		tmpAnn <- hyperGTestCC(testAnn)
 		tmpAnn@link <- ccGeneList[[x]]$any.annotation[[anyTestCat]][["link"]]
 		tmpAnn@description <- ccGeneList[[x]]$any.annotation[[anyTestCat]][["description"]]
+		tmpAnn@ccType <- testCat
 		return(tmpAnn)
 	})	
 	
