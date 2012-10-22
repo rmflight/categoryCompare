@@ -726,8 +726,8 @@ createGraph <- function(nodeList){
   
     allNodes <- c(allNodes, tmpRes[[1]])
 	
-	tmpCatGene <- ccEnrichResult[[iList]]@catToGeneId
-	allCatGene <- sapply(tmpCatGeneNames, addGene)
+		tmpCatGene <- ccEnrichResult[[iList]]@catToGeneId
+		allCatGene <- sapply(tmpCatGeneNames, addGene)
 
   }
   names(allRes) <- lists

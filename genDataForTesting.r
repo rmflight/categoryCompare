@@ -55,6 +55,7 @@ ccOpts <- new("ccOptions", listNames=names(geneList))
 
 pvalueType(enrichList) <- "pval" # needed to make sure that comparing BP and ANY BP are the exact same
 
+compareList <- ccCompare(enrichList, ccOpts)
 
 extGO <- categoryCompareANY:::.extractRes(enrichList$BP)
 extANYGO <- categoryCompareANY:::.extractRes(enrichList$ANY.GOBP)
@@ -76,10 +77,31 @@ anyCatGene <- lapply(anyCatGene, function(x){sort(x)})
 
 all.equal(goCatGene, anyCatGene) # returns TRUE!!!
 
-# so why 
+# so why are the graphs different?
+tmpBP <- compareList$BP@mainGraph
+tmpA <- compareList$ANY.GOBP@mainGraph
 
-compareList <- ccCompare(enrichList, ccOpts)
+goEdges <- edges(tmpBP)
+anyEdges <- edges(tmpA)
+anyinGO <- anyEdges[(names(anyEdges) %in% names(goEdges))]
+anyinGO <- anyinGO[order(names(anyinGO))]
+anyinGO <- lapply(anyinGO, sort)
 
+goinANY <- goEdges[(names(goEdges) %in% names(anyEdges))]
+goinANY <- goinANY[order(names(goinANY))]
+goinANY <- lapply(goinANY, sort)
+
+all.equal(anyinGO, goinANY)
+
+goDat <- edgeData(tmpBP, names(goinANY)[1], goinANY[[1]])
+anyDat <- edgeData(tmpA, names(anyinGO)[1], anyinGO[[1]])
+
+
+goMatch <- which(names(goDat) %in% names(anyDat))
+anyMatch <- which(names(anyDat) %in% names(goDat))
+
+goDat[goMatch]
+anyDat[anyMatch]
 # now why does the ANY.GOBP have more than the BP?
 
 tmpBP <- compareList$BP@mainGraph
