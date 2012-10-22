@@ -20,4 +20,3 @@ biocViews: Bioinformatics, Annotation, GO, MultipleComparisons,
 SystemRequirements: Cytoscape (>= 2.8.0) (if used for visualization of
         results, heavily suggested), CytoscapeRPC plugin (>= 1.8)
 TODO: Text and HTML output without graphs.
-Packaged: 2012-03-15 19:51:42 UTC; rmflig01

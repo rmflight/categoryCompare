@@ -12,11 +12,13 @@ setMethod("ccCompare", signature=list(ccEnrichResult="ccEnrichCollection",ccOpti
 	# apply ccCompare to each sub-object, using the 
   allCompare <- lapply(ccEnrichResult, ccCompare, ccOptions)
   allCompare <- new("ccCompareCollection", allCompare)
+
+}
+
 setMethod("ccCompare",
 					signature=list(ccEnrichResult="ANYccEnrichResult",
 												 ccOptions="ccOptions"),
 					function(ccEnrichResult, ccOptions) .ccCompareANY(ccEnrichResult, ccOptions))
-}
 
 .ccCompareANY <- function(ccEnrichResult, ccOptions){
 	hasDesc <- T
