@@ -23,7 +23,8 @@ importMethodsFrom(graph,
 		"edgeDataDefaults<-",
 		nodes,
 		"nodes<-",
-		removeEdge)
+		removeEdge,
+		addEdge)
 
 importClassesFrom(graph,
 		graphAM,

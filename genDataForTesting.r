@@ -50,3 +50,7 @@ geneList <- list(g48=list(genes=g48,
 geneList <- new("ccGeneList", geneList, ccType=c("BP", "ANY.GOBP", "ANY.PUB"))
 
 enrichList <- ccEnrich(geneList)
+
+ccOpts <- new("ccOptions", listNames=names(geneList))
+
+compareList <- ccCompare(enrichList, ccOpts)

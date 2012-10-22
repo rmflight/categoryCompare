@@ -70,7 +70,7 @@ setMethod("ccCompare",
 	
 	if (graphType(ccEnrichResult) %in% "overlap") {
 		resCatGene <- allCatGene[(names(allCatGene) %in% sigID)]
-		allGraph <- createGraph2(sigID,resCatGene,"ANY",0,10)
+		allGraph <- createGraph2(sigID,resCatGene,"ANY")
 		allGraph@graphData$layout <- "force-directed"
 		allNodes <- nodes(allGraph)
 	} else {
