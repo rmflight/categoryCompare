@@ -68,9 +68,17 @@ setMethod("ccCompare",
 	
 	nodeListMem <- lapply(allRes, function(x){x$sigIDs})
 	
+	# this should probably be better formalized, but this is a quick hack to get it 
+	# to work properly
+	if (length(grep("GO", ccEnrichResult[[1]]@ccType)) > 0){
+		createType <- "GO"
+	} else {
+		createType <- "ANY"
+	}
+	
 	if (graphType(ccEnrichResult) %in% "overlap") {
 		resCatGene <- allCatGene[(names(allCatGene) %in% sigID)]
-		allGraph <- createGraph2(sigID,resCatGene,"ANY")
+		allGraph <- createGraph2(sigID,resCatGene,createType)
 		allGraph@graphData$layout <- "force-directed"
 		allNodes <- nodes(allGraph)
 	} else {
