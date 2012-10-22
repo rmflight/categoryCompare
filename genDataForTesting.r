@@ -55,9 +55,34 @@ ccOpts <- new("ccOptions", listNames=names(geneList))
 
 pvalueType(enrichList) <- "pval" # needed to make sure that comparing BP and ANY BP are the exact same
 
+
+extGO <- categoryCompareANY:::.extractRes(enrichList$BP)
+extANYGO <- categoryCompareANY:::.extractRes(enrichList$ANY.GOBP)
+extANYGO$allNodes[!(extANYGO$allNodes %in% extGO$allNodes)]
+length(extANYGO$allNodes)
+length(extGO$allNodes)
+
+extANYGO$sigID[!(extANYGO$sigID %in% extGO$sigID)]
+length(extANYGO$sigID)
+length(extGO$sigID)
+
+goCatGene <- extGO$allCatGene[(names(extGO$allCatGene) %in% extGO$sigID)]
+anyCatGene <- extANYGO$allCatGene[(names(extANYGO$allCatGene) %in% extANYGO$sigID)]
+
+goCatGene <- goCatGene[order(names(goCatGene))]
+goCatGene <- lapply(goCatGene, function(x){sort(x)})
+anyCatGene <- anyCatGene[order(names(anyCatGene))]
+anyCatGene <- lapply(anyCatGene, function(x){sort(x)})
+
+all.equal(goCatGene, anyCatGene) # returns TRUE!!!
+
+# so why 
+
 compareList <- ccCompare(enrichList, ccOpts)
 
 # now why does the ANY.GOBP have more than the BP?
 
-tmpBP <- summary(enrichList$BP$g48, p.value=1)
-tmpABP <- summary(enrichList$ANY.GOBP$g48)
+tmpBP <- compareList$BP@mainGraph
+tmpA <- compareList$ANY.GOBP@mainGraph
+
+aNodes <- nodes(tmpA)[!(nodes(tmpA) %in% nodes(tmpBP))]
