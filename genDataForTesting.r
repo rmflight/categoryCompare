@@ -57,3 +57,4 @@ pvalueType(enrichList) <- "pval" # needed to make sure that comparing BP and ANY
 
 compareList <- ccCompare(enrichList, ccOpts)
 
+anyCC <- ccOutCyt(compareList$ANY.GOBP, ccOpts)
