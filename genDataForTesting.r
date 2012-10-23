@@ -77,6 +77,19 @@ anyCatGene <- lapply(anyCatGene, function(x){sort(x)})
 
 all.equal(goCatGene, anyCatGene) # returns TRUE!!!
 
+useANYGene <- anyCatGene[names(anyCatGene) %in% extANYGO$sigID]
+useGOGene <- categoryCompareANY:::getGO2ALLEGS(extGO$sigID, "org.Hs.eg.db")
+
+anyGraph <- categoryCompareANY:::createGraph2(extANYGO$sigID, useANYGene, "GO")
+goGraph <- categoryCompareANY:::createGraph2(extGO$sigID, useGOGene, "GO")
+
+anyGraph
+goGraph
+
+# this appears to be an odd result. Having **more** of the GO to Entrez annotations actually
+# results in fewer links and nodes in the final graph. This was actually rather counter-intuitive
+# to what I expected. But the good news is that categorgyCompareANY does appear to work. 
+
 # so why are the graphs different?
 tmpBP <- compareList$BP@mainGraph
 tmpA <- compareList$ANY.GOBP@mainGraph
@@ -102,6 +115,9 @@ anyMatch <- which(names(anyDat) %in% names(goDat))
 
 goDat[goMatch]
 anyDat[anyMatch]
+
+debug(categoryCompareANY:::.ccCompareANY)
+categoryCompareANY:::.ccCompareANY(enrichList$ANY.GOBP, ccOpts)
 # now why does the ANY.GOBP have more than the BP?
 
 tmpBP <- compareList$BP@mainGraph
