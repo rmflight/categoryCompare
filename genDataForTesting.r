@@ -58,3 +58,9 @@ pvalueType(enrichList) <- "pval" # needed to make sure that comparing BP and ANY
 compareList <- ccCompare(enrichList, ccOpts)
 
 anyCC <- ccOutCyt(compareList$ANY.GOBP, ccOpts)
+breakEdges(anyCC, 0.8)
+breakEdges(anyCC, 0.9)
+
+anyPub <- ccOutCyt(compareList$ANY.PUB, ccOpts, postText="PUB")
+breakEdges(anyPub, 0.3)
+breakEdges(anyPub, 0.8)
