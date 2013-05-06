@@ -117,7 +117,7 @@ c10 <- makeContrasts(present - absent, levels=d10)
 fit10_2 <- contrasts.fit(fit10, c10)
 eB10 <- eBayes(fit10_2)
 table10 <- topTable(eB10, number=nrow(e10), p.value=1, adjust.method="BH")
-table10$Entrez <- unlist(mget(table10$ID, hgu95av2ENTREZID, ifnotfound=NA))
+table10$Entrez <- unlist(mget(rownames(table10), hgu95av2ENTREZID, ifnotfound=NA))
 @
 
 And the 48 hour samples we do the same thing:
@@ -135,7 +135,7 @@ c48 <- makeContrasts(present - absent, levels=d48)
 fit48_2 <- contrasts.fit(fit48, c48)
 eB48 <- eBayes(fit48_2)
 table48 <- topTable(eB48, number=nrow(e48), p.value=1, adjust.method="BH")
-table48$Entrez <- unlist(mget(table48$ID, hgu95av2ENTREZID, ifnotfound=NA))
+table48$Entrez <- unlist(mget(rownames(table48), hgu95av2ENTREZID, ifnotfound=NA))
 @
 
 And grab all the genes on the array to have a background set.
