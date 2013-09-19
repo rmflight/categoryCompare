@@ -4,6 +4,7 @@
 \alias{GENccEnrichResult-class}
 \alias{GENccEnrichResult}
 \alias{[,GENccEnrichResult,ANY,ANY-method}
+\alias{[,GENccEnrichResult,ANY,ANY,ANY-method}
 \alias{category,GENccEnrichResult-method}
 \alias{ccCompareGeneric,GENccEnrichResult,ccOptions-method}
 \alias{geneAnnMapping,GENccEnrichResult-method}
