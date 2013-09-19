@@ -139,7 +139,9 @@ exportMethods(
 	"cytOutNodes",
 	"cytOutData",
 	"resetColors",
-	"breakEdges"
+	"breakEdges",
+  "pvalueCutoff",
+  "pvalueCutoff<-"
 		)
 		
 exportClasses(

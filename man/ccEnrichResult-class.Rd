@@ -17,6 +17,7 @@
 \alias{graphType,ccEnrichResult-method}
 \alias{graphType<-,ccEnrichResult-method}
 \alias{[,ccEnrichResult,ANY,ANY-method}
+\alias{[,ccEnrichResult,ANY,ANY,ANY-method}
 
 \title{Class "ccEnrichResult"}
 \description{
