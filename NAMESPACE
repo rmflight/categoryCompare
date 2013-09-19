@@ -101,7 +101,10 @@ importMethodsFrom(RCytoscape,
 		getSelectedNodes,
 		deleteWindow,
 		saveImage)
-		
+
+importClassesFrom(Biobase,
+                  AssayData)
+
 exportMethods(
 	"fdr",
 	"fdr<-",
