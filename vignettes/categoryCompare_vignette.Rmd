@@ -95,4 +95,131 @@ An alternative approach, used in `categoryCompare`, would be to compare the sign
 
 Note 1: I am not proposing that this is the best way to analyse *this* particular data, it is a sample data set that merely serves to illustrate the functionality of this package. However, there are many different experiments where this type of approach is definitely appropriate, and it is up to the user to determine if their data fits the analytical paradigm advocated here.
 
+## Create Gene List
+
+```{r createGeneList}
+library("categoryCompare")
+library("GO.db")
+library("KEGG.db")
+
+g10 <- unique(table10$Entrez[table10$adj.P.Val < 0.05])
+g48 <- unique(table48$Entrez[table48$adj.P.Val < 0.05])
+```
+
+For each list the genes of interest, and a background must be defined. Here we are using those genes with an adjusted P-value of less than 0.05 as the genes of interest, and all of the genes on the chip as the background.
+
+```{r viewLists}
+list10 <- list(genes=g10, universe=gUniverse, annotation='org.Hs.eg.db')
+list48 <- list(genes=g48, universe=gUniverse, annotation='org.Hs.eg.db')
+
+geneLists <- list(T10=list10, T48=list48)
+geneLists <- new("ccGeneList", geneLists, ccType=c("BP","KEGG"))
+fdr(geneLists) <- 0 # this speeds up the calculations for demonstration
+geneLists
+```
+
+## Annotation Enrichment
+
+Now run the enrichment calculations on each list. In this case enrichment will be performed using the biological process (BP) Gene Ontology, and KEGG Pathways.
+
+```{r runEnrichment}
+enrichLists <- ccEnrich(geneLists)
+enrichLists
+```
+
+There are a lot of GO BP processes enriched using the p-value cutoff of 0.05, so lets make that more stringent (`0.001`). This is done here merely for speed, in a usual analysis you should choose this number, and the type of cutoff (p-value or fdr) carefully.
+
+```{r modPVal}
+pvalueCutoff(enrichLists$BP) <- 0.001
+enrichLists
+```
+
+Currently you can see that for T10, there are 141 processes enriched, and 123 for T48. For KEGG, there are much smaller numbers of pathways enriched.
+
+To see which processes and pathways are enriched, and to compare them, we will run `ccCompare`, after generating a `ccOptions` object to tell the software exactly which comparisons to do.
+
+```{r ccOptions}
+ccOpts <- new("ccOptions", listNames=names(geneLists), outType='none')
+ccOpts
+```
+
+```{r ccResults}
+ccResults <- ccCompare(enrichLists,ccOpts)
+ccResults
+```
+
+The `ccResults` is a list object where for each type of category (Gene Ontologies, KEGG pathways, etc) there are `ccCompareResult` objects containing various pieces, including the output of the enrichments in table form (`mainTable`) with a designation as to which of the geneLists they originated from, a graph that shows how the annotations are connected to each other (`mainGraph`), and which genes belong to which annotation, and which list they originated from (`allAnnotation`).
+
+## Visualization
+
+Currently the easiest way to visualize and interact with this data is by using Cytoscape and the `RCytoscape` package. To set up `RCytoscape`, see the [`RCytoscape` webiste](http://rcytoscape.systemsbiology.net/versions/current/index.html) .
+
+Once you have [Cytoscape](http://cytoscape.org) up and running with the `CytoscapeRPC` plugin running, then we can examine the results from each category of annotations. First up, GO Biological Process.
+
+```{r cwBP}
+cw.BP <- ccOutCyt(ccResults$BP,ccOpts)
+```
+
+![cwBP results with all edges](allEdges.png)
+
+You should now see something in Cytoscape that somewhat resembles the above figure. Reddish nodes came from T10, green from T48, and the blue ones from both. The edges determine that some of the genes are shared between annotations (nodes), and are weighted by how many genes are shared. The graph is layed out using a *force-directed* layout, and the force on the edges is determined by the number of shared genes. Right now there are a few groupings of nodes, that are probably functionally related. However, there is also a large mass of interconnected nodes in the middle, due to the shared genes in the annotation. We may get a better picture of this if we **break** the edges between nodes that share lower numbers of genes. The weight of the connections is based on the work of Bader and co-workers.
+
+```{r breakHighBP}
+breakEdges(cw.BP,0.2)
+breakEdges(cw.BP,0.4)
+breakEdges(cw.BP,0.6)
+breakEdges(cw.BP,0.8)
+```
+
+```{r deleteBP, include=FALSE}
+RCytoscape::deleteWindow(cw.BP)
+```
+
+![After breaking edges with weight less than 0.8]("BP_8.png")
+
+By the time you get to breaking any edges with a weight less than 0.8, you should see some very distinct groups of nodes (see the above figure). Because the numbers of genes shared between these nodes is high, it is likely that these groups of nodes describe a functional "theme" that will hopefully tell you something about the genes involved in the biological process that you are examining. This view also shows that even if there are no nodes that explicitly show up in both lists, if there are a series of annotations from each list in a well connected group, then perhaps there is still some similarity between the lists in this area.
+
+To see a description of the nodes and their listMembership, as well as other information about each node, you can use the **Data Panel** in Cytoscape, and select the node attributes that you want listed when you select a node. To discover the **theme** of a group of nodes, select all the nodes that belong to a group.
+
+To view the GO nodes in the GO directed-acyclic graph (DAG) hierarchy, we need to change the graph type and re-run `ccCompare` function. The output is shown in the next figure.
+
+```{r GOHierarchical}
+graphType(enrichLists$BP) <- "hierarchical"
+ccResultsBPHier <- ccCompare(enrichLists$BP, ccOpts)
+ccResultsBPHier
+```
+
+```{r hier2Cytoscape}
+cw.BP2 <- ccOutCyt(ccResultsBPHier, ccOpts, "BPHier")
+```
+
+```{r deleteHier, include=FALSE}
+RCytoscape::deleteWindow(cw.BP2)
+```
+
+![GO BP results using the hierarchical layout](BP2.png)
+
+Note that the current hierarchical layout in Cytoscape does not seem to generate layouts that are easy to follow. This layout should only be used when there are small numbers of GO annotations.
+
+We can do a similar process for the KEGG pathways as well.
+
+```{r cytoscapeKEGG}
+cw.KEGG <- ccOutCyt(ccResults$KEGG,ccOpts)
+```
+
+```{r deleteKEGG, include=FALSE}
+RCytoscape::deleteWindow(cw.KEGG)
+```
+
+![KEGG pathway results](KEGG.png)
+
+If you don't feel that there are enough nodes to work with the data, you may want to change the P-value cutoff used using `pvalueCutoff`, or even the type of P-value, using `pvalueType`.
+
+## Acknowledgements
+
+This package depends heavily on classes and functionality from `Category`, `graph`, and the interactive network visualization capabilities enabled by `RCytoscape`. 
+
+```{r sessionInfo}
+sessionInfo()
+```
 
