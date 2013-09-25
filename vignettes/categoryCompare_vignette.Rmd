@@ -8,7 +8,7 @@
 
 # categoryCompare: High-throughput data meta-analysis using feature annotations
 
-Authored by: *Robert M Flight* `rflight79@gmail.com`
+Authored by: **Robert M Flight** `<rflight79@gmail.com>`
 
 ## Introduction
 
@@ -97,7 +97,7 @@ Note 1: I am not proposing that this is the best way to analyse *this* particula
 
 ## Create Gene List
 
-```{r createGeneList}
+```{r createGeneList, message=FALSE}
 library("categoryCompare")
 library("GO.db")
 library("KEGG.db")
@@ -175,7 +175,7 @@ breakEdges(cw.BP,0.8)
 RCytoscape::deleteWindow(cw.BP)
 ```
 
-![After breaking edges with weight less than 0.8]("BP_8.png")
+![After breaking edges with weight less than 0.8](BP_8.png)
 
 By the time you get to breaking any edges with a weight less than 0.8, you should see some very distinct groups of nodes (see the above figure). Because the numbers of genes shared between these nodes is high, it is likely that these groups of nodes describe a functional "theme" that will hopefully tell you something about the genes involved in the biological process that you are examining. This view also shows that even if there are no nodes that explicitly show up in both lists, if there are a series of annotations from each list in a well connected group, then perhaps there is still some similarity between the lists in this area.
 
