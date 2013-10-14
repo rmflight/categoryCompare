@@ -1,0 +1,169 @@
+importFrom(BiocGenerics, annotation, "annotation<-")
+
+importMethodsFrom(AnnotationDbi,
+		mget)
+		
+importFrom(annotate,
+           organism,
+           getAnnMap)
+
+importFrom(colorspace,
+		rainbow_hcl)
+		
+importFrom(hwriter,
+		openPage,
+		closePage)
+		
+importMethodsFrom(graph,
+		nodeData,
+		"nodeData<-",
+		nodeDataDefaults,
+		"nodeDataDefaults<-",
+		edgeData,
+		"edgeData<-",
+		edgeDataDefaults,
+		"edgeDataDefaults<-",
+		nodes,
+		"nodes<-",
+		removeEdge,
+		addEdge)
+
+importClassesFrom(graph,
+		graphAM,
+		graphNEL)
+
+importMethodsFrom(GSEABase,
+		geneIds,
+		"geneIds<-",
+		ontology)
+
+importFrom(Category,
+		".doHyperGTest",
+		"categoryName")
+
+importMethodsFrom(Category,
+		universeBuilder,
+		universeGeneIds,
+		categoryToEntrezBuilder,
+		pvalueCutoff,
+		"pvalueCutoff<-",
+		testDirection,
+		"testDirection<-",
+		"ontology<-",
+		categoryName,
+		makeValidParams,
+		geneCounts,
+		pvalues,
+		universeCounts,
+		universeMappedCount,
+		expectedCounts,
+		geneIdUniverse,
+		oddsRatios,
+		geneCounts,
+		geneIdsByCategory,
+		geneMappedCount,
+		pvalueCutoff,
+		testDirection,
+		testName
+)
+
+importFrom(GOstats,
+		GOGraph)
+
+importClassesFrom(Category,
+		HyperGParams,
+		GOHyperGParams,
+		KEGGHyperGParams,
+		HyperGResultBase,
+		HyperGResult)
+
+importClassesFrom(RCytoscape,
+		CytoscapeWindowClass)
+
+importFrom(RCytoscape,
+		CytoscapeWindow,
+		existing.CytoscapeWindow)
+
+importMethodsFrom(RCytoscape,
+		displayGraph,
+		setLayoutProperties,
+		layoutNetwork,
+		redraw,
+		setNodeTooltipRule,
+		setNodeColorRule,
+		setNodeShapeRule,
+		getAllEdgeAttributes,
+		getAllNodeAttributes,
+		selectEdges,
+		deleteSelectedEdges,
+		selectNodes,
+		deleteSelectedNodes,
+		getSelectedNodes,
+		deleteWindow,
+		saveImage)
+
+importClassesFrom(Biobase,
+                  AssayData)
+
+exportMethods(
+	"fdr",
+	"fdr<-",
+	"hyperGTestCC",
+	"fdrvalues",
+  "listNames",
+  "compareNames",
+  "compareNames<-",
+  "compareIndx",
+  "compareColors",
+  "compareColors<-",
+  "ccType",
+  "ccType<-",
+  "organism",
+  "pvalueType",
+  "pvalueType<-",
+  "outType",
+  "outType<-",
+	"minCount",
+	"minCount<-",
+	"ccEnrich",
+	"ccCompare",
+	"mainGraph",
+	"mainTable",
+	"allAnnotation",
+	"ccOutCyt",
+	"annotation",
+	"ontology",
+	"geneAnnMapping",
+	"graphType",
+	"graphType<-",
+	"sigID",
+	"mergeLists",
+	"cwReload",
+	"cytOutNodes",
+	"cytOutData",
+	"resetColors",
+	"breakEdges",
+  "pvalueCutoff",
+  "pvalueCutoff<-"
+		)
+		
+exportClasses(
+	"HyperGParamsCC",
+	"GOHyperGParamsCC",
+	"KEGGHyperGParamsCC",
+	"HyperGResultCC",
+	"GOHyperGResultCC",
+	"KEGGHyperGResultCC",
+    "ccOptions",
+    "ccGeneList",
+    "ccEnrichResult",
+    "GOccEnrichResult",
+    "KEGGccEnrichResult",
+	"ccEnrichCollection",
+    "ccCompareResult",
+	"ccCompareCollection",
+	"ccSigList",
+	"GENccEnrichResult",
+	"mergedData"
+)
+
