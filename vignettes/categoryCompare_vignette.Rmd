@@ -28,7 +28,7 @@ library("estrogen")
 library("limma")
 ```
 
-```{r loadData}
+```{r loadMeta}
 datadir <- system.file("extdata", package = "estrogen")
 pd <- read.AnnotatedDataFrame(file.path(datadir,"estrogen.txt"), 
   	header = TRUE, sep = "", row.names = 1)
@@ -37,12 +37,15 @@ pData(pd)
 
 Here you can see the descriptions for each of the arrays. First, we will read in the cel files, and then normalize the data using RMA.
 
-```{r normalizeData}
+```{r loadAffy}
 currDir <- getwd()
 setwd(datadir)
 a <- ReadAffy(filenames=rownames(pData(pd)), phenoData = pd, verbose = TRUE)
-eData <- rma(a)
 setwd(currDir)
+```
+
+```{r normalizeAffy, message=FALSE}
+eData <- rma(a)
 ```
 
 To make it easier to conceptualize, we will split the data up into two eSet objects by time, and perform all of the manipulations for calculating significantly differentially expressed genes on each eSet object.
