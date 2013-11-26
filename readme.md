@@ -27,7 +27,6 @@ Alternatively, you can install **categoryCompare** from Bioconductor itself.
 source("http://bioconductor.org/biocLite.R")
 biocLite("categoryCompare")
 ```
-simple test
 
 [vignLink]: http://bioconductor.org/packages/devel/bioc/vignettes/categoryCompare/inst/doc/categoryCompare_vignette.pdf "categoryCompare Vignette"
 [devtoolsLink]: https://github.com/hadley/devtools "devtools"
