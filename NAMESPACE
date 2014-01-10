@@ -9,9 +9,7 @@ importFrom(annotate,
 
 importFrom(colorspace,
 		rainbow_hcl,
-    RGB,
-    hex2RGB,
-    hex)
+    desaturate)
 
 importClassesFrom(colorspace,
                   polarLUV)
