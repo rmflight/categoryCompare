@@ -28,9 +28,10 @@ setClass("ccOptions",
 							 compareNames="character",
 							 compareIndx="list",
 							 compareColors="character",
+               colorType="character",
 							 cssClass="character",
 							 outType="character"),
-				 prototype=prototype(outType="none"))
+				 prototype=prototype(outType="none", colorType="solid"))
 
 # this actually contains the actual lists of genes, gene universes, annotations, etc that the various calculations will be done on
 # as part of categoryCompare. It is really just an extension of "lists", but by defining it we can set up methods
