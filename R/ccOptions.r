@@ -158,7 +158,10 @@ setReplaceMethod("compareColors", "ccOptions", function(object,value) {
 	object@compareColors <- compColor
   
   if (colorType(object) == "pie"){
-    object@unsaturatedColor <- desaturatePercentage(compColor, 0.25)
+    unSatColor <- desaturate(compColor)
+    names(unSatColor) <- names(compColor)
+    object@unsaturatedColor <- unSatColor
+    names()
   }
   object
 
