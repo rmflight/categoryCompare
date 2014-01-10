@@ -183,4 +183,4 @@ setReplaceMethod("outType", "ccOptions", function(object,value) {
   object@outType <- value
   object
 }
-  
+

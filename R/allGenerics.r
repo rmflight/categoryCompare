@@ -96,3 +96,7 @@ setGeneric("minNodes", function(cwObj,cutoff) standardGeneric("minNodes"))
 setGeneric("cytOutNodes", function(descStr, cwObj, saveObj=vector('list', 0), outImages=NULL) standardGeneric("cytOutNodes"))
 
 setGeneric("cytOutData", function(saveObj, compareResult=NULL, mergedData=NULL, orgType="header", fileName=NULL, displayFile=FALSE) standardGeneric("cytOutData"))
+
+setGeneric("colorType", function(object) standardGeneric("colorType"))
+
+setGeneric("colorType<-", function(object) standardGeneric("colorType<-"))
