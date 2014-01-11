@@ -115,7 +115,6 @@ setMethod("ccCompare", signature=list(ccEnrichResult="GOccEnrichResult", ccOptio
   allNodes <- allNodes[!(allNodes %in% 'all')]
   nNodes <- length(allNodes)
   
-<<<<<<< HEAD
   allGraph <- .initGraphAtts(allGraph,allTable)
   
   idDat <- mget(allNodes, envir=GOTERM, ifnotfound=NA)
@@ -141,35 +140,10 @@ setMethod("ccCompare", signature=list(ccEnrichResult="GOccEnrichResult", ccOptio
     nodeData(allGraph, allNodes[allNodes %in% sigID], attr="isSig") <- as.character(TRUE)
     nodeData(allGraph, allNodes, attr="toolTip") <- paste(unlist(nodeData(allGraph, allNodes, attr="listMembership")), allNodes,unlist(nodeData(allGraph, allNodes, attr="Desc")), sep=" <br> ")
   } else if (colorType(ccOptions) == "pie"){
-    pieData <- genPieMatrix(allNodes, allRes, ccOptions)
+    pieData <- .genPieMatrix(allNodes, allRes, ccOptions)
   }
    # and reorder to be in the same order as the nodes in the graph
   
-  
-=======
-  nodeCompVec <- .compMem(nodeListMem,ccOptions)
-  nodeCompVec <- nodeCompVec[match(allNodes,names(nodeCompVec),nomatch=0)] # and reorder to be in the same order as the nodes in the graph
-  
-  # now that we know which of the lists we belong to, we can set up some attributes
-  allGraph <- .initGraphAtts(allGraph,allTable)
-
-	idDat <- mget(allNodes, envir=GOTERM, ifnotfound=NA)
-	idDat <- lapply(idDat, Term)
-  idDat <- unlist(idDat, use.names=FALSE)
-	nodeData(allGraph, allNodes, attr="Desc") <- idDat
-	
-  nodeData(allGraph, allNodes, attr="fillcolor") <- sapply(nodeCompVec, function(x){compareColors(ccOptions)[x]}) # this is why we are supposed to do the induced graph from each, and then combine them.
-  nodeData(allGraph, allNodes, attr="listMembership") <- sapply(nodeCompVec, function(x){compareNames(ccOptions)[x]})
-  
-  # check fillColor and listMembership, if any are missing, set them to NA
-  tmpMember <- sapply(nodeData(allGraph,allNodes,"listMembership"),length)
-  nodeData(allGraph,names(tmpMember)[tmpMember == 0],"listMembership") <- 'NA'
-  nodeData(allGraph,names(tmpMember)[tmpMember == 0],"fillcolor") <- 'NA'
-  
-  nodeData(allGraph, allNodes, attr="compIndx") <- nodeCompVec # which comparison are we (if we need to access that again)
-  nodeData(allGraph, allNodes[allNodes %in% sigID], attr="isSig") <- as.character(TRUE)
-	nodeData(allGraph, allNodes, attr="toolTip") <- paste(unlist(nodeData(allGraph, allNodes, attr="listMembership")), allNodes,unlist(nodeData(allGraph, allNodes, attr="Desc")), sep=" <br> ")
->>>>>>> 5d76f0bc252dda48d3669d0c3be7090d2dd27d8c
   
     
   # only do this if we are looking at just the overlap between lists without GO context
