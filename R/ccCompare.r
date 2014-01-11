@@ -115,28 +115,36 @@ setMethod("ccCompare", signature=list(ccEnrichResult="GOccEnrichResult", ccOptio
   allNodes <- allNodes[!(allNodes %in% 'all')]
   nNodes <- length(allNodes)
   
-  nodeCompVec <- .compMem(nodeListMem,ccOptions)
-  nodeCompVec <- nodeCompVec[match(allNodes,names(nodeCompVec),nomatch=0)] # and reorder to be in the same order as the nodes in the graph
-  
-  # now that we know which of the lists we belong to, we can set up some attributes
   allGraph <- .initGraphAtts(allGraph,allTable)
-
-	idDat <- mget(allNodes, envir=GOTERM, ifnotfound=NA)
-	idDat <- lapply(idDat, Term)
+  
+  idDat <- mget(allNodes, envir=GOTERM, ifnotfound=NA)
+  idDat <- lapply(idDat, Term)
   idDat <- unlist(idDat, use.names=FALSE)
-	nodeData(allGraph, allNodes, attr="Desc") <- idDat
-	
-  nodeData(allGraph, allNodes, attr="fillcolor") <- sapply(nodeCompVec, function(x){compareColors(ccOptions)[x]}) # this is why we are supposed to do the induced graph from each, and then combine them.
-  nodeData(allGraph, allNodes, attr="listMembership") <- sapply(nodeCompVec, function(x){compareNames(ccOptions)[x]})
+  nodeData(allGraph, allNodes, attr="Desc") <- idDat
   
-  # check fillColor and listMembership, if any are missing, set them to NA
-  tmpMember <- sapply(nodeData(allGraph,allNodes,"listMembership"),length)
-  nodeData(allGraph,names(tmpMember)[tmpMember == 0],"listMembership") <- 'NA'
-  nodeData(allGraph,names(tmpMember)[tmpMember == 0],"fillcolor") <- 'NA'
+  if (colorType(ccOptions) == "solid"){
+    nodeCompVec <- .compMem(nodeListMem,ccOptions)
+    nodeCompVec <- nodeCompVec[match(allNodes,names(nodeCompVec),nomatch=0)]
+    
+    # now that we know which of the lists we belong to, we can set up some attributes
+    
+    nodeData(allGraph, allNodes, attr="fillcolor") <- sapply(nodeCompVec, function(x){compareColors(ccOptions)[x]}) # this is why we are supposed to do the induced graph from each, and then combine them.
+    nodeData(allGraph, allNodes, attr="listMembership") <- sapply(nodeCompVec, function(x){compareNames(ccOptions)[x]})
+    
+    # check fillColor and listMembership, if any are missing, set them to NA
+    tmpMember <- sapply(nodeData(allGraph,allNodes,"listMembership"),length)
+    nodeData(allGraph,names(tmpMember)[tmpMember == 0],"listMembership") <- 'NA'
+    nodeData(allGraph,names(tmpMember)[tmpMember == 0],"fillcolor") <- 'NA'
+    
+    nodeData(allGraph, allNodes, attr="compIndx") <- nodeCompVec # which comparison are we (if we need to access that again)
+    nodeData(allGraph, allNodes[allNodes %in% sigID], attr="isSig") <- as.character(TRUE)
+    nodeData(allGraph, allNodes, attr="toolTip") <- paste(unlist(nodeData(allGraph, allNodes, attr="listMembership")), allNodes,unlist(nodeData(allGraph, allNodes, attr="Desc")), sep=" <br> ")
+  } else if (colorType(ccOptions) == "pie"){
+    pieData <- genPieMatrix(allNodes, allRes, ccOptions)
+  }
+   # and reorder to be in the same order as the nodes in the graph
   
-  nodeData(allGraph, allNodes, attr="compIndx") <- nodeCompVec # which comparison are we (if we need to access that again)
-  nodeData(allGraph, allNodes[allNodes %in% sigID], attr="isSig") <- as.character(TRUE)
-	nodeData(allGraph, allNodes, attr="toolTip") <- paste(unlist(nodeData(allGraph, allNodes, attr="listMembership")), allNodes,unlist(nodeData(allGraph, allNodes, attr="Desc")), sep=" <br> ")
+  
   
     
   # only do this if we are looking at just the overlap between lists without GO context
@@ -686,6 +694,30 @@ createGraph <- function(nodeList){
 	  }
   }
   return(allGraph)
+}
+
+.genPieMatrix <- function(allNodes, allRes, ccOptions){
+  nNode <- length(allNodes)
+  pieMatrix <- do.call(cbind, lapply(names(allRes), function(inName){
+    baseCol <- rep(ccOptions@unsaturatedColor[inName], nNode)
+    changeIndex <- which(allNodes %in% allRes[[inName]]$sigID)
+    baseCol[changeIndex] <- compareColors(ccOptions)[inName]
+    baseCol
+  }))
+  rownames(pieMatrix) <- allNodes
+  pieDir <- file.path(getwd(), "pieGraphs")
+  dir.create(pieDir)
+  
+  pieArea <- rep(1 / length(names(allRes)), length(names(allRes)))
+  names(pieArea) <- ""
+  pieFiles <- sapply(rownames(pieMatrix), function(inRow){
+    filename <- file.path(pieDir, paste(sub(":", "_", inRow, fixed=TRUE), ".png", sep=""))
+    png(filename=filename, bg="transparent")
+    pie(pieArea, col=pieMatrix[inRow,], clockwise=TRUE)
+    dev.off()
+    return(filename)
+  })
+  return(pieFiles)
 }
 
 #  This may be supported later, but not right now. Have to think about how to support multiple organisms
