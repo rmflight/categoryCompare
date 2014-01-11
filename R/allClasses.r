@@ -55,7 +55,7 @@ setClass("KEGGccEnrichResult", contains="ccEnrichResult", prototype=prototype(ca
     
 setClass("ccEnrichCollection", contains="namedList")
 
-setClass("ccCompareResult", representation=representation(mainGraph="graph", subGraph="list", mainTable="data.frame", allAnnotation="list", categoryName="character", ontology="character"))
+setClass("ccCompareResult", representation=representation(mainGraph="graph", subGraph="list", mainTable="data.frame", allAnnotation="list", categoryName="character", ontology="character", pieData="character"))
 
 setClass("ccCompareCollection", contains="namedList")
 
