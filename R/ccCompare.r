@@ -18,6 +18,7 @@ setMethod("ccCompare", signature=list(ccEnrichResult="GOccEnrichResult", ccOptio
 					function(ccEnrichResult, ccOptions) .ccCompareGO(ccEnrichResult, ccOptions))
 
 .ccCompareGO <- function(ccEnrichResult, ccOptions){
+  pieData <- NA
   annOpt <- annStatus() # what can we do. This will possibly change the type of results we can generate
 	if (!annOpt$godb){
 		stop('GO.db needs to be loaded for GOccEnrichResult objects!')
@@ -160,7 +161,7 @@ setMethod("ccCompare", signature=list(ccEnrichResult="GOccEnrichResult", ccOptio
   
   # now we have a graph, and a table, and the annotated genes to each entry in the table. So lets give all that back
   # to the user. 
-	returnData <- new("ccCompareResult", mainGraph=allGraph, mainTable=allTable, allAnnotation=allAnn, categoryName="GO", ontology=ccGOType)
+	returnData <- new("ccCompareResult", mainGraph=allGraph, mainTable=allTable, allAnnotation=allAnn, categoryName="GO", ontology=ccGOType, pieData=pieData)
   #returnData <- list(graphs=list(mainGraph=allGraph), mainTable=allTable, allAnnotation=allAnn)
   return(returnData)
 }
