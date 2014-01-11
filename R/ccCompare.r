@@ -18,7 +18,7 @@ setMethod("ccCompare", signature=list(ccEnrichResult="GOccEnrichResult", ccOptio
 					function(ccEnrichResult, ccOptions) .ccCompareGO(ccEnrichResult, ccOptions))
 
 .ccCompareGO <- function(ccEnrichResult, ccOptions){
-  pieData <- NA
+  pieData <- "NA"
   annOpt <- annStatus() # what can we do. This will possibly change the type of results we can generate
 	if (!annOpt$godb){
 		stop('GO.db needs to be loaded for GOccEnrichResult objects!')
