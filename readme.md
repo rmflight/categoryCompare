@@ -28,5 +28,6 @@ source("http://bioconductor.org/biocLite.R")
 biocLite("categoryCompare")
 ```
 
+
 [vignLink]: http://bioconductor.org/packages/devel/bioc/vignettes/categoryCompare/inst/doc/categoryCompare_vignette.pdf "categoryCompare Vignette"
 [devtoolsLink]: https://github.com/hadley/devtools "devtools"

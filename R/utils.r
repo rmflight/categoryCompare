@@ -1,5 +1,26 @@
 # Some useful utilities. Note, much of the ideas for this are borrowed from the oligoClasses package in Bioconductor
 
+# desaturates a provided color by a specific percentage. Only used for the pie graph visualization
+desaturatePercentage <- function(col, percentage=0.5){
+  # this code is taken from the desaturate function in colorspace
+  if (is.character(col) && (all(substr(col, 1L, 1L) == "#") & 
+                              all(nchar(col) %in% c(7L, 9L)))) {
+    alpha <- substr(col, 8L, 9L)
+    col <- substr(col, 1L, 7L)
+    col <- hex2RGB(col)
+  }
+  else {
+    col <- col2rgb(col, alpha = TRUE)
+    alpha <- format(as.hexmode(col[4L, ]), width = 2L, upper.case = TRUE)
+    alpha[alpha == "FF"] <- ""
+    col <- RGB(t(col[1L:3L, ])/255)
+  }
+  col <- as(col, "polarLUV")
+  col@coords[, 2L] <- col@coords[, 2L] * percentage
+  col <- hex(col)
+  return(col)
+}
+
 # creates a bar across the screen, useful for sending messages to the user.
 getBar <- function(width=getOption("width"))
 	paste(rep("=", width), collapse="")

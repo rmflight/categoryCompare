@@ -3,7 +3,7 @@
 setMethod("initialize", "ccOptions",
   function(.Object, ...){
   .Object <- callNextMethod()
-  makeValidccOptions(.Object)
+  .makeValidccOptions(.Object)
 })
 
 .makeValidccOptions <- function(object){
@@ -33,7 +33,7 @@ setMethod("initialize", "ccOptions",
   
 }
 
-setMethod("makeValidccOptions", "ccOptions", .makeValidccOptions)
+# setMethod("makeValidccOptions", "ccOptions", .makeValidccOptions)
 
 setMethod("listNames", "ccOptions", function(object) object@listNames)
 setReplaceMethod("listNames", "ccOptions", function(object, value) {
@@ -46,17 +46,24 @@ setReplaceMethod("compareNames", "ccOptions", function(object, value) .replaceCo
 
 .replaceCompareNames <- function(object, value){
   currNames <- listNames(object)
-  if ((length(value)==0) || (tolower(value[1]) == "all")){
-    compData <- .compData(currNames)
+  if (colorType(object) == "solid"){
+    if ((length(value)==0) || (tolower(value[1]) == "all")){
+      compData <- .compData(currNames)
+    } else {
+      compData <- .compData(currNames,value)
+    }
+    # can't use the functions because otherwise we will just enter an infinite recursion, which is not good
+    object@compareNames <- compData$name
+    object@compareIndx <- compData$indx
+    
+    object@cssClass <- .classGen(compData$name)
   } else {
-    compData <- .compData(currNames,value)
+    object@compareNames <- currNames
+    tmpIndx <- seq(1, length(currNames))
+    names(tmpIndx) <- currNames
+    object@compareIndx <- as.list(tmpIndx)
   }
-  # can't use the functions because otherwise we will just enter an infinite recursion, which is not good
-  object@compareNames <- compData$name
-  object@compareIndx <- compData$indx
-  
-  object@cssClass <- .classGen(compData$name)
-  
+    
   object
 }
 
@@ -70,7 +77,7 @@ setReplaceMethod("compareIndx", "ccOptions", function(object, value) {
 .compData <- function(tmpNames,compName=NULL){
   
 	# check if all of our listNames are in the compNames
-	
+  
 	# either we have to figure out all of the comparisons, or search through to find the indices
 	if (is.null(compName)){
 		compIndx <- vector("list", 0)
@@ -149,6 +156,12 @@ setReplaceMethod("compareColors", "ccOptions", function(object,value) {
 	
 	names(compColor) <- compNames
 	object@compareColors <- compColor
+  
+  if (colorType(object) == "pie"){
+    unSatColor <- desaturate(compColor)
+    names(unSatColor) <- compNames
+    object@unsaturatedColor <- unSatColor
+  }
   object
 
 }
@@ -183,4 +196,5 @@ setReplaceMethod("outType", "ccOptions", function(object,value) {
   object@outType <- value
   object
 }
-  
+
+setMethod("colorType", "ccOptions", function(object) object@colorType)

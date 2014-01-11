@@ -8,7 +8,11 @@ importFrom(annotate,
            getAnnMap)
 
 importFrom(colorspace,
-		rainbow_hcl)
+		rainbow_hcl,
+    desaturate)
+
+importClassesFrom(colorspace,
+                  polarLUV)
 		
 importFrom(hwriter,
 		openPage,
