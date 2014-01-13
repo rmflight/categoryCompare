@@ -34,9 +34,9 @@ setMethod("ccOutCyt", signature=list(ccCompRes="ccCompareResult",ccOpts="ccOptio
     setNodeShapeRule(cw, node.attribute.name='shape', nodeShapes, nodeShapes, default.shape='ellipse' )
   } else if (colorType(ccOpts) == "pie"){
     useFiles <- file.path("file://localhost", ccCompRes@pieData)
-    setNodeImageDirect(cw, names(ccCompRes@pieData), outFiles)
+    setNodeImageDirect(cw, names(ccCompRes@pieData), useFiles)
     setDefaultNodeColor(cw, 'transparent')
-    setNodeOpacityDirect(cw, names(pieData), 0)
+    setNodeOpacityDirect(cw, names(ccCompRes@pieData), 0)
     redraw(cw)
   }
 	
