@@ -26,10 +26,20 @@ setMethod("ccOutCyt", signature=list(ccCompRes="ccCompareResult",ccOpts="ccOptio
   if (length(toolTipLoc) > 0){
   	setNodeTooltipRule(cw,nodeAtts[toolTipLoc[1]])
   }
-	setNodeColorRule(cw, node.attribute.name='fillcolor', tmpCols, tmpCols, mode='lookup', default.color='#FF0000')
+  
+  if (colorType(ccOpts) == "solid"){
+    setNodeColorRule(cw, node.attribute.name='fillcolor', tmpCols, tmpCols, mode='lookup', default.color='#FF0000')
+    
+    nodeShapes <- unique(unlist(nodeData(ccGraph,,"shape")))
+    setNodeShapeRule(cw, node.attribute.name='shape', nodeShapes, nodeShapes, default.shape='ellipse' )
+  } else if (colorType(ccOpts) == "pie"){
+    useFiles <- file.path("file://localhost", ccCompRes@pieData)
+    setNodeImageDirect(cw, names(ccCompRes@pieData), outFiles)
+    setDefaultNodeColor(cw, 'transparent')
+    setNodeOpacityDirect(cw, names(pieData), 0)
+    redraw(cw)
+  }
 	
-	nodeShapes <- unique(unlist(nodeData(ccGraph,,"shape")))
-	setNodeShapeRule(cw, node.attribute.name='shape', nodeShapes, nodeShapes, default.shape='ellipse' )
 	return(cw)
 }
 
