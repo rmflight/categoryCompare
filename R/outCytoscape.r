@@ -37,6 +37,7 @@ setMethod("ccOutCyt", signature=list(ccCompRes="ccCompareResult",ccOpts="ccOptio
     setNodeImageDirect(cw, names(ccCompRes@pieData), useFiles)
     setDefaultNodeColor(cw, 'transparent')
     setNodeOpacityDirect(cw, names(ccCompRes@pieData), 0)
+    setDefaultNodeShape(cw, "diamond")
     redraw(cw)
   }
 	
