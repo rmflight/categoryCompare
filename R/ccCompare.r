@@ -278,11 +278,12 @@ setMethod("ccCompare", signature=list(ccEnrichResult="KEGGccEnrichResult",ccOpti
 setMethod("ccCompare", signature=list(ccEnrichResult="GENccEnrichResult", ccOptions="ccOptions"),
 					function(ccEnrichResult, ccOptions) .ccCompareGeneric(ccEnrichResult, ccOptions))
 .ccCompareGeneric <- function(ccEnrichResult, ccOptions){
+  ### we need to add a slot, overlapType, to this and the others that sets the overlap to use based on the categoryName, and allows the user to override it if they want
 	annOpt <- annStatus() # what can we do. This will possibly change the type of results we can generate
 	annStr <- NULL
   graphT <- graphType(ccEnrichResult)
   hasMap <- FALSE
-  if (length(geneAnnMapping(ccEnrichResult) > 0)){
+  if (length(geneAnnMapping(ccEnrichResult)) > 0){
   	hasMap <- TRUE
   }
   if (!hasMap){
@@ -315,6 +316,8 @@ setMethod("ccCompare", signature=list(ccEnrichResult="GENccEnrichResult", ccOpti
   sigIDs <- unique(unlist(sapply(ccEnrichResult,function(x){sigID(x)})))
   if (!hasMap){
   	tmpDesc <- .getDesc(sigIDs,categoryName(ccEnrichResult))
+  } else {
+    tmpDesc <- rep("", length(sigIDs))
   }
 	allTable <- data.frame(ID=sigIDs,Desc=tmpDesc)
   
@@ -339,11 +342,9 @@ setMethod("ccCompare", signature=list(ccEnrichResult="GENccEnrichResult", ccOpti
 	 			nodeGeneMap[[iSig]] <- unique(c(nodeGeneMap[[iSig]], tmpAnn[[iSig]]))
 	 		}	 		
 		}
-  } 
-	# currently there is no support for supplying an feature-annotation map. This still needs to be implemented
-# 	else {
-#   	nodeGeneMap <- annGeneMap(ccEnrichResult)[sigIDs]
-#   }
+  } else {
+   	nodeGeneMap <- geneAnnMapping(ccEnrichResult)[sigIDs]
+  }
 	
 	 #browser(expr=TRUE)
 	if (graphT == "overlap"){
