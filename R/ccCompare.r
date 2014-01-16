@@ -424,6 +424,8 @@ setMethod("ccCompare", signature=list(ccEnrichResult="GENccEnrichResult", ccOpti
 }
 
 
+# various types of similarity coefficients to calculate for the nodes.
+
 jaccardCoef <- function(n1, n2){
   (length(intersect(n1,n2))) / (length(union(n1,n2)))
 }
@@ -436,58 +438,6 @@ combinedCoef <- function(n1, n2){
   oCoef <- overlapCoef(n1, n2)
   jCoef <- jaccardCoef(n1, n2)
   return((0.5*oCeof) + (0.5*jCoef))
-}
-
-createGraph3 <- function(nodeList,nodeGeneMap,overlapType){
-  # graph creation is based on:
-  # Merico D, Isserlin R, Stueker O, Emili A, Bader GD, 2010 
-  # Enrichment Map: A Network-Based Method for Gene-Set Enrichment Visualization and Interpretation. PLoS ONE 5(11): e13984. doi:10.1371/journal.pone.0013984
-   
-  # stop code at the spot where errors may likely creep in.
-  if (length(nodeList) == 0){
-    warning("Created a graph with zero nodes and zero edges!", call.=F)
-    return(new("graphNEL", nodes=character(0), edgemode="directed"))
-  }
-  
-  if (length(nodeList) == 1){
-    warning("Created a graph with one node and zero edges!", call.=F)
-    return(new("graphNEL", nodes=nodeList, edgemode="directed"))
-  }
-  
-  nGenesNode <- sapply(nodeGeneMap,'length')
-  keepNodes <- (nGenesNode >= 10) & (nGenesNode <= 500)
-  nodeList <- nodeList[keepNodes]
-  nodeGeneMap <- nodeGeneMap[keepNodes]
-  nNodes <- length(nodeList)
-  
-  graphDat <- new("graphNEL", nodes=nodeList, edgemode="directed") # this is because we will be visualizing in Cytoscape, and really, we don't actually need the dual information.
-  
-  allComp <- expand.grid(seq(1,nNodes),seq(1,nNodes))
-  allComp <- allComp[(allComp[,2] > allComp[,1]),] # keep only where second is greater than first
-  allComp <- as.matrix(allComp)
-  
-  nodeComp <- matrix(c(nodeList[allComp[,1]], nodeList[allComp[,2]]), nrow=nrow(allComp), ncol=2, byrow=FALSE)
-  rm(allComp)
-  
-  # now go through allComp, using them as indices into the matrix
-  doFunction <- function(inComp, inType){
-    n1 <- nodeGeneMap[[inComp[1]]]
-    n2 <- nodeGeneMap[[inComp[2]]]
-    switch(inType,
-           overlap=overlapCoef(n1,n2),
-           jaccard=jaccardCoef(n1,n2))
-  }
-  corAll <- apply(nodeComp, 1, doFunction, overlapType)
-    
-  # get rid of anything that was completely zero
-  notZero <- corAll != 0
-  nodeComp <- nodeComp[notZero,]
-  corAll <- corAll[notZero]
-  fromEdge <- nodeComp[,1]
-  toEdge <- nodeComp[,2]
-  
-  graphDat <- addEdge(fromEdge, toEdge, graphDat, corAll)
-  
 }
 
 
