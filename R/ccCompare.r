@@ -495,10 +495,6 @@ createGraph2 <- function(nodeList,nodeGeneMap,overlapType){
   # graph creation is based on:
   # Merico D, Isserlin R, Stueker O, Emili A, Bader GD, 2010 
   # Enrichment Map: A Network-Based Method for Gene-Set Enrichment Visualization and Interpretation. PLoS ONE 5(11): e13984. doi:10.1371/journal.pone.0013984
-  useJ <- TRUE
-  if ((overlapType == 'overlap')){
-    useJ <- FALSE
-  }
   
   # stop code at the spot where errors may likely creep in.
   if (length(nodeList) == 0){
@@ -529,11 +525,10 @@ createGraph2 <- function(nodeList,nodeGeneMap,overlapType){
   	n1 <- nodeGeneMap[[doComp[1]]]
   	n2 <- nodeGeneMap[[doComp[2]]]
   	
-  	if (useJ){
-  		useC <- (length(intersect(n1,n2))) / (length(union(n1,n2)))
-  	} else {
-  		useC <- (length(intersect(n1,n2))) / (min(c(length(n1),length(n2))))
-  	}
+  	useC <- switch(overlapType,
+                   overlap=overlapCoef(n1,n2),
+                   jaccard=jaccardCoef(n1,n2),
+                   combined=combinedCoef(n1,n2))
   	useC
   })
   
