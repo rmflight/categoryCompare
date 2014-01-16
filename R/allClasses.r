@@ -61,6 +61,6 @@ setClass("ccCompareCollection", contains="namedList")
 
 setClass("ccSigList", representation=representation(sigID="character",categoryName="character",ontology="character",annotation="character"))
 
-setClass("GENccEnrichResult", contains="namedList", representation=representation(categoryName="character", ontology="character", geneAnnMapping="namedList",graphType="character"), prototype=prototype(graphType="overlap") )
+setClass("GENccEnrichResult", contains="namedList", representation=representation(categoryName="character", ontology="character", geneAnnMapping="namedList",graphType="character", overlapType="character"), prototype=prototype(graphType="overlap") )
 
 setClass("mergedData", contains="data.frame", representation=representation(useIDName="character"))

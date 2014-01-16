@@ -348,7 +348,7 @@ setMethod("ccCompare", signature=list(ccEnrichResult="GENccEnrichResult", ccOpti
 	
 	 #browser(expr=TRUE)
 	if (graphT == "overlap"){
-		allGraph <- createGraph2(sigIDs,nodeGeneMap,categoryName(ccEnrichResult))
+		allGraph <- createGraph2(sigIDs,nodeGeneMap,ccEnrichResult@overlapType)
 		allGraph@graphData$layout <- "force-directed"
 		nodeCompVec <- .compMem(nodeListMem,ccOptions)
 	} else if (graphT == "membership"){
@@ -422,12 +422,12 @@ setMethod("ccCompare", signature=list(ccEnrichResult="GENccEnrichResult", ccOpti
   
 }
 
-createGraph2 <- function(nodeList,nodeGeneMap,nodeType){
+createGraph2 <- function(nodeList,nodeGeneMap,overlapType){
   # graph creation is based on:
   # Merico D, Isserlin R, Stueker O, Emili A, Bader GD, 2010 
   # Enrichment Map: A Network-Based Method for Gene-Set Enrichment Visualization and Interpretation. PLoS ONE 5(11): e13984. doi:10.1371/journal.pone.0013984
   useJ <- TRUE
-  if ((nodeType == 'GO')){
+  if ((overlapType == 'overlap')){
     useJ <- FALSE
   }
   
