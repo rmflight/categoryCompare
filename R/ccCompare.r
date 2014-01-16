@@ -424,12 +424,18 @@ setMethod("ccCompare", signature=list(ccEnrichResult="GENccEnrichResult", ccOpti
 }
 
 
-overlapCoef <- function(n1, n2){
+jaccardCoef <- function(n1, n2){
   (length(intersect(n1,n2))) / (length(union(n1,n2)))
 }
 
-jaccardCoef <- function(n1, n2){
+overlapCoef <- function(n1, n2){
   (length(intersect(n1,n2))) / (min(c(length(n1),length(n2))))
+}
+
+combinedCoef <- function(n1, n2){
+  oCoef <- overlapCoef(n1, n2)
+  jCoef <- jaccardCoef(n1, n2)
+  return((0.5*oCeof) + (0.5*jCoef))
 }
 
 createGraph3 <- function(nodeList,nodeGeneMap,overlapType){
