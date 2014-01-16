@@ -105,7 +105,7 @@ setMethod("ccCompare", signature=list(ccEnrichResult="GOccEnrichResult", ccOptio
     }
     
 		
-    allGraph <- createGraph2(sigID,nodeGeneMap,'GO')
+    allGraph <- createGraph2(sigID,nodeGeneMap,ccEnrichResult@overlapType)
     allGraph@graphData$layout <- "force-directed"
     
   }
@@ -227,7 +227,7 @@ setMethod("ccCompare", signature=list(ccEnrichResult="KEGGccEnrichResult",ccOpti
  		}	 		
 	}
 	
-  allGraph <- createGraph2(sigID,nodeGeneMap,'KEGG')
+  allGraph <- createGraph2(sigID,nodeGeneMap,ccEnrichResult@overlapType)
   allGraph@graphData$layout <- "force-directed"
 	
   # Note that we replace allNodes now based on what is now in the graph  
