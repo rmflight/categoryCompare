@@ -318,6 +318,7 @@ setMethod("ccCompare", signature=list(ccEnrichResult="GENccEnrichResult", ccOpti
   	tmpDesc <- .getDesc(sigIDs,categoryName(ccEnrichResult))
   } else {
     tmpDesc <- rep("", length(sigIDs))
+    names(tmpDesc) <- sigIDs
   }
 	allTable <- data.frame(ID=sigIDs,Desc=tmpDesc)
   
@@ -364,7 +365,7 @@ setMethod("ccCompare", signature=list(ccEnrichResult="GENccEnrichResult", ccOpti
 	nodeCompVec <- nodeCompVec[match(allNodes,names(nodeCompVec),nomatch=0)]
 	
 	# idDat <- allTable$Desc[match(allTable$ID, allNodes, nomatch=0)]
-	nodeData(allGraph, allNodes, attr="Desc") <- .getDesc(allNodes,categoryName(ccEnrichResult))
+	nodeData(allGraph, allNodes, attr="Desc") <- tmpDesc[allNodes]
 
   nodeData(allGraph, allNodes, attr="fillcolor") <- sapply(nodeCompVec, function(x){compareColors(ccOptions)[x]}) # this is why we are supposed to do the induced graph from each, and then combine them.
   nodeData(allGraph, allNodes, attr="listMembership") <- sapply(nodeCompVec, function(x){compareNames(ccOptions)[x]})
