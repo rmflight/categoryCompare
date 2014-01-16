@@ -45,13 +45,13 @@ setClass("ccGeneList", contains="namedList",
 setClass("ccEnrichResult", contains="namedList", 
 				 representation(minCount="numeric",fdr="numeric", pvalueCutoff="numeric",
 				 							 pvalueType="character", categoryName="character", ontology="character",
-				 							 graphType="character"))
+				 							 graphType="character", overlapType="character"))
 
 setClass("GOccEnrichResult", contains="ccEnrichResult",
 				 representation=representation(ontology="character"),
-				 prototype=prototype(categoryName="GO",graphType="overlap"))
+				 prototype=prototype(categoryName="GO",graphType="overlap", overlapType="overlap"))
 
-setClass("KEGGccEnrichResult", contains="ccEnrichResult", prototype=prototype(categoryName="KEGG",graphType="overlap"))
+setClass("KEGGccEnrichResult", contains="ccEnrichResult", prototype=prototype(categoryName="KEGG",graphType="overlap", overlapType="jaccard"))
     
 setClass("ccEnrichCollection", contains="namedList")
 
