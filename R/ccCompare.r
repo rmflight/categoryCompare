@@ -285,7 +285,7 @@ setMethod("ccCompare", signature=list(ccEnrichResult="KEGGccEnrichResult",ccOpti
 setMethod("ccCompare", signature=list(ccEnrichResult="GENccEnrichResult", ccOptions="ccOptions"),
 					function(ccEnrichResult, ccOptions) .ccCompareGeneric(ccEnrichResult, ccOptions))
 .ccCompareGeneric <- function(ccEnrichResult, ccOptions){
-  ### we need to add a slot, overlapType, to this and the others that sets the overlap to use based on the categoryName, and allows the user to override it if they want
+  pieData <- "NA"
 	annOpt <- annStatus() # what can we do. This will possibly change the type of results we can generate
 	annStr <- NULL
   graphT <- graphType(ccEnrichResult)
@@ -374,24 +374,29 @@ setMethod("ccCompare", signature=list(ccEnrichResult="GENccEnrichResult", ccOpti
 	# idDat <- allTable$Desc[match(allTable$ID, allNodes, nomatch=0)]
 	nodeData(allGraph, allNodes, attr="Desc") <- tmpDesc[allNodes]
 
-  nodeData(allGraph, allNodes, attr="fillcolor") <- sapply(nodeCompVec, function(x){compareColors(ccOptions)[x]}) # this is why we are supposed to do the induced graph from each, and then combine them.
-  nodeData(allGraph, allNodes, attr="listMembership") <- sapply(nodeCompVec, function(x){compareNames(ccOptions)[x]})
+  if (colorType(ccOptions) == "solid"){
+    nodeData(allGraph, allNodes, attr="fillcolor") <- sapply(nodeCompVec, function(x){compareColors(ccOptions)[x]}) # this is why we are supposed to do the induced graph from each, and then combine them.
+    nodeData(allGraph, allNodes, attr="listMembership") <- sapply(nodeCompVec, function(x){compareNames(ccOptions)[x]})
+    
+    # check fillColor and listMembership, if any are missing, set them to NA
+    tmpMember <- sapply(nodeData(allGraph,allNodes,"listMembership"),length)
+    nodeData(allGraph,names(tmpMember)[tmpMember == 0],"listMembership") <- 'NA'
+    nodeData(allGraph,names(tmpMember)[tmpMember == 0],"fillcolor") <- 'NA'
+    
+    nodeData(allGraph, allNodes, attr="compIndx") <- nodeCompVec # which comparison are we (if we need to access that again)
+    nodeData(allGraph, allNodes[allNodes %in% sigIDs], attr="isSig") <- as.character(TRUE)
+    nodeData(allGraph, allNodes, attr="toolTip") <- paste(unlist(nodeData(allGraph, allNodes, attr="listMembership")), allNodes,unlist(nodeData(allGraph, allNodes, attr="Desc")), sep=" <br> ")
+  } else if (colorType(ccOptions) == "pie"){
+    pieData <- .genPieMatrix(allNodes, allRes, ccOptions)
+  }
   
-  # check fillColor and listMembership, if any are missing, set them to NA
-  tmpMember <- sapply(nodeData(allGraph,allNodes,"listMembership"),length)
-  nodeData(allGraph,names(tmpMember)[tmpMember == 0],"listMembership") <- 'NA'
-  nodeData(allGraph,names(tmpMember)[tmpMember == 0],"fillcolor") <- 'NA'
-  
-  nodeData(allGraph, allNodes, attr="compIndx") <- nodeCompVec # which comparison are we (if we need to access that again)
-  nodeData(allGraph, allNodes[allNodes %in% sigIDs], attr="isSig") <- as.character(TRUE)
-	nodeData(allGraph, allNodes, attr="toolTip") <- paste(unlist(nodeData(allGraph, allNodes, attr="listMembership")), allNodes,unlist(nodeData(allGraph, allNodes, attr="Desc")), sep=" <br> ")
 	
 	# only do this if we are looking at just the overlap between lists without considering gene overlap
   if (graphT == "membership") {
     nodeData(allGraph, allNodes[allNodes %in% lists], attr="shape") <- "trapezoid"
   } 
   
-  returnData <- new("ccCompareResult", mainGraph=allGraph, mainTable=allTable, categoryName=categoryName(ccEnrichResult))
+  returnData <- new("ccCompareResult", mainGraph=allGraph, mainTable=allTable, categoryName=categoryName(ccEnrichResult), pieData=pieData)
 	#returnData <- list(graphs=list(mainGraph=allGraph), mainTable=allTable, allAnnotation=allAnn)
   return(returnData)
   	
