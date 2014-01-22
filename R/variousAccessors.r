@@ -253,7 +253,8 @@ setMethod("[", "ccEnrichResult", function(x, i){
 							pvalueType=x@pvalueType,
 							categoryName=x@categoryName,
 							ontology=x@ontology,
-							graphType=x@graphType)
+							graphType=x@graphType,
+              overlapType=x@overlapType)
 	return(xRet)
 })
 
@@ -269,6 +270,7 @@ setMethod("[", "GENccEnrichResult", function(x, i){
 							categoryName=x@categoryName,
 							ontology=x@ontology,
 							geneAnnMapping=x@geneAnnMapping,
-							graphType=x@graphType)
+							graphType=x@graphType,
+              overlapType=x@overlapType)
 	return(xRet)
 })
