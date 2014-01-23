@@ -113,6 +113,9 @@ importMethodsFrom(RCytoscape,
 importClassesFrom(Biobase,
                   AssayData)
 
+export(
+  generateLegend)
+
 exportMethods(
 	"fdr",
 	"fdr<-",

@@ -334,3 +334,16 @@ addListMembership <- function(mainTable, allGraph){
 	mainTable$listMembership[matchID2Node] <- listMem
 	return(mainTable)
 }
+
+generateLegend <- function(ccOptions){
+  useColors <- ccOptions@compareColors
+  nColor <- length(useColors)
+  if (ccOptions@colorType == "pie"){
+    pieArea <- rep(1 / nColor, nColor)
+    names(pieArea) <- names(useColors)
+    pie(pieArea, col=useColors, clockwise=TRUE)
+  } else {
+    symbols(x=rep(1, nColor), y=seq(nColor, 1, -1), circles=rep(1, nColor), inches=1/4, fg=NULL, bg=useColors, ylab="", xlab="", axes=FALSE)
+    text(rep(1.2, nColor), seq(nColor, 1, -1), names(useColors))
+  }
+}
