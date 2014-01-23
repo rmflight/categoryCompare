@@ -107,7 +107,8 @@ importMethodsFrom(RCytoscape,
 		saveImage,
     setNodeImageDirect,
     setNodeOpacityDirect,
-    setDefaultNodeColor)
+    setDefaultNodeColor,
+    setDefaultNodeShape)
 
 importClassesFrom(Biobase,
                   AssayData)
