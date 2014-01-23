@@ -391,6 +391,9 @@ setMethod("ccCompare", signature=list(ccEnrichResult="GENccEnrichResult", ccOpti
     nodeData(allGraph, allNodes, attr="compIndx") <- nodeCompVec # which comparison are we (if we need to access that again)
     nodeData(allGraph, allNodes[allNodes %in% sigIDs], attr="isSig") <- as.character(TRUE)
   } else if (colorType(ccOptions) == "pie"){
+    allRes <- lapply(ccEnrichResult, function(inList){
+      return(list(sigID = sigID(inList)))
+    })
     pieData <- .genPieMatrix(allNodes, allRes, ccOptions)
     pieSig <- .genPieSig(allNodes, allRes)
     
