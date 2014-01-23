@@ -752,6 +752,18 @@ createGraph <- function(nodeList){
   return(pieFiles)
 }
 
+.genPieSig <- function(allNodes, allRes){
+  nNode <- length(allNodes)
+  baseString <- rep("", nNode)
+  pieMatrix <- do.call(cbind, lapply(names(allRes), function(inName){
+    changeIndex <- which(allNodes %in% allRes[[inName]]$sigID)
+    tmpString <- baseString
+    tmpString[changeIndex] <- inName
+  }))
+  pieSig <- apply(pieMatrix, 1, paste, sep=",")
+  return(pieSig)
+}
+
 #  This may be supported later, but not right now. Have to think about how to support multiple organisms
 #  May just refuse to do it on multiple organisms
 # keggSub <- function(ccResults,allRes,allGraph,keggData){
