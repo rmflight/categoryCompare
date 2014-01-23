@@ -765,6 +765,7 @@ createGraph <- function(nodeList){
     changeIndex <- which(allNodes %in% allRes[[inName]]$sigID)
     tmpString <- baseString
     tmpString[changeIndex] <- inName
+    return(tmpString)
   }))
   pieSig <- apply(pieMatrix, 1, paste, sep=",")
   return(pieSig)
