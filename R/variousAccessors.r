@@ -271,7 +271,7 @@ setMethod("[", "GENccEnrichResult", function(x, i){
 							ontology=x@ontology,
 							geneAnnMapping=x@geneAnnMapping,
 							graphType=x@graphType,
-              overlapType=x@overlapType
+              overlapType=x@overlapType,
               annDescription=x@annDescription)
 	return(xRet)
 })
