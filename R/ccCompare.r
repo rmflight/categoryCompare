@@ -390,12 +390,15 @@ setMethod("ccCompare", signature=list(ccEnrichResult="GENccEnrichResult", ccOpti
     
     nodeData(allGraph, allNodes, attr="compIndx") <- nodeCompVec # which comparison are we (if we need to access that again)
     nodeData(allGraph, allNodes[allNodes %in% sigIDs], attr="isSig") <- as.character(TRUE)
-    nodeData(allGraph, allNodes, attr="toolTip") <- paste(unlist(nodeData(allGraph, allNodes, attr="listMembership")), allNodes,unlist(nodeData(allGraph, allNodes, attr="Desc")), sep=" <br> ")
   } else if (colorType(ccOptions) == "pie"){
     pieData <- .genPieMatrix(allNodes, allRes, ccOptions)
+    pieSig <- .genPieSig(allNodes, allRes)
+    
+    nodeData(allGraph, allNodes, attr="listMembership") <- pieSig
   }
   
-	
+  nodeData(allGraph, allNodes, attr="toolTip") <- paste(unlist(nodeData(allGraph, allNodes, attr="listMembership")), allNodes,unlist(nodeData(allGraph, allNodes, attr="Desc")), sep=" <br> ")
+  
 	# only do this if we are looking at just the overlap between lists without considering gene overlap
   if (graphT == "membership") {
     nodeData(allGraph, allNodes[allNodes %in% lists], attr="shape") <- "trapezoid"
