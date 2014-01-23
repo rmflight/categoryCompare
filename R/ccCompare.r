@@ -767,7 +767,8 @@ createGraph <- function(nodeList){
     tmpString[changeIndex] <- inName
     return(tmpString)
   }))
-  pieSig <- apply(pieMatrix, 1, paste, sep=",")
+  pieSig <- apply(pieMatrix, 1, paste, collapse=",")
+  pieSig <- as.vector(pieSig)
   return(pieSig)
 }
 
