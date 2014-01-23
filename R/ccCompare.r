@@ -324,8 +324,13 @@ setMethod("ccCompare", signature=list(ccEnrichResult="GENccEnrichResult", ccOpti
   if (!hasMap){
   	tmpDesc <- .getDesc(sigIDs,categoryName(ccEnrichResult))
   } else {
-    tmpDesc <- rep("", length(sigIDs))
-    names(tmpDesc) <- sigIDs
+    if (length(ccEnrichResult@annDescription) > 0){
+      tmpDesc <- ccEnrichResult@annDescription[sigIDs]
+    } else {
+      tmpDesc <- rep("", length(sigIDs))
+      names(tmpDesc) <- sigIDs
+    }
+    
   }
 	allTable <- data.frame(ID=sigIDs,Desc=tmpDesc)
   
