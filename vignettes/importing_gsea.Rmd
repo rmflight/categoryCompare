@@ -1,0 +1,9 @@
+<!--
+  %\VignetteEngine{knitr}
+  %\VignetteIndexEntry{Importing GSEA}
+  %\VignetteDepends{categoryComparePaper}
+-->
+
+# Importing GSEA Data
+
+How would we work with GSEA data? We are going to assume that we are working with the simple text results (what GSEA reports as .xls) 
