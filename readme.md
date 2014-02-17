@@ -5,6 +5,12 @@ enriched feature annotations instead of just the features themselves.
 
 See the "Description" file for additional requirements.
 
+## Paper
+
+This particular branch is the **paper** branch that was used for all of the results reported in the `categoryCompare` publication. Therefore, to avoid installing over a current `categoryCompare`, this package is named `categoryComparePaper`, and the [`ccPaper`](https://github.com/rmflight/ccPaper) package is dependent on it.
+
+It is expected that many of the **paper** specific changes will be incorporated into the *dev* and *release* versions of `categoryCompare` over the next two release cycles of `Bioconductor`.
+
 ## Documentation
 
 The [Vignette][vignLink] provides a description of the thinking behind
