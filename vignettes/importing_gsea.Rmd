@@ -91,5 +91,6 @@ compGSEA <- ccCompare(ccGSEA, gseaOpts)
 ```{r visResults, eval=FALSE}
 compGSEA <- breakEdges(compGSEA, 0.8)
 cwGSEA <- ccOutCyt(compGSEA, gseaOpts, postText="GSEA", rpcPort=9001)
+breakEdges(cwGSEA, 0.9)
 ```
 
