@@ -38,3 +38,50 @@ readGMT <- function(gmtfile){
 gmtData <- readGMT(gmtfile)
 ```
 
+## Import Results
+
+```{r readResults}
+fileList <- list(ES12.Down="gsea_nt12_results.xls",
+                 ES12.Up="gsea_es12_results.xls",
+                 ES24.Down="gsea_nt24_results.xls",
+                 ES24.Up="gsea_es24_results.xls")
+fileList <- lapply(fileList, function(x){file.path(fileLoc, x)})
+
+readGSEAResults <- function(fileList, pUse="NOM p-val", pCut=0.01){
+  pUse <- make.names(pUse)
+  outResults <- lapply(fileList, function(x){
+    tmpRes <- read.table(x, header=TRUE, sep="\t", quote="", stringsAsFactors=FALSE)
+    sigLoc <- which(names(tmpRes) %in% pUse)
+    sigEntry <- tmpRes[,sigLoc] <= pCut
+    return(new("ccSigList", sigID=tmpRes[sigEntry, 'NAME']))
+  })
+  return(outResults)
+}
+
+gseaRes <- readGSEAResults(fileList)
+```
+
+## Run categoryCompare
+
+```{r runCC}
+geneAnnMapping <- new("namedList", .Data=gmtData$data, names=names(gmtData$data))
+ccGSEA <- new("GENccEnrichResult", gseaRes, categoryName="gsea", geneAnnMapping=geneAnnMapping, overlapType="overlap", annDescription=gmtData$description)
+
+gseaOpts <- new("ccOptions", listNames=names(ccGSEA), compareNames=c("ES12.Up",
+                                                                     "ES12.Down",
+                                                                     "ES24.Up",
+                                                                     "ES24.Down",
+                                                                     "ES12.Up,ES24.Up",
+                                                                     "ES12.Up,ES24.Down",
+                                                                     "ES12.Down,ES24.Up",
+                                                                     "ES12.Down,ES24.Down"))
+compGSEA <- ccCompare(ccGSEA, gseaOpts)
+```
+
+## Visualize the results
+
+```{r visResults, eval=FALSE}
+compGSEA <- breakEdges(compGSEA, 0.8)
+cwGSEA <- ccOutCyt(compGSEA, gseaOpts, postText="GSEA", rpcPort=9001)
+```
+
