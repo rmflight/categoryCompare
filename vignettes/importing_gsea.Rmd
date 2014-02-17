@@ -21,19 +21,23 @@ gmtfile <- file.path(fileLoc, "Human_GO_AllPathways_no_GO_iea_April_15_2013_symb
 readGMT <- function(gmtfile){
   gmtContents <- scan(gmtfile, what="char", sep="\n", encoding="latin1")
   nSet <- length(gmtContents)
-  gmtID <- character(nSet)
+  gmtID <- as.character(seq(1, nSet))
+  oldID <- character(nSet)
   gmtDesc <- character(nSet)
   
   gmtSplit <- strsplit(gmtContents, "\t", fixed=F)
     
   gmtData <- lapply(seq(1, nSet), function(inLoc){
-    gmtID[inLoc] <<- gmtSplit[[inLoc]][1]
-    gmtDesc[inLoc] <<- gmtSplit[[inLoc]][2]
+    oldID[inLoc] <<- gmtSplit[[inLoc]][1]
+    gmtDesc[inLoc] <<- paste(gmtSplit[[inLoc]][1], gmtSplit[[inLoc]][2], sep="::")
     nSplit <- length(gmtSplit[[inLoc]])
     unique(gmtSplit[[inLoc]][seq(3, nSplit)])
   })
   names(gmtData) <- gmtID
-  return(list(id=gmtID, description=gmtDesc, data=gmtData))
+  old2new <- gmtID
+  names(old2new) <- toupper(oldID)
+  names(gmtDesc) <- gmtID
+  return(list(id=gmtID, old2new=old2new, description=gmtDesc, data=gmtData))
 }
 gmtData <- readGMT(gmtfile)
 ```
@@ -47,18 +51,22 @@ fileList <- list(ES12.Down="gsea_nt12_results.xls",
                  ES24.Up="gsea_es24_results.xls")
 fileList <- lapply(fileList, function(x){file.path(fileLoc, x)})
 
-readGSEAResults <- function(fileList, pUse="NOM p-val", pCut=0.01){
+readGSEAResults <- function(fileList, old2new, pUse="NOM p-val", pCut=0.01){
   pUse <- make.names(pUse)
   outResults <- lapply(fileList, function(x){
     tmpRes <- read.table(x, header=TRUE, sep="\t", quote="", stringsAsFactors=FALSE)
     sigLoc <- which(names(tmpRes) %in% pUse)
     sigEntry <- tmpRes[,sigLoc] <= pCut
-    return(new("ccSigList", sigID=tmpRes[sigEntry, 'NAME']))
+    sigID <- tmpRes[sigEntry, 'NAME']
+    newID <- old2new[sigID]
+    names(newID) <- NULL
+    newID <- newID[!is.na(newID)]
+    return(new("ccSigList", sigID=newID))
   })
   return(outResults)
 }
 
-gseaRes <- readGSEAResults(fileList)
+gseaRes <- readGSEAResults(fileList, gmtData$old2new)
 ```
 
 ## Run categoryCompare
