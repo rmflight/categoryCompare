@@ -14,7 +14,7 @@ fileLoc <- system.file("extdata", package="categoryComparePaper")
 
 ## Import GMT
 
-We first need to be able to import GSEA's `gmt` files that define the gene sets.
+We first need to be able to import GSEA's `gmt` files that define the gene sets. The actual names of the gene sets are not very appropriate for use as direct names in `R`, so they are assigned numerical entries instead, and the full label and description is stored.
 
 ```{r draftGMT}
 gmtfile <- file.path(fileLoc, "Human_GO_AllPathways_no_GO_iea_April_15_2013_symbol.gmt.gz")
@@ -44,6 +44,12 @@ gmtData <- readGMT(gmtfile)
 
 ## Import Results
 
+This is very important for importing the `GSEA` results files. `GSEA` will output two files for each comparison. In this example, we did the comparison of **estrogen** (ES) to **no-treatment** (NT) for both the 12 and 24 hour time points. `GSEA` reported two files for both, one with gene-sets associated with **estrogen** and associated with **no-treatment**. The **estrogen** results have positive enrichment scores, i.e. they are positively associated with the comparison, and the **no-treatment** results have negative enrichment scores, i.e. they are negatively associated with the comparison. 
+
+**It is up to the user** to associate proper conditions to each file in each comparison! In this example, we have given the designations of Up and Down based on the explanation above. 
+
+Note that we define the files, and we also define which statistic to use (the default is `NOM p-val`), and what the cutoff value is to consider something important.
+
 ```{r readResults}
 fileList <- list(ES12.Down="gsea_nt12_results.xls",
                  ES12.Up="gsea_es12_results.xls",
@@ -71,6 +77,8 @@ gseaRes <- readGSEAResults(fileList, gmtData$old2new)
 
 ## Run categoryCompare
 
+We define the gene to annotation mapping, and define sensible comparisons
+
 ```{r runCC}
 geneAnnMapping <- new("namedList", .Data=gmtData$data, names=names(gmtData$data))
 ccGSEA <- new("GENccEnrichResult", gseaRes, categoryName="gsea", geneAnnMapping=geneAnnMapping, overlapType="overlap", annDescription=gmtData$description)
@@ -84,12 +92,17 @@ gseaOpts <- new("ccOptions", listNames=names(ccGSEA), compareNames=c("ES12.Up",
                                                                      "ES12.Down,ES24.Up",
                                                                      "ES12.Down,ES24.Down"))
 compGSEA <- ccCompare(ccGSEA, gseaOpts)
+compGSEA
+
+# break some edges
+compGSEA <- breakEdges(compGSEA, 0.8)
+compGSEA
 ```
 
 ## Visualize the results
 
 ```{r visResults, eval=FALSE}
-compGSEA <- breakEdges(compGSEA, 0.8)
+
 cwGSEA <- ccOutCyt(compGSEA, gseaOpts, postText="GSEA", rpcPort=9001)
 breakEdges(cwGSEA, 0.9)
 ```
