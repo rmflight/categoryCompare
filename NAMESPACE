@@ -114,7 +114,9 @@ importClassesFrom(Biobase,
                   AssayData)
 
 export(
-  generateLegend)
+  generateLegend,
+  readGMT,
+  readGSEAResults)
 
 exportMethods(
 	"fdr",
