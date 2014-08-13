@@ -4,6 +4,8 @@ Title: Meta-analysis of high-throughput experiments using feature
         annotations
 Author: Robert M. Flight <rflight79@gmail.com>
 Maintainer: Robert M. Flight <rflight79@gmail.com>
+URL: https://github.com/rmflight/categoryCompare
+BugReports: https://github.com/rmflight/categoryCompare/issues
 License: GPL-2
 Depends: R (>= 2.10), Biobase, BiocGenerics
 Suggests: methods, GO.db, KEGG.db, estrogen, org.Hs.eg.db, hgu95av2.db,
