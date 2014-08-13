@@ -24,3 +24,4 @@ SystemRequirements: Cytoscape (>= 2.8.0) (if used for visualization of
         results, heavily suggested), CytoscapeRPC plugin (>= 1.8)
 TODO: Text and HTML output without graphs.
 biocViews: Annotation, GO, MultipleComparison, Pathways, GeneExpression
+VignetteBuilder: knitr
