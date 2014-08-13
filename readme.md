@@ -31,3 +31,8 @@ biocLite("categoryCompare")
 
 [vignLink]: http://bioconductor.org/packages/devel/bioc/vignettes/categoryCompare/inst/doc/categoryCompare_vignette.pdf "categoryCompare Vignette"
 [devtoolsLink]: https://github.com/hadley/devtools "devtools"
+
+## Citation
+
+Flight RM, Harrison BJ, Mohammad F, Bunge MB, Moon LDF, Petruska JC and Rouchka EC (2014). .CATEGORYCOMPARE, an analytical tool based on feature annotations.
+_Frontiers in Genetics_. [link](http://dx.doi.org/10.3389/fgene.2014.00098)
