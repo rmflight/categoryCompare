@@ -19,7 +19,7 @@ before_install:
   - tar -xzf rmf_cytoscape.tar.gz
   - "export DISPLAY=:99.0"
   - Xvfb :99 -ac &
-  - Cytoscape_v2.8.3/cytoscape.sh &
+  - "sudo Cytoscape_v2.8.3/cytoscape.sh &"
 
 install:
   - ./travis-tool.sh aptget_install r-cran-xml
