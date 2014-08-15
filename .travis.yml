@@ -20,6 +20,7 @@ before_install:
   - "export DISPLAY=:99.0"
   - Xvfb :99 -ac &
   - sleep 3
+  - echo '-Djava.net.preferIPv4Stack=true' >> Cytoscape_v2.8.3/Cytoscape.vmoptions
   - Cytoscape_v2.8.3/cytoscape.sh &
   - sleep 3
 
