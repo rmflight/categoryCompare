@@ -20,9 +20,7 @@ before_install:
   - "export DISPLAY=:99.0"
   - Xvfb :99 -ac &
   - sleep 3
-  - rackup
-  - sleep 3
-  - "sudo Cytoscape_v2.8.3/cytoscape.sh &"
+  - Cytoscape_v2.8.3/cytoscape.sh &
   - sleep 3
 
 install:
