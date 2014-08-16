@@ -173,7 +173,7 @@ if (!runCy){
 
 Once you have [Cytoscape](http://cytoscape.org) up and running with the `CytoscapeRPC` plugin running, then we can examine the results from each category of annotations. First up, GO Biological Process.
 
-```{r cwBP}
+```{r cwBP, eval=runCy}
 cw.BP <- ccOutCyt(ccResults$BP,ccOpts)
 ```
 
@@ -181,14 +181,14 @@ cw.BP <- ccOutCyt(ccResults$BP,ccOpts)
 
 You should now see something in Cytoscape that somewhat resembles the above figure. Reddish nodes came from T10, green from T48, and the blue ones from both. The edges determine that some of the genes are shared between annotations (nodes), and are weighted by how many genes are shared. The graph is layed out using a *force-directed* layout, and the force on the edges is determined by the number of shared genes. Right now there are a few groupings of nodes, that are probably functionally related. However, there is also a large mass of interconnected nodes in the middle, due to the shared genes in the annotation. We may get a better picture of this if we **break** the edges between nodes that share lower numbers of genes. The weight of the connections is based on the work of Bader and co-workers.
 
-```{r breakHighBP}
+```{r breakHighBP, eval=runCy}
 breakEdges(cw.BP,0.2)
 breakEdges(cw.BP,0.4)
 breakEdges(cw.BP,0.6)
 breakEdges(cw.BP,0.8)
 ```
 
-```{r deleteBP, include=FALSE}
+```{r deleteBP, include=FALSE, eval=runCy}
 RCytoscape::deleteWindow(cw.BP)
 ```
 
@@ -206,11 +206,11 @@ ccResultsBPHier <- ccCompare(enrichLists$BP, ccOpts)
 ccResultsBPHier
 ```
 
-```{r hier2Cytoscape}
+```{r hier2Cytoscape, eval=runCy}
 cw.BP2 <- ccOutCyt(ccResultsBPHier, ccOpts, "BPHier")
 ```
 
-```{r deleteHier, include=FALSE}
+```{r deleteHier, include=FALSE, eval=runCy}
 RCytoscape::deleteWindow(cw.BP2)
 ```
 
@@ -220,11 +220,11 @@ Note that the current hierarchical layout in Cytoscape does not seem to generate
 
 We can do a similar process for the KEGG pathways as well.
 
-```{r cytoscapeKEGG}
+```{r cytoscapeKEGG, eval=runCy}
 cw.KEGG <- ccOutCyt(ccResults$KEGG,ccOpts)
 ```
 
-```{r deleteKEGG, include=FALSE}
+```{r deleteKEGG, include=FALSE, eval=runCy}
 RCytoscape::deleteWindow(cw.KEGG)
 ```
 
