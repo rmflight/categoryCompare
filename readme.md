@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/rmflight/categoryCompare.svg?branch=travis)](https://travis-ci.org/rmflight/categoryCompare)
+
 # categoryCompare
 
 A Bioconductor package for meta analysis of high-throughput datasets using 
