@@ -15,14 +15,6 @@ before_install:
   - curl -OL http://raw.github.com/craigcitro/r-travis/master/scripts/travis-tool.sh
   - chmod 755 ./travis-tool.sh
   - ./travis-tool.sh bootstrap
-  - wget https://www.dropbox.com/s/m1ps15zcn5fn4ad/rmf_cytoscape.tar.gz
-  - tar -xzf rmf_cytoscape.tar.gz
-  - "export DISPLAY=:99.0"
-  - Xvfb :99 -ac &
-  - sleep 3
-  - echo '-Djava.net.preferIPv4Stack=true' >> Cytoscape_v2.8.3/Cytoscape.vmoptions
-  - Cytoscape_v2.8.3/cytoscape.sh &
-  - sleep 3
 
 install:
   - ./travis-tool.sh aptget_install r-cran-xml
