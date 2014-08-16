@@ -157,6 +157,20 @@ The `ccResults` is a list object where for each type of category (Gene Ontologie
 
 Currently the easiest way to visualize and interact with this data is by using Cytoscape and the `RCytoscape` package. To set up `RCytoscape`, see the [`RCytoscape` webiste](http://rcytoscape.systemsbiology.net/versions/current/index.html) .
 
+```{r setupRunningCytoscape, echo=FALSE, error=FALSE, results='asis'}
+runCy <- FALSE
+
+try({
+  tmp <- RCytoscape::CytoscapeWindow("tmp")
+  runCy <- TRUE
+  RCytoscape::deleteWindow(tmp)
+})
+
+if (!runCy){
+  print("No connection to Cytoscape available, subsequent visualizations were not run")
+}
+```
+
 Once you have [Cytoscape](http://cytoscape.org) up and running with the `CytoscapeRPC` plugin running, then we can examine the results from each category of annotations. First up, GO Biological Process.
 
 ```{r cwBP}
