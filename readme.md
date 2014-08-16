@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/rmflight/categoryCompare.svg?branch=travis)](https://travis-ci.org/rmflight/categoryCompare)
+[![Build Status](https://travis-ci.org/rmflight/categoryCompare.svg?branch=master)](https://travis-ci.org/rmflight/categoryCompare)
 
 # categoryCompare
 
