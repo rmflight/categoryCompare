@@ -26,6 +26,8 @@ script: ./travis-tool.sh run_tests
 env:
   - secure: "kkqbJJpfbv8UbQIDMITApBayq7bYtvAdHt/ILFOOoDeERz8jeHmNnnXB15Lpum8TxDCdsWDrZm39BM/iirdhJ+USnpkrVW7ER++Jvz3LGkuurjcKULSoN/iXw9oXRCwMhaPGrDTEhOOJk7StiYPPzpSjlZ1q0yj1JCnivLTp9IM="
 
+  - echo $GIT_NAME
+  - echo $GIT_EMAIL  
 after_failure:
   - ./travis-tool.sh dump_logs
 
