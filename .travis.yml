@@ -10,8 +10,11 @@ env:
  global:
  - R_BUILD_ARGS="--no-manual --keep-empty-dirs --no-resave-data"
  - R_CHECK_ARGS="--no-vignettes --timings --no-manual"
+ secure: "kkqbJJpfbv8UbQIDMITApBayq7bYtvAdHt/ILFOOoDeERz8jeHmNnnXB15Lpum8TxDCdsWDrZm39BM/iirdhJ+USnpkrVW7ER++Jvz3LGkuurjcKULSoN/iXw9oXRCwMhaPGrDTEhOOJk7StiYPPzpSjlZ1q0yj1JCnivLTp9IM="
 
 before_install:
+  - echo $GIT_NAME
+  - echo $GIT_EMAIL
   - curl -OL http://raw.github.com/craigcitro/r-travis/master/scripts/travis-tool.sh
   - chmod 755 ./travis-tool.sh
   - ./travis-tool.sh bootstrap
@@ -23,11 +26,6 @@ install:
 
 script: ./travis-tool.sh run_tests
 
-env:
-  - secure: "kkqbJJpfbv8UbQIDMITApBayq7bYtvAdHt/ILFOOoDeERz8jeHmNnnXB15Lpum8TxDCdsWDrZm39BM/iirdhJ+USnpkrVW7ER++Jvz3LGkuurjcKULSoN/iXw9oXRCwMhaPGrDTEhOOJk7StiYPPzpSjlZ1q0yj1JCnivLTp9IM="
-
-  - echo $GIT_NAME
-  - echo $GIT_EMAIL  
 after_failure:
   - ./travis-tool.sh dump_logs
 
