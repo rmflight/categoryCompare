@@ -26,6 +26,8 @@ install:
 
 script: 
   - ./travis-tool.sh run_tests
+
+after_script:
   - ./categoryCompare_gh_pages.sh
 
 after_failure:
