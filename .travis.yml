@@ -19,7 +19,14 @@ before_install:
   - chmod 755 ./categoryCompare_gh_pages.sh
   - ./travis-tool.sh bootstrap
 
-script: ./categoryCompare_gh_pages.sh
+install:
+  - ./travis-tool.sh aptget_install r-cran-xml
+  - ./travis-tool.sh bioc_install Biobase BiocGenerics AnnotationDbi GSEABase Category GOstats annotate graph RCytoscape GO.db KEGG.db estrogen org.Hs.eg.db hgu95av2.db limma affy genefilter
+  - ./travis-tool.sh install_deps
+
+script: 
+  - ./travis-tool.sh run_tests
+  - ./categoryCompare_gh_pages.sh
 
 after_failure:
   - ./travis-tool.sh dump_logs
