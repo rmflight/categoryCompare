@@ -8,7 +8,7 @@
 
 # categoryCompare: High-throughput data meta-analysis using feature annotations
 
-Authored by: **Robert M Flight** `<rflight79@gmail.com>`
+Authored by: **Robert M Flight** `<rflight79@gmail.com>` on `r Sys.time()`
 
 ## Introduction
 
