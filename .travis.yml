@@ -32,7 +32,7 @@ script:
   - pwd
   - ls
 
-after_script:
+after_success:
   - ./.push_gh_pages.sh
   - pwd
 
