@@ -31,7 +31,7 @@ biocLite("categoryCompare")
 ```
 
 
-[vignLink]: http://bioconductor.org/packages/devel/bioc/vignettes/categoryCompare/inst/doc/categoryCompare_vignette.pdf "categoryCompare Vignette"
+[vignLink]: http://rmflight.github.io/categoryCompare/index.html "categoryCompare Vignette"
 [devtoolsLink]: https://github.com/hadley/devtools "devtools"
 
 ## Citation
