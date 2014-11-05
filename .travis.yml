@@ -17,17 +17,24 @@ before_install:
   - chmod 755 ./travis-tool.sh
   - chmod 755 ./.push_gh_pages.sh
   - ./travis-tool.sh bootstrap
+  - pwd
+  - ls
 
 install:
   - ./travis-tool.sh aptget_install r-cran-xml
   - ./travis-tool.sh bioc_install Biobase BiocGenerics AnnotationDbi GSEABase Category GOstats annotate graph RCytoscape GO.db KEGG.db estrogen org.Hs.eg.db hgu95av2.db limma affy genefilter
   - ./travis-tool.sh install_deps
+  - pwd
+  - ls
 
 script: 
   - ./travis-tool.sh run_tests
+  - pwd
+  - ls
 
 after_script:
   - ./.push_gh_pages.sh
+  - pwd
 
 after_failure:
   - ./travis-tool.sh dump_logs
