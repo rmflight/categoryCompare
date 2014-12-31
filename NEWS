@@ -1,3 +1,4 @@
+2.0.0 Complete redesign! Comparisons are of first importance, enrichments are added on after.
 1.5.1 Fixed vignette issue with new version of limma
 0.99.0 First review in Bioconductor
 0.7.8 Updated the vignette. Removed long lines, added links to figures, fixed some errors
