@@ -30,7 +30,7 @@ enriched_result <- setClass("enriched_result",
 #' @export
 annotation <- setClass("annotation",
                        slots = list(annotation_features = "list",
-                                    description = "character"
+                                    description = "character",
                                     counts = "numeric",
                                     links = "character",
                                     type = "character"))
