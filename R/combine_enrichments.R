@@ -39,5 +39,18 @@ setMethod("combine_enrichments", signature = "enriched_result", function(...) .c
 #' @return list of combined
 #' 
 combine_annotation_features <- function(annotation_features){
+  annotation_names <- lapply(annotation_features, function(x){names(x)})
+  annotation_names <- unique(unlist(annotation_names))
   
+  annotation_out <- vector("list", length(annotation_names))
+  names(annotation_out) <- annotation_names
+  
+  for (i_annot in seq(1, length(annotation_features))){
+    use_names <- names(annotation_features[[i_annot]])
+    for (i_name in use_names){
+      annotation_out[[i_name]] <- union(annotation_out[[i_name]], annotation_features[[i_annot]][[i_name]])
+    }
+  }
+  
+  return(annotation_out)
 }
