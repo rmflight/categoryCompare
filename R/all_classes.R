@@ -22,6 +22,7 @@ enriched_result <- setClass("enriched_result",
 #' a Gene Ontology annotation.
 #' 
 #' @slot annotation_features list of annotation to feature relationships
+#' @slot description character vector providing descriptive text about the annotation
 #' @slot counts numeric vector of how many features are in each annotation
 #' @slot links character vector defining html links for each annotation (may be empty)
 #' @slot type a one word short description of the "type" of annotation
@@ -29,6 +30,7 @@ enriched_result <- setClass("enriched_result",
 #' @export
 annotation <- setClass("annotation",
                        slots = list(annotation_features = "list",
+                                    description = "character"
                                     counts = "numeric",
                                     links = "character",
                                     type = "character"))
