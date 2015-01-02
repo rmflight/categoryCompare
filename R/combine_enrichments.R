@@ -47,9 +47,7 @@ combine_annotation_features <- function(annotation_features){
   
   for (i_annot in seq(1, length(annotation_features))){
     use_names <- names(annotation_features[[i_annot]])
-    for (i_name in use_names){
-      annotation_out[[i_name]] <- union(annotation_out[[i_name]], annotation_features[[i_annot]][[i_name]])
-    }
+    annotation_out[use_names] <- lapply(use_names, function(x){union(annotation_out[[x]], annotation_features[[i_annot]][[x]])})
   }
   
   return(annotation_out)
