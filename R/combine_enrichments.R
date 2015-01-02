@@ -82,13 +82,13 @@ generate_annotation_similarity_graph <- function(annotation_features, overlap_ty
     
   similarity <- sapply(seq(1, nrow(all_comparisons)), function(x){
     do_comparison <- all_comparisons[x, ]
-    n1 <- annotation_features[[do_comparison[1]]]
-    n2 <- annotation_features[[do_comparison[2]]]
+    n1 <- annotation_features[[do_comparison[1,1]]]
+    n2 <- annotation_features[[do_comparison[1,2]]]
     
     use_similarity <- switch(overlap_type,
                              overlap = overlap_coefficient(n1, n2),
                              jaccard = jaccard_coefficient(n1, n2),
-                             combined = combined_coefficent(n1, n2))
+                             combined = combined_coefficient(n1, n2))
     
     use_similarity
   })
@@ -146,6 +146,6 @@ jaccard_coefficient <- function(n1, n2){
 #' @export
 combined_coefficient <- function(n1, n2){
   o_coef <- overlap_coefficient(n1, n2)
-  j_coef <- overlap_coefficient(n1, n2)
+  j_coef <- jaccard_coefficient(n1, n2)
   return((0.5 * o_coef) + (0.5 * j_coef))
 }
