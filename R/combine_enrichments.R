@@ -23,6 +23,21 @@ setMethod("combine_enrichments", signature = "enriched_result", function(...) .c
     stop("Cannot combine enriched_result's with more than one annotation type.", call.=FALSE)
   }
   
+  all_annotation <- combine_annotation_features(lapply(enriched, function(x){x@annotation@annotation_features}))
   
 }
 
+#' combine annotation-features
+#' 
+#' For the generation of a proper annotation-annotation relationship graph, we
+#' need to combine the annotation-feature relationships across multiple
+#' \linkS4class{annotation} objects
+#' 
+#' @param annotation_features list of annotation_features to combine
+#' 
+#' @export
+#' @return list of combined
+#' 
+combine_annotation_features <- function(annotation_features){
+  
+}
