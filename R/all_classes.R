@@ -1,17 +1,3 @@
-#' the enriched results class
-#' 
-#' @slot features the "features" of interest, a vector of class ANY
-#' @slot universe all of the "features" in the background
-#' @slot annotation list giving the annotation to feature relationship
-#' @slot statistics named list with various statistics of the enrichment results
-#' 
-#' @export
-enriched_result <- setClass("enriched_result",
-                            slots = list(features = "ANY",
-                                         universe = "ANY",
-                                         annotation = "annotation",
-                                         statistics = "list"))
-
 #' annotation class
 #' 
 #' This class holds an annotation object that defines how annotations relate to
@@ -34,3 +20,17 @@ annotation <- setClass("annotation",
                                     counts = "numeric",
                                     links = "character",
                                     type = "character"))
+
+#' the enriched results class
+#' 
+#' @slot features the "features" of interest, a vector of class ANY
+#' @slot universe all of the "features" in the background
+#' @slot annotation list giving the annotation to feature relationship
+#' @slot statistics named list with various statistics of the enrichment results
+#' 
+#' @export
+enriched_result <- setClass("enriched_result",
+                            slots = list(features = "ANY",
+                                         universe = "ANY",
+                                         annotation = "annotation",
+                                         statistics = "list"))
