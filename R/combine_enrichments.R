@@ -10,7 +10,7 @@
 #' 
 #' @return \linkS4class{combined_enrichment}
 #' @export
-setMethod("combine_enrichments", signature = "enrichment_objects", function(...) .combine_enrichments(...))
+setMethod("combine_enrichments", signature = "enriched_result", function(...) .combine_enrichments(...))
 
 .combine_enrichments <- function(...){
   
