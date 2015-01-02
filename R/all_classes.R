@@ -9,7 +9,7 @@
 enriched_result <- setClass("enriched_result",
                             slots = list(features = "ANY",
                                          universe = "ANY",
-                                         annotation = "list",
+                                         annotation = "annotation",
                                          statistics = "list"))
 
 #' annotation class
