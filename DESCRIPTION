@@ -1,5 +1,5 @@
 Package: categoryComparev2
-Version: 2.0.17
+Version: 2.0.18
 Title: Meta-analysis of high-throughput experiments using feature
         annotations
 Author: Robert M. Flight <rflight79@gmail.com>
@@ -9,7 +9,7 @@ BugReports: https://github.com/rmflight/categoryCompare/issues
 License: GPL-2
 Depends: R (>= 3.1.0), Biobase, BiocGenerics
 Suggests: knitr, methods, GO.db, estrogen, org.Hs.eg.db, hgu95av2.db,
-        limma, affy, genefilter
+        limma, affy, genefilter, testthat
 Imports: AnnotationDbi, hwriter, GSEABase, Category, GOstats, annotate,
         colorspace, graph, RCytoscape (>= 1.5.11)
 LazyLoad: yes
