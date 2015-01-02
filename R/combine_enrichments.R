@@ -36,7 +36,7 @@ setMethod("combine_enrichments", signature = "enriched_result", function(...) .c
 #' @param annotation_features list of annotation_features to combine
 #' 
 #' @export
-#' @return list of combined
+#' @return list of combined annotations
 #' 
 combine_annotation_features <- function(annotation_features){
   annotation_names <- lapply(annotation_features, function(x){names(x)})
