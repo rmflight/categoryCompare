@@ -34,6 +34,22 @@ setMethod("combine_enrichments", signature = "enriched_result", function(...) .c
   out_combined
 }
 
+#' combine annotations
+#' 
+#' Takes multiple \linkS4class{annotation} objects and combines them so that there
+#' is a consistent sole set for creating the \code{annotation_graph} and providing
+#' other information about each annotation entry.
+#' 
+#' @param ... one or more \linkS4class{annotation}
+#' 
+#' @return \linkS4class{annotation}
+#' @export
+setMethod("combine_annotations", signature = "annotation", function(...) .combine_annotations(...))
+
+.combine_annotations <- function(...){
+  
+}
+
 #' combine annotation-features
 #' 
 #' For the generation of a proper annotation-annotation relationship graph, we
