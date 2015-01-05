@@ -34,3 +34,23 @@ enriched_result <- setClass("enriched_result",
                                          universe = "ANY",
                                          annotation = "annotation",
                                          statistics = "list"))
+
+#' combined enrichments
+#' 
+#' The \code{combined_enrichment} class holds the results of combining several 
+#' \linkS4class{enriched_result}s together, which includes the original 
+#' \linkS4class{enriched_result}s, as well as the \code{annotation_graph}
+#' and combined \linkS4class{annotation} objects.
+#' 
+#' @slot enriched list of enriched objects
+#' @slot enriched_type character describing the enrichment annotation
+#' @slot annotation \linkS4class{annotation} where the annotation_features
+#' have been combined across the \linkS4class{enriched_results}
+#' @slot graph the annotation graph, where nodes are annotations, and edges are
+#' weighted by similarity between annotation_features.
+#' 
+#' @export
+combined_enrichment <- setClass("combined_enrichment",
+                                slots = list(enriched = "enriched_results",
+                                             annotation = "annotation",
+                                             graph = "graphNEL"))
