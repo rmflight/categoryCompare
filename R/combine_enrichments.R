@@ -17,7 +17,7 @@ setMethod("combine_enrichments", signature = "enriched_result", function(...) .c
   
   all_annotation <- combine_annotations(lapply(enriched, function(x){x@annotation}))
   
-  annotation_graph <- generate_annotation_similarity_graph(all_annotation)
+  annotation_graph <- generate_annotation_similarity_graph(lapply(all_annotation, function(x){x@annotation_features}))
   
   out_combined <- new("combined_enrichment",
                       enriched = enriched,
@@ -37,12 +37,11 @@ setMethod("combine_enrichments", signature = "enriched_result", function(...) .c
 #' 
 #' @return \linkS4class{annotation}
 #' @export
-setMethod("combine_annotations", signature = "annotation", function(...) .combine_annotations(...))
+setMethod("combine_annotations", signature = "list", function(annotation_list) .combine_annotations(annotation_list))
 
-.combine_annotations <- function(...){
-  all_annotations <- list(...)
+.combine_annotations <- function(annotation_list){
   
-  combined_type <- unique(unlist(lapply(all_annotations, function(x){x@type})))
+  combined_type <- unique(unlist(lapply(annotation_list, function(x){x@type})))
   
   # stop if there are more than one type
   n_type <- length(combined_type)
@@ -50,14 +49,14 @@ setMethod("combine_annotations", signature = "annotation", function(...) .combin
     stop("Cannot combine annotation's with more than one annotation type.", call.=FALSE)
   }
   
-  combined_features <- combine_annotation_features(lapply(all_annotations, function(x){x@annotation_features}))
+  combined_features <- combine_annotation_features(lapply(annotation_list, function(x){x@annotation_features}))
   
   all_annotation_names <- names(combined_features)
   
-  combined_description <- combine_text(lapply(all_annotations, function(x){x@description}),
+  combined_description <- combine_text(lapply(annotation_list, function(x){x@description}),
                                        all_annotation_names,
                                        "description")
-  combined_links <- combine_text(lapply(all_annotations, function(x){x@links}),
+  combined_links <- combine_text(lapply(annotation_list, function(x){x@links}),
                                  all_annotation_names,
                                  "links")
   
@@ -69,6 +68,8 @@ setMethod("combine_annotations", signature = "annotation", function(...) .combin
                         counts = combined_counts,
                         links = combined_links,
                         type = combined_type)
+  
+  out_annotation
   
 }
 
