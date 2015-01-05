@@ -15,10 +15,10 @@ setMethod("combine_enrichments", signature = "enriched_result", function(...) .c
 .combine_enrichments <- function(...){
   enriched <- list(...)
   
-  enriched_types <- lapply(enriched, function(x){x@annotation@type})
+  enriched_type <- unique(unlist(lapply(enriched, function(x){x@annotation@type})))
   
   # stop if there are more than one type
-  n_type <- length(unique(unlist(enriched_types)))
+  n_type <- length(enriched_type)
   if (n_type != 1){
     stop("Cannot combine enriched_result's with more than one annotation type.", call.=FALSE)
   }
@@ -26,6 +26,12 @@ setMethod("combine_enrichments", signature = "enriched_result", function(...) .c
   
   annotation_graph <- generate_annotation_similarity_graph(all_annotation)
   
+  out_combined <- new("combined_enrichment",
+                      enriched = enriched,
+                      enriched_type = enriched_type,
+                      annotation = all_annotation,
+                      graph = annotation_graph)
+  out_combined
 }
 
 #' combine annotation-features
