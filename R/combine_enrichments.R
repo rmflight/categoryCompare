@@ -15,14 +15,7 @@ setMethod("combine_enrichments", signature = "enriched_result", function(...) .c
 .combine_enrichments <- function(...){
   enriched <- list(...)
   
-  enriched_type <- unique(unlist(lapply(enriched, function(x){x@annotation@type})))
-  
-  # stop if there are more than one type
-  n_type <- length(enriched_type)
-  if (n_type != 1){
-    stop("Cannot combine enriched_result's with more than one annotation type.", call.=FALSE)
-  }
-  all_annotation <- combine_annotation_features(lapply(enriched, function(x){x@annotation@annotation_features}))
+  all_annotation <- combine_annotations(lapply(enriched, function(x){x@annotation}))
   
   annotation_graph <- generate_annotation_similarity_graph(all_annotation)
   
@@ -47,6 +40,33 @@ setMethod("combine_enrichments", signature = "enriched_result", function(...) .c
 setMethod("combine_annotations", signature = "annotation", function(...) .combine_annotations(...))
 
 .combine_annotations <- function(...){
+  all_annotations <- list(...)
+  
+  combined_type <- unique(unlist(lapply(all_annotations, function(x){x@type})))
+  
+  # stop if there are more than one type
+  n_type <- length(combined_type)
+  if (n_type != 1){
+    stop("Cannot combine annotation's with more than one annotation type.", call.=FALSE)
+  }
+  
+  combined_features <- combine_annotation_features(lapply(all_annotations, function(x){x@annotation_features}))
+  
+  all_annotation_names <- names(combined_features)
+  
+  combined_description <- combine_annotation_text(lapply(all_annotations, function(x){x@description}),
+                                                         all_annotation_names)
+  combined_links <- combine_annotation_text(lapply(all_annotations, function(x){x@links}),
+                                             all_annotation_names)
+  
+  combined_counts <- sapply(combined_features, length)
+  
+  out_annotation <- new("annotation",
+                        annotation_features = combined_features,
+                        description = combined_description,
+                        counts = combined_counts,
+                        links = combined_links,
+                        type = combined_type)
   
 }
 
