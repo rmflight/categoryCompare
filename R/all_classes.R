@@ -51,6 +51,6 @@ enriched_result <- setClass("enriched_result",
 #' 
 #' @export
 combined_enrichment <- setClass("combined_enrichment",
-                                slots = list(enriched = "enriched_results",
+                                slots = list(enriched = "list",
                                              annotation = "annotation",
                                              graph = "graphNEL"))
