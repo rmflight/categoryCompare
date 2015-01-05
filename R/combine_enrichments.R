@@ -17,11 +17,10 @@ setMethod("combine_enrichments", signature = "enriched_result", function(...) .c
   
   all_annotation <- combine_annotations(lapply(enriched, function(x){x@annotation}))
   
-  annotation_graph <- generate_annotation_similarity_graph(lapply(all_annotation, function(x){x@annotation_features}))
+  annotation_graph <- generate_annotation_similarity_graph(all_annotation@annotation_features)
   
   out_combined <- new("combined_enrichment",
                       enriched = enriched,
-                      enriched_type = enriched_type,
                       annotation = all_annotation,
                       graph = annotation_graph)
   out_combined
