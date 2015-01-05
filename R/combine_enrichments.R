@@ -54,10 +54,12 @@ setMethod("combine_annotations", signature = "annotation", function(...) .combin
   
   all_annotation_names <- names(combined_features)
   
-  combined_description <- combine_annotation_text(lapply(all_annotations, function(x){x@description}),
-                                                         all_annotation_names)
-  combined_links <- combine_annotation_text(lapply(all_annotations, function(x){x@links}),
-                                             all_annotation_names)
+  combined_description <- combine_text(lapply(all_annotations, function(x){x@description}),
+                                       all_annotation_names,
+                                       "description")
+  combined_links <- combine_text(lapply(all_annotations, function(x){x@links}),
+                                 all_annotation_names,
+                                 "links")
   
   combined_counts <- sapply(combined_features, length)
   
@@ -94,6 +96,52 @@ combine_annotation_features <- function(annotation_features){
   }
   
   return(annotation_out)
+}
+
+#' combine text
+#' 
+#' Given lists of named character objects, and a character vector of names to be
+#' in the final object, either get the character string from the list that has
+#' the names, or check that the character string is the same across all of the
+#' lists.
+#' 
+#' @param list_characters list containing named character strings
+#' @param names_out the full list of names to use
+#' 
+#' @export
+#' @return named character vector
+combine_text <- function(list_characters, names_out, text_id){
+  n_char <- length(names_out)
+  list_names <- names(list_characters)
+  n_list <- length(list_characters)
+  
+  list_text <- matrix("", n_char, n_list)
+  rownames(list_text) <- names_out
+  colnames(list_text) <- names(list_characters)
+  
+  for (i_name in list_names){
+    match_list <- intersect(names_out, names(list_characters[[i_name]]))
+    list_text[match_list, i_name] <- list_characters[[i_name]][match_list]
+  }
+  
+  list_has_char <- nchar(list_text) > 0
+  
+  out_char <- lapply(names_out, function(x){
+    unique(list_text[x, list_has_char[x,]])
+  })
+  
+  names(out_char) <- names_out
+  
+  n_result <- sapply(out_char, length)
+  
+  n_multi <- sum(n_result > 1)
+  if (n_multi != 0){
+    errmsg <- paste(n_multi, text_id, "are not identical across annotation objects", collapse = " ")
+    stop(errmsg, call. = FALSE)
+  }
+  
+  unlist(out_char)
+  
 }
 
 #' annotation similarity graph
