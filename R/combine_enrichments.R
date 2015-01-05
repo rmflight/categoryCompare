@@ -22,7 +22,6 @@ setMethod("combine_enrichments", signature = "enriched_result", function(...) .c
   if (n_type != 1){
     stop("Cannot combine enriched_result's with more than one annotation type.", call.=FALSE)
   }
-  
   all_annotation <- combine_annotation_features(lapply(enriched, function(x){x@annotation@annotation_features}))
   
   annotation_graph <- generate_annotation_similarity_graph(all_annotation)
@@ -80,7 +79,7 @@ generate_annotation_similarity_graph <- function(annotation_features, overlap_ty
   all_comparisons <- expand.grid(seq(1, n_annotation), seq(1, n_annotation))
   all_comparisons <- all_comparisons[(all_comparisons[,2] > all_comparisons[,1]), ]
     
-  similarity <- sapply(seq(1, nrow(all_comparisons)), function(x){
+  similarity <- choose_mclapply(seq(1, nrow(all_comparisons)), function(x){
     do_comparison <- all_comparisons[x, ]
     n1 <- annotation_features[[do_comparison[1,1]]]
     n2 <- annotation_features[[do_comparison[1,2]]]
@@ -92,9 +91,9 @@ generate_annotation_similarity_graph <- function(annotation_features, overlap_ty
     
     use_similarity
   })
-  
+  similarity <- unlist(similarity)
   similarity_non_zero <- similarity != 0
-  all_comparisons <- all_comparisons[, similarity_non_zero]
+  all_comparisons <- all_comparisons[similarity_non_zero, ]
   similarity <- similarity[similarity_non_zero]
   
   from_edge <- use_annotations[all_comparisons[,1]]
