@@ -34,3 +34,32 @@ multi_query_list <- function(list_to_query, ...){
   names(result_logical) <- NULL
   result_logical
 }
+
+#' get signficant annotations
+#' 
+#' given a \linkS4class{statistical_results} object and some conditional expressions,
+#' return the significant annotations
+#' 
+#' @param stat_results the statistical_results object
+#' @param ... conditional expressions
+#' 
+#' @examples
+#' 
+#' test_stat <- new("statistical_results",
+#'                  annotation_id = c("a1", "a2", "a3"),
+#'                  statistics = list(pvalues = c(a1 = 0.01, a2 = 0.5, a3 = 0.0001),
+#'                    counts = c(a1 = 5, a2 = 10, a3 = 1),
+#'                    odds = c(a1 = 20, a2 = 100, a3 = 0)))
+#' get_significant_annotations(test_stat, pvalues < 0.05)
+#' get_significant_annotations(test_stat, odds > 10)
+#' get_significant_annotations(test_stat, pvalues < 0.05, counts >= 1)
+#' 
+#' @export
+#' @return vector of significant annotation_id's
+get_significant_annotations <- function(stat_results, ...){
+  out_ids <- stat_results@annotation_id
+  
+  sig_entries <- multi_query_list(stat_results@statistics, ...)
+  
+  out_ids[sig_entries]
+}
