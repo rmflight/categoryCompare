@@ -49,7 +49,7 @@ enriched_result <- setClass("enriched_result",
                             slots = list(features = "ANY",
                                          universe = "ANY",
                                          annotation = "annotation",
-                                         statistics = "list"))
+                                         statistics = "statistical_results"))
 
 #' combined enrichments
 #' 
