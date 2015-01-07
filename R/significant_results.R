@@ -11,7 +11,7 @@
 #' @return logical "&" of all queries
 #' 
 multi_query_list <- function(list_to_query, ...){
-  queries <- list(...)
+  queries <- as.list(substitute(list(...)))
   
-  
+  browser(expr = TRUE)
 }
