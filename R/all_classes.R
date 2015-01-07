@@ -21,6 +21,22 @@ annotation <- setClass("annotation",
                                     links = "character",
                                     type = "character"))
 
+#' statistical results class
+#' 
+#' This class holds the part of an enrichment that is the statistical results.
+#' It has two pieces, a \code{list} of \code{statistics} that is a named list
+#' with the actual numerical results of applying the statistics. The other piece
+#' is the \code{annotation_id} vector defining which entry in each vector of the
+#' \code{statistics} is.
+#' 
+#' @slot statistics list of numerical statistics
+#' @slot annotation_id vector of ids
+#' 
+#' @export
+statistical_results <- setClass("statistical_results",
+                                slots = list(statistics = "list",
+                                             annotation_id = "ANY"))
+
 #' the enriched results class
 #' 
 #' @slot features the "features" of interest, a vector of class ANY
