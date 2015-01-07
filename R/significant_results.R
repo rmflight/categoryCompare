@@ -31,5 +31,6 @@ multi_query_list <- function(list_to_query, ...){
     result_logical <- result_logical & query_results[[i_query]]
   }
   
+  names(result_logical) <- NULL
   result_logical
 }
