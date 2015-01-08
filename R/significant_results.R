@@ -35,15 +35,7 @@ multi_query_list <- function(list_to_query, ...){
   result_logical
 }
 
-#' get significant annotations generic
-#' 
-#' given an object (documented below) and multiple logical operators, generate
-#' the results of the logical operators on the object.
-#' 
-#' @name get_significant_annotation
-NULL
-
-#' @rdname get_significant_annotation
+#' get significant annotations
 #' 
 #' given a \linkS4class{statistical_results} object and some conditional expressions,
 #' return the significant annotations
@@ -62,9 +54,10 @@ NULL
 #' get_significant_annotations(test_stat, odds > 10)
 #' get_significant_annotations(test_stat, pvalues < 0.05, counts >= 1)
 #' 
-#' @export
 #' @return vector of significant annotation_id's
-get_significant_annotations <- setMethod("get_significant_annotations",
+#' @exportMethod get_significant_annotations
+#' @rdname get_significant_annotations
+setMethod("get_significant_annotations",
                                          signature = list(combined_enrichment_or_stat_results = "statistical_results"),
                                          function(combined_enrichment_or_stat_results, ...) .get_significant_stat_results(combined_enrichment_or_stat_results, ...))
 
@@ -76,3 +69,10 @@ get_significant_annotations <- setMethod("get_significant_annotations",
   out_ids[sig_entries]
 }
 
+#' get significant annotations
+#' 
+#' In the case where we have a \linkS4class{combined_enrichment} and we want
+#' to get all of the significant annotations from each of them, and put them
+#' together so we can start doing real meta-analysis.
+#' 
+#' @param 

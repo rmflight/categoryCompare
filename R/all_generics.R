@@ -2,4 +2,7 @@ setGeneric("combine_enrichments", function(...) standardGeneric("combine_enrichm
 
 setGeneric("combine_annotations", function(annotation_list) standardGeneric("combine_annotations"))
 
+#' get significant annotations
+#' 
+#' @export
 setGeneric("get_significant_annotations", function(combined_enrichment_or_stat_results, ...) standardGeneric("get_significant_annotations"))
