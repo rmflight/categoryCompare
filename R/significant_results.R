@@ -40,7 +40,7 @@ multi_query_list <- function(list_to_query, ...){
 #' given a \linkS4class{statistical_results} object and some conditional expressions,
 #' return the significant annotations
 #' 
-#' @param stat_results the statistical_results object
+#' @param combined_enrichment_or_stat_results the \linkS4class{statistical_results} object
 #' @param ... conditional expressions
 #' 
 #' @examples
@@ -57,12 +57,12 @@ multi_query_list <- function(list_to_query, ...){
 #' @return vector of significant annotation_id's
 #' @exportMethod get_significant_annotations
 #' @rdname get_significant_annotations
-setMethod("get_significant_annotations",
-                                         signature = list(combined_enrichment_or_stat_results = "statistical_results"),
-                                         function(combined_enrichment_or_stat_results, ...) .get_significant_stat_results(combined_enrichment_or_stat_results, ...))
+setMethod("get_significant_annotations", 
+          signature = list(combined_enrichment_or_stat_results = "statistical_results"),
+          function(combined_enrichment_or_stat_results, ...) .get_significant_stat_results(combined_enrichment_or_stat_results, ...))
 
 .get_significant_stat_results <- function(combined_enrichment_or_stat_results, ...){
-    out_ids <- combined_enrichment_or_stat_results@annotation_id
+  out_ids <- combined_enrichment_or_stat_results@annotation_id
   
   sig_entries <- multi_query_list(combined_enrichment_or_stat_results@statistics, ...)
   
