@@ -75,4 +75,16 @@ setMethod("get_significant_annotations",
 #' to get all of the significant annotations from each of them, and put them
 #' together so we can start doing real meta-analysis.
 #' 
-#' @param 
+#' @param combined_enrichment_or_stat_results a \linkS4class{combined_enrichment} object
+#' @param ... conditional expressions
+#' 
+#' @return \linkS4class{signficant_annotations} object
+#' @exportMethod get_signficant_annotations
+#' @rdname get_significant_annotations
+setMethod("get_significant_annotations",
+          signature = list(combined_enrichment_or_stat_results = "combined_enrichment"),
+          function(combined_enrichment_or_stat_results, ...) .get_significant_combined_enrichment(combined_enrichment_or_stat_results, ...))
+
+.get_significant_combined_enrichment <- function(combined_enrichment_or_stat_results, ...){
+  
+}
