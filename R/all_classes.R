@@ -70,3 +70,18 @@ combined_enrichment <- setClass("combined_enrichment",
                                 slots = list(enriched = "list",
                                              annotation = "annotation",
                                              graph = "graphNEL"))
+
+#' significant annotations
+#' 
+#' The \code{significant_annotations} class holds which annotations from which
+#' enrichment were both \strong{measured} and \strong{significant}. Each of these
+#' slots is a \emph{logical matrix} with rows named by \emph{annotation_id} and 
+#' columns named by the names of the \linkS4class{enriched_result} that was combined.
+#' 
+#' @slot significant logical matrix
+#' @slot measured logical matrix
+#' 
+#' @export
+significant_annotations <- setClass("significant_annotations",
+                                    slots = list(significant = "matrix",
+                                                 measured = "matrix"))

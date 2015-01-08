@@ -79,12 +79,38 @@ setMethod("get_significant_annotations",
 #' @param ... conditional expressions
 #' 
 #' @return \linkS4class{signficant_annotations} object
-#' @exportMethod get_signficant_annotations
+#' @exportMethod get_significant_annotations
 #' @rdname get_significant_annotations
 setMethod("get_significant_annotations",
           signature = list(combined_enrichment_or_stat_results = "combined_enrichment"),
           function(combined_enrichment_or_stat_results, ...) .get_significant_combined_enrichment(combined_enrichment_or_stat_results, ...))
 
 .get_significant_combined_enrichment <- function(combined_enrichment_or_stat_results, ...){
+  all_measured <- lapply(combined_enrichment_or_stat_results@enriched,
+                         function(x){x@statistics@annotation_id})
   
+  all_significant <- lapply(combined_enrichment_or_stat_results@enriched,
+                            function(x){get_significant_annotations(x@statistics, ...)})
+  
+  annotation_measured <- unique(unlist(all_measured))
+  n_measured <- length(annotation_measured)
+  n_enriched <- length(combined_enrichment_or_stat_results@enriched)
+  
+  out_measured <- matrix(FALSE, n_measured, n_enriched)
+  rownames(out_measured) <- annotation_measured
+  colnames(out_measured) <- names(all_measured)
+  
+  out_significant <- out_measured
+  
+  for (i_meas in names(all_measured)){
+    out_measured[all_measured[[i_meas]], i_meas] <- TRUE
+  }
+  
+  for (i_meas in names(all_significant)){
+    out_significant[all_significant[[i_meas]], i_meas] <- TRUE
+  }
+  
+  new("significant_annotations",
+      significant = out_significant,
+      measured = out_measured)
 }
