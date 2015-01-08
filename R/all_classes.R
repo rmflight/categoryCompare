@@ -42,7 +42,7 @@ statistical_results <- setClass("statistical_results",
 #' @slot features the "features" of interest, a vector of class ANY
 #' @slot universe all of the "features" in the background
 #' @slot annotation list giving the annotation to feature relationship
-#' @slot statistics named list with various statistics of the enrichment results
+#' @slot statistics a \linkS4class{statistical_results} object
 #' 
 #' @export
 enriched_result <- setClass("enriched_result",

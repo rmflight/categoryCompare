@@ -56,7 +56,6 @@ multi_query_list <- function(list_to_query, ...){
 #' 
 #' @return vector of significant annotation_id's
 #' @exportMethod get_significant_annotations
-#' @rdname get_significant_annotations
 setMethod("get_significant_annotations", 
           signature = list(combined_enrichment_or_stat_results = "statistical_results"),
           function(combined_enrichment_or_stat_results, ...) .get_significant_stat_results(combined_enrichment_or_stat_results, ...))
@@ -80,7 +79,6 @@ setMethod("get_significant_annotations",
 #' 
 #' @return \linkS4class{signficant_annotations} object
 #' @exportMethod get_significant_annotations
-#' @rdname get_significant_annotations
 setMethod("get_significant_annotations",
           signature = list(combined_enrichment_or_stat_results = "combined_enrichment"),
           function(combined_enrichment_or_stat_results, ...) .get_significant_combined_enrichment(combined_enrichment_or_stat_results, ...))
