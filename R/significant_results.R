@@ -35,7 +35,15 @@ multi_query_list <- function(list_to_query, ...){
   result_logical
 }
 
-#' get signficant annotations
+#' get significant annotations generic
+#' 
+#' given an object (documented below) and multiple logical operators, generate
+#' the results of the logical operators on the object.
+#' 
+#' @name get_significant_annotation
+NULL
+
+#' @rdname get_significant_annotation
 #' 
 #' given a \linkS4class{statistical_results} object and some conditional expressions,
 #' return the significant annotations
@@ -56,10 +64,15 @@ multi_query_list <- function(list_to_query, ...){
 #' 
 #' @export
 #' @return vector of significant annotation_id's
-get_significant_annotations <- function(stat_results, ...){
-  out_ids <- stat_results@annotation_id
+get_significant_annotations <- setMethod("get_significant_annotations",
+                                         signature = list(combined_enrichment_or_stat_results = "statistical_results"),
+                                         function(combined_enrichment_or_stat_results, ...) .get_significant_stat_results(combined_enrichment_or_stat_results, ...))
+
+.get_significant_stat_results <- function(combined_enrichment_or_stat_results, ...){
+    out_ids <- combined_enrichment_or_stat_results@annotation_id
   
-  sig_entries <- multi_query_list(stat_results@statistics, ...)
+  sig_entries <- multi_query_list(combined_enrichment_or_stat_results@statistics, ...)
   
   out_ids[sig_entries]
 }
+
