@@ -41,3 +41,49 @@ test_that("get correct significant annotations", {
            expect_equal(c("a1", "a2"), get_significant_annotations(test_stat, odds > 10))
            expect_equal(c("a1", "a3"), get_significant_annotations(test_stat, pvalues < 0.05, counts >= 1))
 })
+
+# here we test what we get back from a combined_enrichment object
+context("significant annotations from combined_enrichment")
+
+stat1 <- new("statistical_results",
+             annotation_id = c("a1", "a2", "a3"),
+             statistics = list(pvalues = c(a1 = 0.01, a2 = 0.5, a3 = 0.0001),
+                               counts = c(a1 = 5, a2 = 10, a3 = 1),
+                               odds = c(a1 = 20, a2 = 100, a3 = 0)))
+stat2 <- new("statistical_results",
+             annotation_id = c("a1", "a2", "a4"),
+             statistics = list(pvalues = c(a1 = 0.01, a2 = 0.03, a4 = 0.0001),
+                               counts = c(a1 = 5, a2 = 10, a4 = 1),
+                               odds = c(a1 = 20, a2 = 100, a4 = 0)))
+
+en1 <- new("enriched_result",
+           features = letters,
+           universe = letters,
+           annotation = new("annotation"),
+           statistics = stat1)
+
+en2 <- new("enriched_result",
+           features = letters,
+           universe = letters,
+           annotation = new("annotation"),
+           statistics = stat2)
+
+test_combined <- new("combined_enrichment",
+                     enriched = list(en1 = en1, en2 = en2),
+                     annotation = new("annotation"),
+                     graph = new("graphNEL"))
+
+# this uses pvalues < 0.05
+meas_matrix <- matrix(c(TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, FALSE, TRUE), nrow = 4, ncol = 2)
+rownames(meas_matrix) <- c("a1", "a2", "a3", "a4")
+colnames(meas_matrix) <- c("en1", "en2")
+sig_matrix <- meas_matrix
+sig_matrix["a2", ] <- c(FALSE, TRUE)
+
+expected_significant_annotations <- new("significant_annotations",
+                                        significant = sig_matrix,
+                                        measured = meas_matrix)
+
+test_that("get correct sig annotations from combined_enrichment", {
+  expect_equal(expected_significant_annotations, get_significant_annotations(test_combined, pvalues < 0.05))
+})
