@@ -11,7 +11,10 @@ setMethod("extract_statistics", signature = list(in_results = "statistical_resul
           function(in_results) .extract_statistics_statistical_results(in_results))
 
 .extract_statistics_statistical_results(in_results){
+  out_data <- as.data.frame(in_results@statistics)
+  rownames(out_data) <- in_results@annotation_id
   
+  out_data
 }
 
 #' extract statistics
