@@ -31,5 +31,29 @@ setMethod("extract_statistics", signature = list(in_results = "combined_enrichme
           function(in_results) .extract_statistics_combined_enrichment(in_results))
 
 .extract_statistics_combined_enrichment <- function(in_results){
+  all_data <- lapply(in_results@enriched, function(x){extract_statistics(x@statistics)})
   
+  all_rows <- unique(unlist(lapply(all_data, rownames)))
+  
+  new_named_data <- lapply(names(all_data), function(x){
+    tmp_x <- all_data[[x]]
+    names(tmp_x) <- paste(x, names(tmp_x), sep = ".")
+    tmp_x
+  })
+  names(new_named_data) <- names(all_data)
+  
+  all_cols <- (unlist(lapply(new_named_data, colnames)))
+  
+  data_matrix <- matrix(NA, length(all_rows), length(all_cols))
+  data_frame <- as.data.frame(data_matrix)
+  
+  rownames(data_frame) <- all_rows
+  names(data_frame) <- all_cols
+  
+  for (i_data in names(new_named_data)){
+    tmp_data <- new_named_data[[i_data]]
+    data_frame[rownames(tmp_data), names(tmp_data)] <- tmp_data
+  }
+  
+  data_frame
 }
