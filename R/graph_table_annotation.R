@@ -10,7 +10,7 @@
 setMethod("extract_statistics", signature = list(in_results = "statistical_results"),
           function(in_results) .extract_statistics_statistical_results(in_results))
 
-.extract_statistics_statistical_results(in_results){
+.extract_statistics_statistical_results <- function(in_results){
   out_data <- as.data.frame(in_results@statistics)
   rownames(out_data) <- in_results@annotation_id
   
@@ -30,6 +30,6 @@ setMethod("extract_statistics", signature = list(in_results = "statistical_resul
 setMethod("extract_statistics", signature = list(in_results = "combined_enrichment"),
           function(in_results) .extract_statistics_combined_enrichment(in_results))
 
-.extract_statistics_combined_enrichment(in_results){
+.extract_statistics_combined_enrichment <- function(in_results){
   
 }
