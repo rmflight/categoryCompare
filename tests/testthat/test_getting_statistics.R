@@ -52,20 +52,25 @@ test_combined <- new("combined_enrichment",
                      annotation = new("annotation"),
                      graph = new("graphNEL"))
 
-out_stats_combined <- matrix(0, nrow = 4, ncol = 6)
+out_stats_combined <- matrix(NA, nrow = 4, ncol = 6)
 rownames(out_stats_combined) <- c("a1", "a2", "a3", "a4")
 colnames(out_stats_combined) <- c("en1.pvalues", "en1.counts", "en1.odds",
                                   "en2.pvalues", "en2.counts", "en2.odds")
 
 en1_locs <- stat1@annotation_id
 en2_locs <- stat2@annotation_id
-out_stats_combined[en1_locs, "en1.pvalues"] <- stat1@statistics$pvalues
-out_stats_combined[en1_locs, "en1.counts"] <- stat1@statistics$counts
-out_stats_combined[en1_locs, "en1.odds"] <- stat1@statistics$odds
-out_stats_combined[en2_locs, "en2.pvalues"] <- stat2@statistics$pvalues
-out_stats_combined[en2_locs, "en2.counts"] <- stat2@statistics$counts
-out_stats_combined[en2_locs, "en2.odds"] <- stat2@statistics$odds
-out_stats_combined <- as.data.frame(out_stats_combined)
+out_stats_data[en1_locs, "en1.pvalues"] <- stat1@statistics$pvalues
+out_stats_data[en1_locs, "en1.counts"] <- stat1@statistics$counts
+out_stats_data[en1_locs, "en1.odds"] <- stat1@statistics$odds
+out_stats_data[en2_locs, "en2.pvalues"] <- stat2@statistics$pvalues
+out_stats_data[en2_locs, "en2.counts"] <- stat2@statistics$counts
+out_stats_data[en2_locs, "en2.odds"] <- stat2@statistics$odds
+out_stats_data <- as.data.frame(out_stats_data)
+
+out_stats_combined <- new("combined_statistics",
+                          statistics = out_stats_data,
+                          which_enrichment = c("en1", "en1", "en1", "en2", "en2", "en2"),
+                          which_statistic = c("pvalues", "counts", "odds", "pvalues", "counts", "odds"))
 
 test_that("combined_enrichment works", {
   expect_equal(extract_statistics(test_combined), out_stats_combined)
