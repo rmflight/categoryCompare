@@ -19,10 +19,18 @@ setMethod("combine_enrichments", signature = "enriched_result", function(...) .c
   
   annotation_graph <- generate_annotation_similarity_graph(all_annotation@annotation_features)
   
+  # create a dummy that may be a little smaller for passing to other functions
+  out_combined <- new("combined_enrichment",
+                      enriched = enriched)
+  
+  combined_stats <- extract_statistics(out_combined)
+  
   out_combined <- new("combined_enrichment",
                       enriched = enriched,
                       annotation = all_annotation,
-                      graph = annotation_graph)
+                      graph = annotation_graph,
+                      statistics = combined_stats)
+  
   out_combined
 }
 
