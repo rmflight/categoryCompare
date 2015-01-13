@@ -52,9 +52,9 @@ test_combined <- new("combined_enrichment",
                      annotation = new("annotation"),
                      graph = new("graphNEL"))
 
-out_stats_combined <- matrix(NA, nrow = 4, ncol = 6)
-rownames(out_stats_combined) <- c("a1", "a2", "a3", "a4")
-colnames(out_stats_combined) <- c("en1.pvalues", "en1.counts", "en1.odds",
+out_stats_data <- matrix(NA, nrow = 4, ncol = 6)
+rownames(out_stats_data) <- c("a1", "a2", "a3", "a4")
+colnames(out_stats_data) <- c("en1.pvalues", "en1.counts", "en1.odds",
                                   "en2.pvalues", "en2.counts", "en2.odds")
 
 en1_locs <- stat1@annotation_id
