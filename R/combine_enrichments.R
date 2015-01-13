@@ -262,12 +262,12 @@ setMethod("extract_statistics", signature = list(in_results = "statistical_resul
 #' extract statistics
 #' 
 #' extract all statistics from a \linkS4class{combined_enrichment} object and 
-#' create a \code{data.frame} where each statistic from the underlying 
+#' create a \linkS4class{combined_statistics} where each statistic from the underlying 
 #' \linkS4class{statistical_results} object in each of the enrichments
 #' is named according to which enrichment it was in and what statistic it was.
 #' 
 #' @param in_results the \linkS4class{combined_enrichment} object
-#' @return data.frame
+#' @return combined_statistics
 #' @exportMethod extract_statistics
 setMethod("extract_statistics", signature = list(in_results = "combined_enrichment"),
           function(in_results) .extract_statistics_combined_enrichment(in_results))
@@ -276,6 +276,10 @@ setMethod("extract_statistics", signature = list(in_results = "combined_enrichme
   all_data <- lapply(in_results@enriched, function(x){extract_statistics(x@statistics)})
   
   all_rows <- unique(unlist(lapply(all_data, rownames)))
+  
+  enrichment_names <- rep(names(all_data), unlist(lapply(all_data, ncol)))
+  
+  statistic_names <- unlist(lapply(all_data, names), use.names = FALSE)
   
   new_named_data <- lapply(names(all_data), function(x){
     tmp_x <- all_data[[x]]
@@ -297,7 +301,10 @@ setMethod("extract_statistics", signature = list(in_results = "combined_enrichme
     data_frame[rownames(tmp_data), names(tmp_data)] <- tmp_data
   }
   
-  data_frame
+  new("combined_statistics",
+      statistics = data_frame,
+      which_enrichment = enrichment_names,
+      which_statistic = statistic_names)
 }
 
 #' all data extraction
