@@ -85,3 +85,22 @@ combined_enrichment <- setClass("combined_enrichment",
 significant_annotations <- setClass("significant_annotations",
                                     slots = list(significant = "matrix",
                                                  measured = "matrix"))
+
+#' combined statistics
+#' 
+#' holds the results of extracting a bunch of statistics from a \linkS4class{combined_enrichment}
+#' into one entity. This is useful because we want to enable multiple data representations and
+#' simple filtering on the actual \code{data.frame} of statistics, and this provides flexibility
+#' to enable that.
+#' 
+#' @slot statistics a \code{data.frame} of all of the statistics from all of the enrichments
+#' @slot significant a \linkS4class{significant_annotations} object, that may be empty
+#' @slot which_enrichment a \code{vector} giving which enrichment each column of the statistics came from
+#' @slot which_statistic a \code{vector} providing which statistic each column contains
+#' 
+#' @export
+combined_statistics <- setClass("combined_statistics",
+                                slots = list(statistics = "data.frame",
+                                             significant = "significant_annotations",
+                                             which_enrichment = "character",
+                                             which_statistic = "character"))
