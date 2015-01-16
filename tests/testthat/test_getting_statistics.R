@@ -59,12 +59,12 @@ colnames(out_stats_data) <- c("en1.pvalues", "en1.counts", "en1.odds",
 
 en1_locs <- stat1@annotation_id
 en2_locs <- stat2@annotation_id
-out_stats_data[en1_locs, "en1.pvalues"] <- stat1@statistics$pvalues
-out_stats_data[en1_locs, "en1.counts"] <- stat1@statistics$counts
-out_stats_data[en1_locs, "en1.odds"] <- stat1@statistics$odds
-out_stats_data[en2_locs, "en2.pvalues"] <- stat2@statistics$pvalues
-out_stats_data[en2_locs, "en2.counts"] <- stat2@statistics$counts
-out_stats_data[en2_locs, "en2.odds"] <- stat2@statistics$odds
+out_stats_data[en1_locs, "en1.pvalues"] <- stat1@statistic_data$pvalues
+out_stats_data[en1_locs, "en1.counts"] <- stat1@statistic_data$counts
+out_stats_data[en1_locs, "en1.odds"] <- stat1@statistic_data$odds
+out_stats_data[en2_locs, "en2.pvalues"] <- stat2@statistic_data$pvalues
+out_stats_data[en2_locs, "en2.counts"] <- stat2@statistic_data$counts
+out_stats_data[en2_locs, "en2.odds"] <- stat2@statistic_data$odds
 out_stats_data <- as.data.frame(out_stats_data)
 
 out_stats_combined <- new("combined_statistics",
