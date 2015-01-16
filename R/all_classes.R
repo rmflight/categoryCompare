@@ -29,12 +29,12 @@ annotation <- setClass("annotation",
 #' is the \code{annotation_id} vector defining which entry in each vector of the
 #' \code{statistics} is.
 #' 
-#' @slot statistics list of numerical statistics
+#' @slot statistic_data list of numerical statistics
 #' @slot annotation_id vector of ids
 #' 
 #' @export
 statistical_results <- setClass("statistical_results",
-                                slots = list(statistics = "list",
+                                slots = list(statistic_data = "list",
                                              annotation_id = "ANY"))
 
 #' the enriched results class
@@ -73,14 +73,15 @@ significant_annotations <- setClass("significant_annotations",
 #' simple filtering on the actual \code{data.frame} of statistics, and this provides flexibility
 #' to enable that.
 #' 
-#' @slot statistics a \code{data.frame} of all of the statistics from all of the enrichments
+#' @slot statistic_data a \code{data.frame} of all of the statistics from all of the enrichments
 #' @slot significant a \linkS4class{significant_annotations} object, that may be empty
 #' @slot which_enrichment a \code{vector} giving which enrichment each column of the statistics came from
 #' @slot which_statistic a \code{vector} providing which statistic each column contains
 #' 
 #' @export
 combined_statistics <- setClass("combined_statistics",
-                                slots = list(statistics = "data.frame",
+                                contains = "statistical_results",
+                                slots = list(statistic_data = "data.frame",
                                              significant = "significant_annotations",
                                              which_enrichment = "character",
                                              which_statistic = "character"))

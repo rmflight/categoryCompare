@@ -7,7 +7,7 @@ context("getting statistics from objects")
 # statistical results
 
 c1 <- new("statistical_results",
-          statistics = list(pvalues = c(a1 = 0.01, a2 = 0.5, a3 = 0.0001),
+          statistic_data = list(pvalues = c(a1 = 0.01, a2 = 0.5, a3 = 0.0001),
                             counts = c(a1 = 5, a2 = 10, a3 = 1),
                             odds = c(a1 = 20, a2 = 100, a3 = 0)),
           annotation_id = c("a1", "a2", "a3"))
@@ -26,12 +26,12 @@ test_that("basic statistical_results works", {
 
 stat1 <- new("statistical_results",
              annotation_id = c("a1", "a2", "a3"),
-             statistics = list(pvalues = c(a1 = 0.01, a2 = 0.5, a3 = 0.0001),
+             statistic_data = list(pvalues = c(a1 = 0.01, a2 = 0.5, a3 = 0.0001),
                                counts = c(a1 = 5, a2 = 10, a3 = 1),
                                odds = c(a1 = 20, a2 = 100, a3 = 0)))
 stat2 <- new("statistical_results",
              annotation_id = c("a1", "a2", "a4"),
-             statistics = list(pvalues = c(a1 = 0.01, a2 = 0.03, a4 = 0.0001),
+             statistic_data = list(pvalues = c(a1 = 0.01, a2 = 0.03, a4 = 0.0001),
                                counts = c(a1 = 5, a2 = 10, a4 = 1),
                                odds = c(a1 = 20, a2 = 100, a4 = 0)))
 
@@ -68,7 +68,8 @@ out_stats_data[en2_locs, "en2.odds"] <- stat2@statistics$odds
 out_stats_data <- as.data.frame(out_stats_data)
 
 out_stats_combined <- new("combined_statistics",
-                          statistics = out_stats_data,
+                          statistic_data = out_stats_data,
+                          annotation_id = rownames(out_stats_data),
                           which_enrichment = c("en1", "en1", "en1", "en2", "en2", "en2"),
                           which_statistic = c("pvalues", "counts", "odds", "pvalues", "counts", "odds"))
 
