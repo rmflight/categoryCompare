@@ -10,11 +10,18 @@
 #' 
 #' @return \linkS4class{combined_enrichment}
 #' @export
-setMethod("combine_enrichments", signature = list(x = "enriched_result"), 
-          function(annotation_similarity, x, ...) .combine_enrichments(annotation_similarity, x, ...))
+setMethod("combine_enrichments", signature = list(annotation_similarity = "character"), 
+          function(annotation_similarity, ...) .combine_enrichments(annotation_similarity, ...))
 
-.combine_enrichments <- function(annotation_similarity = "combined", x, ...){
-  enriched <- c(x, list(...))
+setMethod("combine_enrichments", signature = "missing",
+          function(...) .combine_enrichments(annotation_similarity = "combined", ...))
+
+.combine_enrichments <- function(annotation_similarity = "combined", ...){
+  enriched <- list(...)
+  enriched_class <- unique(sapply(enriched, class))
+  if (enriched_class != "enriched_result"){
+    stop("objects passed are not all of class enriched_result", call. = FALSE)
+  }
   
   all_annotation <- combine_annotations(lapply(enriched, function(x){x@annotation}))
   
