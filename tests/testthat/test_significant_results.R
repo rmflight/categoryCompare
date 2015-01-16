@@ -32,7 +32,7 @@ context("significant annotations from statistical_results")
 
 test_stat <- new("statistical_results",
                   annotation_id = c("a1", "a2", "a3"),
-                  statistics = list(pvalues = c(a1 = 0.01, a2 = 0.5, a3 = 0.0001),
+                  statistic_data = list(pvalues = c(a1 = 0.01, a2 = 0.5, a3 = 0.0001),
                     counts = c(a1 = 5, a2 = 10, a3 = 1),
                     odds = c(a1 = 20, a2 = 100, a3 = 0)))
 
@@ -47,12 +47,12 @@ context("significant annotations from combined_enrichment")
 
 stat1 <- new("statistical_results",
              annotation_id = c("a1", "a2", "a3"),
-             statistics = list(pvalues = c(a1 = 0.01, a2 = 0.5, a3 = 0.0001),
+             statistic_data = list(pvalues = c(a1 = 0.01, a2 = 0.5, a3 = 0.0001),
                                counts = c(a1 = 5, a2 = 10, a3 = 1),
                                odds = c(a1 = 20, a2 = 100, a3 = 0)))
 stat2 <- new("statistical_results",
              annotation_id = c("a1", "a2", "a4"),
-             statistics = list(pvalues = c(a1 = 0.01, a2 = 0.03, a4 = 0.0001),
+             statistic_data = list(pvalues = c(a1 = 0.01, a2 = 0.03, a4 = 0.0001),
                                counts = c(a1 = 5, a2 = 10, a4 = 1),
                                odds = c(a1 = 20, a2 = 100, a4 = 0)))
 

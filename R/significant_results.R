@@ -63,7 +63,7 @@ setMethod("get_significant_annotations",
 .get_significant_stat_results <- function(combined_enrichment_or_stat_results, ...){
   out_ids <- combined_enrichment_or_stat_results@annotation_id
   
-  sig_entries <- multi_query_list(combined_enrichment_or_stat_results@statistics, ...)
+  sig_entries <- multi_query_list(combined_enrichment_or_stat_results@statistic_data, ...)
   
   out_ids[sig_entries]
 }
