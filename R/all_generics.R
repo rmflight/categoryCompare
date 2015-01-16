@@ -1,4 +1,4 @@
-setGeneric("combine_enrichments", function(...) standardGeneric("combine_enrichments"))
+setGeneric("combine_enrichments", function(annotation_similarity, x, ...) standardGeneric("combine_enrichments"))
 
 setGeneric("combine_annotations", function(annotation_list) standardGeneric("combine_annotations"))
 

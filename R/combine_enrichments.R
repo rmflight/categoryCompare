@@ -10,14 +10,15 @@
 #' 
 #' @return \linkS4class{combined_enrichment}
 #' @export
-setMethod("combine_enrichments", signature = "enriched_result", function(...) .combine_enrichments(...))
+setMethod("combine_enrichments", signature = list(x = "enriched_result"), 
+          function(annotation_similarity, x, ...) .combine_enrichments(annotation_similarity, x, ...))
 
-.combine_enrichments <- function(...){
-  enriched <- list(...)
+.combine_enrichments <- function(annotation_similarity = "combined", x, ...){
+  enriched <- c(x, list(...))
   
   all_annotation <- combine_annotations(lapply(enriched, function(x){x@annotation}))
   
-  annotation_graph <- generate_annotation_similarity_graph(all_annotation@annotation_features)
+  annotation_graph <- generate_annotation_similarity_graph(all_annotation@annotation_features, annotation_similarity)
   
   # create a dummy that may be a little smaller for passing to other functions
   out_combined <- new("combined_enrichment",
@@ -158,13 +159,13 @@ combine_text <- function(list_characters, names_out, text_id){
 #' the annotations
 #' 
 #' @param annotation_features list where each entry is a set of features to that annotation
-#' @param overlap_type which type of overlap coefficient to report
+#' @param similarity_type which type of overlap coefficient to report
 #' 
 #' @export
 #' @return graphNEL
 #' 
 #' @import graph
-generate_annotation_similarity_graph <- function(annotation_features, overlap_type = "combined"){
+generate_annotation_similarity_graph <- function(annotation_features, similarity_type = "combined"){
   num_features <- sapply(annotation_features, length)
   
   keep_annotations <- (num_features >= 5) & (num_features <= 1000)
@@ -182,7 +183,7 @@ generate_annotation_similarity_graph <- function(annotation_features, overlap_ty
     n1 <- annotation_features[[do_comparison[1,1]]]
     n2 <- annotation_features[[do_comparison[1,2]]]
     
-    use_similarity <- switch(overlap_type,
+    use_similarity <- switch(similarity_type,
                              overlap = overlap_coefficient(n1, n2),
                              jaccard = jaccard_coefficient(n1, n2),
                              combined = combined_coefficient(n1, n2))
