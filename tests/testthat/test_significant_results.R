@@ -73,6 +73,9 @@ test_combined <- new("combined_enrichment",
                      annotation = new("annotation"),
                      graph = new("graphNEL"))
 
+combined_stats <- extract_statistics(test_combined)
+test_combined@statistics <- combined_stats
+
 # this uses pvalues < 0.05
 meas_matrix <- matrix(c(TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, FALSE, TRUE), nrow = 4, ncol = 2)
 rownames(meas_matrix) <- c("a1", "a2", "a3", "a4")
@@ -84,6 +87,9 @@ expected_significant_annotations <- new("significant_annotations",
                                         significant = sig_matrix,
                                         measured = meas_matrix)
 
+expected_sig_combined <- test_combined
+expected_sig_combined@statistics@significant <- expected_significant_annotations
+
 test_that("get correct sig annotations from combined_enrichment", {
-  expect_equal(expected_significant_annotations, get_significant_annotations(test_combined, pvalues < 0.05))
+  expect_equal(expected_sig_combined, get_significant_annotations(test_combined, pvalues < 0.05))
 })
