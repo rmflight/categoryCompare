@@ -10,22 +10,13 @@
 #' 
 #' @return \linkS4class{combined_enrichment}
 #' @export
-setMethod("combine_enrichments", signature = list(annotation_similarity = "character"), 
-          function(annotation_similarity, ...) .combine_enrichments(annotation_similarity, ...))
+setMethod("combine_enrichments", signature = "enriched_result", 
+          function(...) .combine_enrichments(...))
 
-setMethod("combine_enrichments", signature = "missing",
-          function(...) .combine_enrichments(annotation_similarity = "combined", ...))
-
-.combine_enrichments <- function(annotation_similarity = "combined", ...){
+.combine_enrichments <- function(...){
   enriched <- list(...)
-  enriched_class <- unique(sapply(enriched, class))
-  if (enriched_class != "enriched_result"){
-    stop("objects passed are not all of class enriched_result", call. = FALSE)
-  }
   
   all_annotation <- combine_annotations(lapply(enriched, function(x){x@annotation}))
-  
-  annotation_graph <- generate_annotation_similarity_graph(all_annotation@annotation_features, annotation_similarity)
   
   # create a dummy that may be a little smaller for passing to other functions
   out_combined <- new("combined_enrichment",
@@ -36,11 +27,34 @@ setMethod("combine_enrichments", signature = "missing",
   out_combined <- new("combined_enrichment",
                       enriched = enriched,
                       annotation = all_annotation,
-                      graph = annotation_graph,
                       statistics = combined_stats)
   
   out_combined
 }
+
+#' generate the annotation graph
+#' 
+#' given a \linkS4class{combined_enrichment}, generate the annotation similarity graph and add it to the object.
+#' 
+#' @param comb_enrichment the combined_enrichment object
+#' @param annotation_similarity which similarity measure to use
+#' @param low_cut keep only those annotations in the graph with at least this many annotated features
+#' @param hi_cut keep only those annotations with less than this many annotated features
+#' 
+#' @return \linkS4class{combined_enrichment}
+#' 
+#' @export
+setMethod("generate_annotation_graph", signature = list(comb_enrichment = "combined_enrichment",
+                                               annotation_similarity = "character",
+                                               low_cut = "numeric",
+                                               hi_cut = "numeric"),
+          function(comb_enrichment, annotation_similarity, low_cut, hi_cut) .generate_annotation_graph(comb_enrichment, annotation_similarity, low_cut, hi_cut))
+
+.generate_annotation_graph <- function(comb_enrichment, annotation_similarity = "combined", low_cut = 10, hi_cut = 500){
+  comb_enrichment@graph <- generate_annotation_similarity_graph(comb_enrichment@all_annotation@annotation_features)
+  comb_enrichment
+}
+
 
 #' combine annotations
 #' 
