@@ -40,7 +40,7 @@ multi_query_list <- function(list_to_query, ...){
 #' given a \linkS4class{statistical_results} object and some conditional expressions,
 #' return the significant annotations
 #' 
-#' @param combined_enrichment_or_stat_results the \linkS4class{statistical_results} object
+#' @param in_results the \linkS4class{statistical_results} object
 #' @param ... conditional expressions
 #' 
 #' @examples
@@ -57,13 +57,13 @@ multi_query_list <- function(list_to_query, ...){
 #' @return vector of significant annotation_id's
 #' @exportMethod get_significant_annotations
 setMethod("get_significant_annotations", 
-          signature = list(combined_enrichment_or_stat_results = "statistical_results"),
-          function(combined_enrichment_or_stat_results, ...) .get_significant_stat_results(combined_enrichment_or_stat_results, ...))
+          signature = list(in_results = "statistical_results"),
+          function(in_results, ...) .get_significant_stat_results(in_results, ...))
 
-.get_significant_stat_results <- function(combined_enrichment_or_stat_results, ...){
-  out_ids <- combined_enrichment_or_stat_results@annotation_id
+.get_significant_stat_results <- function(in_results, ...){
+  out_ids <- in_results@annotation_id
   
-  sig_entries <- multi_query_list(combined_enrichment_or_stat_results@statistic_data, ...)
+  sig_entries <- multi_query_list(in_results@statistic_data, ...)
   
   out_ids[sig_entries]
 }
@@ -74,25 +74,28 @@ setMethod("get_significant_annotations",
 #' to get all of the significant annotations from each of them, and put them
 #' together so we can start doing real meta-analysis.
 #' 
-#' @param combined_enrichment_or_stat_results a \linkS4class{combined_enrichment} object
+#' Note that this function returns the original \linkS4class{combined_enrichment} object with a modified
+#' \linkS4class{combined_statistics} slot where the significant annotations have been added in. 
+#' 
+#' @param in_results a \linkS4class{combined_enrichment} object
 #' @param ... conditional expressions
 #' 
-#' @return \linkS4class{signficant_annotations} object
+#' @return \linkS4class{combined_enrichment} object
 #' @exportMethod get_significant_annotations
 setMethod("get_significant_annotations",
-          signature = list(combined_enrichment_or_stat_results = "combined_enrichment"),
-          function(combined_enrichment_or_stat_results, ...) .get_significant_combined_enrichment(combined_enrichment_or_stat_results, ...))
+          signature = list(in_results = "combined_enrichment"),
+          function(in_results, ...) .get_significant_combined_enrichment(in_results, ...))
 
-.get_significant_combined_enrichment <- function(combined_enrichment_or_stat_results, ...){
-  all_measured <- lapply(combined_enrichment_or_stat_results@enriched,
+.get_significant_combined_enrichment <- function(in_results, ...){
+  all_measured <- lapply(in_results@enriched,
                          function(x){x@statistics@annotation_id})
   
-  all_significant <- lapply(combined_enrichment_or_stat_results@enriched,
+  all_significant <- lapply(in_results@enriched,
                             function(x){get_significant_annotations(x@statistics, ...)})
   
   annotation_measured <- unique(unlist(all_measured))
   n_measured <- length(annotation_measured)
-  n_enriched <- length(combined_enrichment_or_stat_results@enriched)
+  n_enriched <- length(in_results@enriched)
   
   out_measured <- matrix(FALSE, n_measured, n_enriched)
   rownames(out_measured) <- annotation_measured
