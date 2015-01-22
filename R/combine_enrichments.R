@@ -48,8 +48,13 @@ setMethod("generate_annotation_graph", signature = list(comb_enrichment = "combi
           function(comb_enrichment, annotation_similarity, low_cut, hi_cut) .generate_annotation_graph(comb_enrichment, annotation_similarity, low_cut, hi_cut))
 
 .generate_annotation_graph <- function(comb_enrichment, annotation_similarity = "combined", low_cut = 5, hi_cut = 500){
-  browser(expr = TRUE)
-  comb_enrichment@graph <- generate_annotation_similarity_graph(comb_enrichment@all_annotation@annotation_features)
+  
+  annotation_features <- comb_enrichment@all_annotation@annotation_features
+  n_features <- sapply(annotation_features, length)
+  
+  keep_annotations <- (n_features >= low_cut) & (n_features <= hi_cut)
+  
+  comb_enrichment@graph <- generate_annotation_similarity_graph(annotation_features[keep_annotation], annotation_similarity)
   comb_enrichment
 }
 
