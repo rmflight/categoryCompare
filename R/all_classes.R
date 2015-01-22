@@ -82,6 +82,7 @@ significant_annotations <- setClass("significant_annotations",
 combined_statistics <- setClass("combined_statistics",
                                 contains = "statistical_results",
                                 slots = list(statistic_data = "data.frame",
+                                             annotation_id = "character",
                                              significant = "significant_annotations",
                                              which_enrichment = "character",
                                              which_statistic = "character"))
