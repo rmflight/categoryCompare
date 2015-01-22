@@ -111,7 +111,11 @@ setMethod("get_significant_annotations",
     out_significant[all_significant[[i_meas]], i_meas] <- TRUE
   }
   
-  new("significant_annotations",
-      significant = out_significant,
-      measured = out_measured)
+  sig_annotation <- new("significant_annotations",
+                        significant = out_significant,
+                        measured = out_measured)
+  
+  in_results@combined_statistics@significant <- sig_annotation
+  
+  in_results
 }
