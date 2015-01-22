@@ -11,3 +11,8 @@ setGeneric("get_significant_annotations", function(combined_enrichment_or_stat_r
 #' 
 #' @export
 setGeneric("extract_statistics", function(in_results) standardGeneric("extract_statistics"))
+
+#' generate annotation graph
+#' 
+#' @export
+setGeneric("generate_annotation_graph", function(comb_enrichment, annotation_similarity, low_cut, hi_cut) standardGeneric("generate_annotation_graph"))
