@@ -115,7 +115,7 @@ setMethod("get_significant_annotations",
                         significant = out_significant,
                         measured = out_measured)
   
-  in_results@combined_statistics@significant <- sig_annotation
+  in_results@statistics@significant <- sig_annotation
   
   in_results
 }
