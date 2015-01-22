@@ -15,4 +15,4 @@ setGeneric("extract_statistics", function(in_results) standardGeneric("extract_s
 #' generate annotation graph
 #' 
 #' @export
-setGeneric("generate_annotation_graph", function(comb_enrichment, annotation_similarity, low_cut, hi_cut) standardGeneric("generate_annotation_graph"))
+setGeneric("generate_annotation_graph", function(comb_enrichment, annotation_similarity = "combined", low_cut = 5, hi_cut = 500) standardGeneric("generate_annotation_graph"))

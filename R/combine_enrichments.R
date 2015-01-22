@@ -44,13 +44,11 @@ setMethod("combine_enrichments", signature = "enriched_result",
 #' @return \linkS4class{combined_enrichment}
 #' 
 #' @export
-setMethod("generate_annotation_graph", signature = list(comb_enrichment = "combined_enrichment",
-                                               annotation_similarity = "character",
-                                               low_cut = "numeric",
-                                               hi_cut = "numeric"),
+setMethod("generate_annotation_graph", signature = list(comb_enrichment = "combined_enrichment"),
           function(comb_enrichment, annotation_similarity, low_cut, hi_cut) .generate_annotation_graph(comb_enrichment, annotation_similarity, low_cut, hi_cut))
 
-.generate_annotation_graph <- function(comb_enrichment, annotation_similarity = "combined", low_cut = 10, hi_cut = 500){
+.generate_annotation_graph <- function(comb_enrichment, annotation_similarity = "combined", low_cut = 5, hi_cut = 500){
+  browser(expr = TRUE)
   comb_enrichment@graph <- generate_annotation_similarity_graph(comb_enrichment@all_annotation@annotation_features)
   comb_enrichment
 }
