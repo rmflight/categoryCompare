@@ -49,12 +49,12 @@ setMethod("generate_annotation_graph", signature = list(comb_enrichment = "combi
 
 .generate_annotation_graph <- function(comb_enrichment, annotation_similarity = "combined", low_cut = 5, hi_cut = 500){
   
-  annotation_features <- comb_enrichment@all_annotation@annotation_features
+  annotation_features <- comb_enrichment@annotation@annotation_features
   n_features <- sapply(annotation_features, length)
   
   keep_annotations <- (n_features >= low_cut) & (n_features <= hi_cut)
   
-  comb_enrichment@graph <- generate_annotation_similarity_graph(annotation_features[keep_annotation], annotation_similarity)
+  comb_enrichment@graph <- generate_annotation_similarity_graph(annotation_features[keep_annotations], annotation_similarity)
   comb_enrichment
 }
 
@@ -190,11 +190,7 @@ combine_text <- function(list_characters, names_out, text_id){
 #' 
 #' @import graph
 generate_annotation_similarity_graph <- function(annotation_features, similarity_type = "combined"){
-  num_features <- sapply(annotation_features, length)
-  
-  keep_annotations <- (num_features >= 5) & (num_features <= 1000)
-  annotation_features <- annotation_features[keep_annotations]
-  
+    
   use_annotations <- names(annotation_features)
   n_annotation <- length(use_annotations)
   out_graph <- new("graphNEL", nodes = use_annotations, edgemode = "directed")
