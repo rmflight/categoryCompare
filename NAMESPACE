@@ -4,7 +4,6 @@ importMethodsFrom(AnnotationDbi,
 		mget)
 		
 importFrom(annotate,
-           organism,
            getAnnMap)
 
 importFrom(colorspace,
@@ -64,7 +63,8 @@ importMethodsFrom(Category,
 		geneMappedCount,
 		pvalueCutoff,
 		testDirection,
-		testName
+		testName,
+		organism
 )
 
 importFrom(GOstats,
@@ -118,7 +118,6 @@ exportMethods(
   "compareColors<-",
   "ccType",
   "ccType<-",
-  "organism",
   "pvalueType",
   "pvalueType<-",
   "outType",
