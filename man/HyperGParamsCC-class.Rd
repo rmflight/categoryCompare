@@ -13,7 +13,6 @@
 \alias{KEGGHyperGParams}
 \alias{fdr,HyperGParamsCC-method}
 \alias{fdr<-,HyperGParamsCC-method}
-\alias{organism,HyperGParams-method}
 
 \title{Class "HyperGParamsCC"}
 \description{

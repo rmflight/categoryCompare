@@ -88,7 +88,3 @@ whichCat <- function(p,cat2Entrez,geneIds) {
 
 }
 
-
-# for some reason this is not exported from Category, nor is it able to be accessed using the ::: operator
-setMethod("organism", "HyperGParams",
-function(object) organism(object@datPkg) )        
