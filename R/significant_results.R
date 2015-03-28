@@ -14,6 +14,9 @@ multi_query_list <- function(list_to_query, ...){
   queries <- as.list(substitute(list(...)))[-1L]
   
   n_query <- length(queries)
+
+  stopifnot(length(queries) > 0)
+  
   
   query_results <- lapply(queries, eval, list_to_query)
   
@@ -61,6 +64,9 @@ setMethod("get_significant_annotations",
           function(in_results, ...) .get_significant_stat_results(in_results, ...))
 
 .get_significant_stat_results <- function(in_results, ...){
+  queries <- as.list(substitute(list(...)))[-1L]
+  stopifnot(length(queries) > 0)
+  
   out_ids <- in_results@annotation_id
   
   sig_entries <- multi_query_list(in_results@statistic_data, ...)
@@ -87,6 +93,9 @@ setMethod("get_significant_annotations",
           function(in_results, ...) .get_significant_combined_enrichment(in_results, ...))
 
 .get_significant_combined_enrichment <- function(in_results, ...){
+  queries <- as.list(substitute(list(...)))[-1L]
+  stopifnot(length(queries) > 0)
+  
   all_measured <- lapply(in_results@enriched,
                          function(x){x@statistics@annotation_id})
   
