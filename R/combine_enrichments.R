@@ -54,8 +54,8 @@ setMethod("generate_annotation_graph", signature = list(comb_enrichment = "combi
   
   keep_annotations <- (n_features >= low_cut) & (n_features <= hi_cut)
   
-  comb_enrichment@graph <- generate_annotation_similarity_graph(annotation_features[keep_annotations], annotation_similarity)
-  comb_enrichment
+  annotation_graph <- generate_annotation_similarity_graph(annotation_features[keep_annotations], annotation_similarity)
+  annotation_graph
 }
 
 
@@ -337,8 +337,11 @@ setMethod("extract_statistics", signature = list(in_results = "combined_enrichme
       which_statistic = statistic_names)
 }
 
-#' all data extraction
+#' add data to graph
 #' 
-#' given a \linkS4class{combined_enrichment} object, get the significant and present
-#' annotations, their descriptions, links (if present), and all the statistics, and 
-#' generate an object that can be used to 
+#' given a \linkS4class{combined_enrichment} object, add the data about the significant 
+#' and present annotations, their descriptions, links (if present), and all the statistics, 
+#' and add that data to the annotation graph object.
+#' 
+#' @param combined_enrichment a \linkS4class{combined_enrichment} object
+#' @exportMethod
