@@ -299,25 +299,35 @@ setMethod("extract_statistics", signature = list(in_results = "statistical_resul
 #' @param annotation_id the annotations for which we are returning statistics
 #' @param significant the significant annotations
 #' @param measured the measured annotations
+#' @param use_names the order of naming
 #' 
 #' @export
 #' @return combined_statistics
 combined_statistics <- function(statistic_data, which_enrichment, which_statistic,
-                                annotation_id, significant = NULL, measured = NULL){
+                                annotation_id, significant = NULL, measured = NULL, use_names = NULL){
   
   nul_sig <- is.null(significant)
   nul_meas <- is.null(measured)
+  nul_names <- is.null(use_names)
+  
+  enrich_names <- unique(which_enrichment)
+  
+  if (nul_names){
+    use_names <- enrich_names
+  } else {
+    use_names <- use_names[(use_names %in% enrich_names)]
+  }
   
   if (nul_sig){
-    significant <- matrix(FALSE, nrow = length(annotation_id), ncol = length(which_enrichment))
+    significant <- matrix(FALSE, nrow = length(annotation_id), ncol = length(use_names))
     rownames(significant) <- annotation_id
-    colnames(significant) <- which_enrichment
+    colnames(significant) <- use_names
   }
   
   if (nul_meas){
-    measured <- matrix(FALSE, nrow = length(annotation_id), ncol = length(which_enrichment))
+    measured <- matrix(FALSE, nrow = length(annotation_id), ncol = length(use_names))
     rownames(measured) <- annotation_id
-    colnames(measured) <- which_enrichment
+    colnames(measured) <- use_names
   }
   
   sig_data <- new("significant_annotations",
@@ -348,6 +358,8 @@ setMethod("extract_statistics", signature = list(in_results = "combined_enrichme
 .extract_statistics_combined_enrichment <- function(in_results){
   all_data <- lapply(in_results@enriched, function(x){extract_statistics(x@statistics)})
   
+  base_enrich_names <- names(all_data)
+  
   all_rows <- unique(unlist(lapply(all_data, rownames)))
   
   enrichment_names <- rep(names(all_data), unlist(lapply(all_data, ncol)))
@@ -377,7 +389,8 @@ setMethod("extract_statistics", signature = list(in_results = "combined_enrichme
  combined_statistics(statistic_data = data_frame,
                      annotation_id = rownames(data_frame),
                      which_enrichment = enrichment_names,
-                     which_statistic = statistic_names)
+                     which_statistic = statistic_names,
+                     use_names = base_enrich_names)
 }
 
 #' add data to graph
