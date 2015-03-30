@@ -58,6 +58,84 @@ setMethod("generate_annotation_graph", signature = list(comb_enrichment = "combi
   annotation_graph
 }
 
+#' generate table
+#' 
+#' given a \linkS4class{combined_enrichment} object, get out the data.frame
+#' either for investigation or to add data to the \linkS4class{annotation_graph}.
+#' 
+#' @param comb_enrichment the combined_enrichment object
+#' @param link_type should their be an "explicit" link (see details)
+#' @details the \code{link_type} controls whether to create an "explicit" link
+#'   that is actually a column in the data.frame, or create an "implicit" html link
+#'   that is part of the \code{@@name} column in the returned data.frame. Useful
+#'   if you are embedding the data.frame in an html report.
+#' @return data.frame
+#' @export
+setMethod("generate_table", signature = list(comb_enrichment = "combined_enrichment"),
+          function(comb_enrichment, link_type) .generate_table(comb_enrichment, link_type))
+
+.generate_table <- function(comb_enrichment, link_type = "explicit"){
+  # get the bits we need
+  # from the combined_statistcs we take the statistic_data and significant_annotations,
+  # and from the annotation slot we take the description and links, and we put this
+  # all together into a single data.frame
+  
+  base_data <- comb_enrichment@statistics@statistic_data
+  which_enrichment <- names(comb_enrichment@enriched)
+  n_enrichment <- length(which_enrichment)
+  sig_data <- comb_enrichment@statistics@significant@significant
+  meas_data <- comb_enrichment@statistics@significant@measured
+  
+  keep_data <- rowSums(sig_data) > 0
+  
+  # ideally we only keep things that were significant in at least one of the
+  # enrichments we did, but if nothing is significant in any (implies not having
+  # done sig cutoffs yet), then we will just return everything
+  if (sum(keep_data) == 0){
+    keep_data <- rep(TRUE, length(keep_data))
+  }
+  
+  base_data <- base_data[keep_data, ]
+  sig_data <- sig_data[keep_data, ]
+  meas_data <- meas_data[keep_data, ]
+  
+  keep_annot <- comb_enrichment@statistics@annotation_id[keep_data]
+  
+  annot_obj <- comb_enrichment@annotation
+  has_desc <- length(annot_obj@description) > 0
+  has_link <- length(annot_obj@links) > 0
+  
+  obj_desc <- data.frame(name = keep_annot, stringsAsFactors = FALSE)
+  
+  if (has_desc){
+    if ((link_type != "explicit") & (has_link)){
+      text_desc <- paste('<a href="', annot_obj@links[keep_annot], '">', annot_obj@desc[keep_annot], '</a>', sep = "")
+      obj_desc$description <- text_desc
+    } else if ((link_type == "explicit") & has_link){
+      obj_desc$description <- annot_obj@description[keep_annot]
+      obj_desc$link <- annot_obj@links[keep_annot]
+    } else {
+      obj_desc$description <- annot_obj@description[keep_annot]
+    }
+  }
+  
+  sig_cols <- as.data.frame(sig_data)
+  colnames(sig_cols) <- paste(colnames(sig_cols), "sig", sep = ".")
+  
+  meas_cols <- as.data.frame(meas_data)
+  colnames(meas_cols) <- paste(colnames(meas_cols), "meas", sep = ".")
+  
+  if (has_desc){
+    out_data <- cbind(obj_desc[, c("name", "description")], sig_cols, meas_cols, base_data)
+  } else {
+    out_data <- cbind(obj_desc[, "name"], sig_cols, meas_cols, base_data)
+  }
+  
+  if (exists("link", where = -1)){
+    out_data <- cbind(out_data, obj_desc$link)
+  }
+  out_data
+}
 
 #' combine annotations
 #' 
