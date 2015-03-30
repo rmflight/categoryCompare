@@ -16,3 +16,8 @@ setGeneric("extract_statistics", function(in_results) standardGeneric("extract_s
 #' 
 #' @export
 setGeneric("generate_annotation_graph", function(comb_enrichment, annotation_similarity = "combined", low_cut = 5, hi_cut = 500) standardGeneric("generate_annotation_graph"))
+
+#' generate statistical table
+#' 
+#' @export
+setGeneric("generate_table", function(comb_enrichment, link_type = "explicit") standardGeneric("generate_table"))
