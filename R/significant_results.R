@@ -122,7 +122,8 @@ setMethod("get_significant_annotations",
   
   sig_annotation <- new("significant_annotations",
                         significant = out_significant,
-                        measured = out_measured)
+                        measured = out_measured,
+                        sig_calls = sapply(queries, deparse))
   
   in_results@statistics@significant <- sig_annotation
   

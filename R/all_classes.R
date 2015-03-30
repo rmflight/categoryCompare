@@ -60,11 +60,13 @@ enriched_result <- setClass("enriched_result",
 #' 
 #' @slot significant logical matrix
 #' @slot measured logical matrix
+#' @slot sig_calls character representations of calls used to filter the data
 #' 
 #' @export
 significant_annotations <- setClass("significant_annotations",
                                     slots = list(significant = "matrix",
-                                                 measured = "matrix"))
+                                                 measured = "matrix",
+                                                 sig_calls = "character"))
 
 #' combined statistics
 #' 
