@@ -49,13 +49,51 @@ setMethod("generate_annotation_graph", signature = list(comb_enrichment = "combi
 
 .generate_annotation_graph <- function(comb_enrichment, annotation_similarity = "combined", low_cut = 5, hi_cut = 500){
   
-  annotation_features <- comb_enrichment@annotation@annotation_features
+  keep_features <- comb_enrichment@statistics@annotation_id
+  annotation_features <- comb_enrichment@annotation@annotation_features[keep_features]
   n_features <- sapply(annotation_features, length)
   
   keep_annotations <- (n_features >= low_cut) & (n_features <= hi_cut)
   
   annotation_graph <- generate_annotation_similarity_graph(annotation_features[keep_annotations], annotation_similarity)
+  
+  annotation_table <- generate_table(comb_enrichment, link_type = "explicit")
+  
+  annotation_graph <- add_data_to_graph(annotation_graph, annotation_table) 
   annotation_graph
+}
+
+#' add table data to graph
+#' 
+#' given the annotation_graph and a data.frame, add all of the data in the data.frame
+#' to the graph so it is available elsewhere.
+#' 
+#' @param graph the graph to work on
+#' @param data the data to add to it
+#' @import graph
+#' 
+#' @return graphNEL
+add_data_to_graph <- function(graph, data){
+  type_convert <- c('STRING','INTEGER','DOUBLE','STRING')
+  type_defaults <- list(character = "NA", integer = NA, numeric = NA, logical = "NA")
+  names(type_convert) <- c('character','integer','numeric','logical')
+  
+  data_types <- lapply(data, class)
+  
+  graph_entries <- nodes(graph)
+  data_entries <- rownames(data)
+  
+  match_entries <- intersect(graph_entries, data_entries)
+  
+  for (i_data in names(data_types)){
+    use_type <- data_types[[i_data]][1]
+    nodeDataDefaults(graph, i_data) <- type_defaults[[use_type]][1]
+    attr(nodeDataDefaults(graph, i_data), "class") <- type_convert[use_type]
+    
+    nodeData(graph, match_entries, i_data) <- data[match_entries, i_data]
+  }
+  
+  graph
 }
 
 #' generate table
