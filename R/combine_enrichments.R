@@ -288,6 +288,50 @@ setMethod("extract_statistics", signature = list(in_results = "statistical_resul
   out_data
 }
 
+#' combined_statistics
+#' 
+#' constructor function for the combined_statistics object, makes sure that
+#' empty things get initialized correctly
+#' 
+#' @param statistic_data the data.frame of statistics
+#' @param which_enrichment which enrichment gave the results
+#' @param which_statistics which statistics were @useDynLib 
+#' @param annotation_id the annotations for which we are returning statistics
+#' @param significant the significant annotations
+#' @param measured the measured annotations
+#' 
+#' @export
+#' @return combined_statistics
+combined_statistics <- function(statistic_data, which_enrichment, which_statistics,
+                                annotation_id, significant = NULL, measured = NULL){
+  
+  nul_sig <- is.null(significant)
+  nul_meas <- is.null(measured)
+  
+  if (nul_sig){
+    significant <- matrix(FALSE, nrow = length(annotation_id), ncol = length(which_enrichment))
+    rownames(significant) <- annotation_id
+    colnames(significant) <- which_enrichment
+  }
+  
+  if (nul_meas){
+    measured <- matrix(FALSE, nrow = length(annotation_id), ncol = length(which_enrichment))
+    rownames(measured) <- annotation_id
+    colnames(measured) <- which_enrichment
+  }
+  
+  sig_data <- new("significant_annotations",
+                  significant = significant,
+                  measured = measured)
+  
+  new("combined_statistics",
+      statistic_data = statistic_data,
+      which_enrichment = which_enrichment,
+      which_statistics = which_statistics,
+      annotation_id = annotation_id,
+      significant = sig_data)
+}
+
 #' extract statistics
 #' 
 #' extract all statistics from a \linkS4class{combined_enrichment} object and 
@@ -330,11 +374,10 @@ setMethod("extract_statistics", signature = list(in_results = "combined_enrichme
     data_frame[rownames(tmp_data), names(tmp_data)] <- tmp_data
   }
   
-  new("combined_statistics",
-      statistic_data = data_frame,
-      annotation_id = rownames(data_frame),
-      which_enrichment = enrichment_names,
-      which_statistic = statistic_names)
+ combined_statistics(statistic_data = data_frame,
+                     annotation_id = rownames(data_frame),
+                     which_enrichment = enrichment_names,
+                     which_statistic = statistic_names)
 }
 
 #' add data to graph
