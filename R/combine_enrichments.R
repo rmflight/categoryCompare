@@ -295,14 +295,14 @@ setMethod("extract_statistics", signature = list(in_results = "statistical_resul
 #' 
 #' @param statistic_data the data.frame of statistics
 #' @param which_enrichment which enrichment gave the results
-#' @param which_statistics which statistics were @useDynLib 
+#' @param which_statistic which statistics were calculated in each case
 #' @param annotation_id the annotations for which we are returning statistics
 #' @param significant the significant annotations
 #' @param measured the measured annotations
 #' 
 #' @export
 #' @return combined_statistics
-combined_statistics <- function(statistic_data, which_enrichment, which_statistics,
+combined_statistics <- function(statistic_data, which_enrichment, which_statistic,
                                 annotation_id, significant = NULL, measured = NULL){
   
   nul_sig <- is.null(significant)
@@ -327,7 +327,7 @@ combined_statistics <- function(statistic_data, which_enrichment, which_statisti
   new("combined_statistics",
       statistic_data = statistic_data,
       which_enrichment = which_enrichment,
-      which_statistics = which_statistics,
+      which_statistic = which_statistic,
       annotation_id = annotation_id,
       significant = sig_data)
 }
