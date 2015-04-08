@@ -2,3 +2,6 @@
 ^\.Rproj\.user$
 ^\.travis\.yml$
 ^\.push_gh_pages\.sh$
+tests.R
+test_data_gen.R
+test_data.RData
