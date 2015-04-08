@@ -53,13 +53,16 @@ setMethod("generate_annotation_graph", signature = list(comb_enrichment = "combi
   annotation_features <- comb_enrichment@annotation@annotation_features[keep_features]
   n_features <- sapply(annotation_features, length)
   
-  keep_annotations <- (n_features >= low_cut) & (n_features <= hi_cut)
-  
-  annotation_graph <- generate_annotation_similarity_graph(annotation_features[keep_annotations], annotation_similarity)
+  keep_annotations <- names(annotation_features)[(n_features >= low_cut) & (n_features <= hi_cut)]
   
   annotation_table <- generate_table(comb_enrichment, link_type = "explicit")
   
-  annotation_graph <- add_data_to_graph(annotation_graph, annotation_table) 
+  in_graph_annotation <- intersect(keep_annotations, rownames(annotation_table))
+  
+  annotation_graph <- generate_annotation_similarity_graph(annotation_features[in_graph_annotation], annotation_similarity)
+  
+  annotation_graph <- add_data_to_graph(annotation_graph, annotation_table)
+  
   annotation_graph
 }
 
