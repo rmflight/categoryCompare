@@ -11,7 +11,9 @@ library("hgu95av2.db")
 library("genefilter")
 library("estrogen")
 library("limma")
-library("Category")
+library("GOstats")
+#library("Category")
+
 
 datadir <- system.file("extdata", package = "estrogen")
 pd <- read.AnnotatedDataFrame(file.path(datadir,"estrogen.txt"), 
@@ -83,13 +85,15 @@ estrogen_10_enrichment <- list(features = g10,
                                annotation = bp_annotation,
                                enrich = list(pvalues = pvalues(g10_enrich),
                                              odds_ratio = oddsRatios(g10_enrich),
-                                             counts = geneCounts(g10_enrich)))
+                                             counts = geneCounts(g10_enrich),
+                                             stat_names = names(pvalues(g10_enrich))))
 
 estrogen_48_enrichment <- list(features = g48,
                                universe = gUniverse,
                                annotation = bp_annotation,
                                enrich = list(pvalues = pvalues(g48_enrich),
                                              odds_ratio = oddsRatios(g48_enrich),
-                                             counts = geneCounts(g48_enrich)))
+                                             counts = geneCounts(g48_enrich),
+                                             stat_names = names(pvalues(g48_enrich))))
 
 save(estrogen_10_enrichment, estrogen_48_enrichment, file = "test_data.RData")
