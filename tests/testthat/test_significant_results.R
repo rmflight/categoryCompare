@@ -1,7 +1,5 @@
 # runs the tests for getting significant results from combined objects
 
-library("categoryComparev2")
-
 context("basic logical indexing of list elements")
 
 c1 <- list(pvalues = c(a1 = 0.01, a2 = 0.5, a3 = 0.0001),
@@ -25,7 +23,7 @@ test_that("list indexing works properly", {
           expect_equal(counts2, multi_query_list(c1, counts < 10))
           expect_equal(odds1, multi_query_list(c1, odds > 0))
           expect_equal(pvalue_counts1, multi_query_list(c1, pvalues < 0.5, counts >= 1))
-          expect_error(multi_query_list(c1, crap))
+          expect_error(multi_query_list(c1, asdfghjkl))
           })
 
 context("significant annotations from statistical_results")

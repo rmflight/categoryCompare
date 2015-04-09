@@ -1,7 +1,5 @@
 # tests getting statistics from different types of objects
 
-library("categoryComparev2")
-
 context("getting statistics from objects")
 
 # statistical results
