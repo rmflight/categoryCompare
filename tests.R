@@ -37,6 +37,9 @@ bp_sig <- get_significant_annotations(bp_combined, pvalues <= 0.05, counts >= 2)
 
 bp_graph_sig <- generate_annotation_graph(bp_sig) # generate graph from sig annotations
 
+bp_table <- generate_table(bp_combined)
+bp_table_sig <- generate_table(bp_sig)
+
 bp_graph_sig2 <- filter_annotation_graph(bp_graph, bp_sig) # filter a previously generated annotation graph
 
 bp_combined_2 <- combine_enrichments("combined", e10 = e10, e48 = e48)
