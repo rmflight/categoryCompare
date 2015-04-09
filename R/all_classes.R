@@ -109,3 +109,19 @@ combined_enrichment <- setClass("combined_enrichment",
                                              annotation = "annotation",
                                              graph = "graphNEL",
                                              statistics = "combined_statistics"))
+
+#' cc_graph
+#' 
+#' A \code{cc_graph} class is a \code{graphNEL} with the added slot of
+#' \code{significant}, a matrix of rows (nodes / annotations) and whether
+#' they were found to be significant in a given enrichment (columns). This
+#' matrix is used for classifying the annotations into different groups, and
+#' generating either pie-charts or coloring the nodes in a visualization.
+#' 
+#' @slot significant numeric matrix of ones and zeros
+#' 
+#' @export
+#' @importFrom graph graphNEL
+cc_graph <- setClass("cc_graph",
+                     contains = "graphNEL",
+                     slots = list(significant = "matrix"))
