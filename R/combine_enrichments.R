@@ -305,14 +305,14 @@ combine_text <- function(list_characters, names_out, text_id){
 #' @param similarity_type which type of overlap coefficient to report
 #' 
 #' @export
-#' @return graphNEL
+#' @return cc_graph
 #' 
 #' @import graph
 generate_annotation_similarity_graph <- function(annotation_features, similarity_type = "combined"){
     
   use_annotations <- names(annotation_features)
   n_annotation <- length(use_annotations)
-  out_graph <- new("graphNEL", nodes = use_annotations, edgemode = "directed")
+  out_graph <- new("cc_graph", nodes = use_annotations, edgemode = "directed")
   
   all_comparisons <- expand.grid(seq(1, n_annotation), seq(1, n_annotation))
   all_comparisons <- all_comparisons[(all_comparisons[,2] > all_comparisons[,1]), ]
