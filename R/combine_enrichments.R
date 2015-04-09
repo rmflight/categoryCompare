@@ -64,6 +64,7 @@ setMethod("generate_annotation_graph", signature = list(comb_enrichment = "combi
   annotation_graph <- add_data_to_graph(annotation_graph, annotation_table)
   
   annotation_graph@significant <- comb_enrichment@statistics@significant@significant[in_graph_annotation, , drop = FALSE]
+  annotation_graph
 }
 
 #' add table data to graph
