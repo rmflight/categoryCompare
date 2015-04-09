@@ -85,7 +85,8 @@ sig_matrix["a2", ] <- c(FALSE, TRUE)
 
 expected_significant_annotations <- new("significant_annotations",
                                         significant = sig_matrix,
-                                        measured = meas_matrix)
+                                        measured = meas_matrix,
+                                        sig_calls = "pvalues < 0.05")
 
 expected_sig_combined <- test_combined
 expected_sig_combined@statistics@significant <- expected_significant_annotations
