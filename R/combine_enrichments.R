@@ -34,14 +34,14 @@ setMethod("combine_enrichments", signature = "enriched_result",
 
 #' generate the annotation graph
 #' 
-#' given a \linkS4class{combined_enrichment}, generate the annotation similarity graph and add it to the object.
+#' given a \linkS4class{combined_enrichment}, generate the annotation similarity graph
 #' 
 #' @param comb_enrichment the combined_enrichment object
 #' @param annotation_similarity which similarity measure to use
 #' @param low_cut keep only those annotations in the graph with at least this many annotated features
 #' @param hi_cut keep only those annotations with less than this many annotated features
 #' 
-#' @return \linkS4class{combined_enrichment}
+#' @return \linkS4class{cc_graph}
 #' 
 #' @export
 setMethod("generate_annotation_graph", signature = list(comb_enrichment = "combined_enrichment"),
@@ -63,7 +63,7 @@ setMethod("generate_annotation_graph", signature = list(comb_enrichment = "combi
   
   annotation_graph <- add_data_to_graph(annotation_graph, annotation_table)
   
-  annotation_graph
+  annotation_graph@significant <- comb_enrichment@statistics@significant@significant[in_graph_annotation]
 }
 
 #' add table data to graph
