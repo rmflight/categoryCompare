@@ -4,39 +4,36 @@ library(categoryComparev2)
 library(GO.db)
 library(parallel)
 options(mc.cores = 4)
-load("test_data.RData")
+load("test_data2.RData")
 
-bp_annotation_list <- estrogen_10_enrichment$annotation
-bp_annotation <- new("annotation",
-                     annotation_features = bp_annotation_list,
-                     description = Term(names(bp_annotation_list)),
-                     counts = sapply(bp_annotation_list, length),
+bp_annotation_obj <- new("annotation",
+                     annotation_features = bp_annotation,
+                     description = Term(names(bp_annotation)),
+                     counts = sapply(bp_annotation, length),
                      type = "GO.BP")
 
-e10 <- enriched_result(estrogen_10_enrichment$features, 
-                       estrogen_10_enrichment$universe,
-                       bp_annotation, 
+c1 <- enriched_result(c1_enrichment$features,
+                       c1_enrichment$universe,
+                       bp_annotation_obj, 
                        new("statistical_results",
-                            statistic_data = estrogen_10_enrichment$enrich[c("pvalues", "odds_ratio", "counts")],
-                            annotation_id = estrogen_10_enrichment$enrich$stat_names))
+                            statistic_data = c1_enrichment$enrich[c("pvalues", "odds_ratio", "counts")],
+                            annotation_id = c1_enrichment$enrich$stat_names))
 
-e48 <- enriched_result(estrogen_48_enrichment$features,
-                       estrogen_48_enrichment$universe,
-                       bp_annotation,
+c2 <- enriched_result(c2_enrichment$features,
+                       c2_enrichment$universe,
+                       bp_annotation_obj,
                        new("statistical_results",
-                            statistic_data = estrogen_48_enrichment$enrich[c("pvalues", "odds_ratio", "counts")],
-                            annotation_id = estrogen_48_enrichment$enrich$stat_names))
+                            statistic_data = c2_enrichment$enrich[c("pvalues", "odds_ratio", "counts")],
+                            annotation_id = c2_enrichment$enrich$stat_names))
 
-enriched <- list(e10 = e10, e48 = e48)
+enriched <- list(c1 = c1, c2 = c2)
 
-bp_combined <- combine_enrichments(e10 = e10, e48 = e48)
+bp_combined <- combine_enrichments(c1 = c1, c2 = c2)
 
 # if there are no significant things set, then generate the full graph
 bp_graph <- generate_annotation_graph(bp_combined) # default graph gen
 
 bp_sig <- get_significant_annotations(bp_combined, pvalues <= 0.05, counts >= 2) # add significant annotations
-
-bp_graph_overlap <- generate_annotation_graph(bp_combined, "overlap") # adding a different type of similarity metric
 
 bp_graph_sig <- generate_annotation_graph(bp_sig) # generate graph from sig annotations
 
