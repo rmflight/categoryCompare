@@ -70,4 +70,4 @@ c2_enrichment <- list(features = c2_diff,
                                              counts = geneCounts(c2_enrich),
                                              stat_names = names(pvalues(c2_enrich))))
 
-save(c1_enrichment, c2_enrichment, file = "test_data2.RData")
+save(c1_enrichment, c2_enrichment, bp_annotation, file = "test_data2.RData")
