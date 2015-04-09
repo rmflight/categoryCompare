@@ -67,11 +67,19 @@ out_stats_data[en2_locs, "en2.counts"] <- stat2@statistic_data$counts
 out_stats_data[en2_locs, "en2.odds"] <- stat2@statistic_data$odds
 out_stats_data <- as.data.frame(out_stats_data)
 
+sig_matrix <- matrix(FALSE, 4, 2)
+rownames(sig_matrix) <- rownames(out_stats_data)
+colnames(sig_matrix) <- c("en1", "en2")
+
 out_stats_combined <- new("combined_statistics",
                           statistic_data = out_stats_data,
                           annotation_id = rownames(out_stats_data),
                           which_enrichment = c("en1", "en1", "en1", "en2", "en2", "en2"),
-                          which_statistic = c("pvalues", "counts", "odds", "pvalues", "counts", "odds"))
+                          which_statistic = c("pvalues", "counts", "odds", "pvalues", "counts", "odds"),
+                          significant = new("significant_annotations",
+                                           sig_calls = character(),
+                                           significant = sig_matrix,
+                                           measured = sig_matrix))
 
 test_that("combined_enrichment works", {
   expect_equal(extract_statistics(test_combined), out_stats_combined)
