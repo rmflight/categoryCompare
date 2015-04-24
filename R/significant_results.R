@@ -129,3 +129,30 @@ setMethod("get_significant_annotations",
   
   in_results
 }
+
+#' filter graph by significant entries
+#' 
+#' If a graph has already been generated, it may be faster to filter a previously
+#' generated one than generate a new one from significant data.
+#' 
+#' @param in_graph the \linkS4Class{cc_graph} previously generated
+#' @param comb_enrich the \linkS4Class{combined_enrichment} that you want to use to filter with
+#' 
+#' @export
+#' @importFrom graph subGraph nodes
+#' @return cc_graph
+filter_annotation_graph <- function(in_graph, comb_enrich){
+  sig_matrix <- comb_enrich@statistics@significant@significant
+  
+  annotation_list <- rownames(sig_matrix)
+  
+  sig_entries <- rowSums(sig_matrix) > 0
+  
+  keep_annotation <- annotation_list[sig_entries]
+  
+  # use intersect in case there is something odd of the graph and significant entries
+  keep_intersect <- intersect(keep_annotation, nodes(in_graph))
+  
+  subGraph(keep_intersect, in_graph)
+  
+}
