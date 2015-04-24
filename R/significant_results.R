@@ -153,6 +153,10 @@ filter_annotation_graph <- function(in_graph, comb_enrich){
   # use intersect in case there is something odd of the graph and significant entries
   keep_intersect <- intersect(keep_annotation, nodes(in_graph))
   
-  subGraph(keep_intersect, in_graph)
+  if (length(keep_intersect) > 0){
+    return(subGraph(keep_intersect, in_graph))
+  } else {
+    warning("No matching nodes and annotations found", call. = TRUE)
+  }
   
 }
