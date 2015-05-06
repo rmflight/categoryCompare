@@ -6,9 +6,12 @@
 #' 
 #' @param in_graph the \S4Class{cc_graph} to work on
 #' 
-#' @export
 #' @return node_assignment
-annotation_combinations <- function(in_graph){
+setMethod("annotation_combinations", 
+          signature = list(in_graph = "cc_graph"),
+          function(in_graph) .annotation_combinations(in_graph))
+
+.annotation_combinations <- function(in_graph){
   sig_matrix <- in_graph@significant
   
   unique_combinations <- unique(sig_matrix)

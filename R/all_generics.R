@@ -21,3 +21,8 @@ setGeneric("generate_annotation_graph", function(comb_enrichment, annotation_sim
 #' 
 #' @export
 setGeneric("generate_table", function(comb_enrichment, link_type = "explicit") standardGeneric("generate_table"))
+
+#' unique annotation combinations
+#' 
+#' @export
+setGeneric("annotation_combinations", function(in_graph) standardGeneric("annotation_combinations"))
