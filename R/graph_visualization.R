@@ -7,6 +7,7 @@
 #' @param in_graph the \S4Class{cc_graph} to work on
 #' 
 #' @return node_assignment
+#' @exportMethod annotation_combinations
 setMethod("annotation_combinations", 
           signature = list(in_graph = "cc_graph"),
           function(in_graph) .annotation_combinations(in_graph))
