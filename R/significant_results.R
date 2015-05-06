@@ -155,9 +155,10 @@ filter_annotation_graph <- function(in_graph, comb_enrich){
   
   if (length(keep_intersect) > 0){
     in_graph <- subGraph(keep_intersect, in_graph)
-    in_graph@significant <- in_graph@significant[keep_intersect, ]
+    out_graph <- as(in_graph, "cc_graph")
+    out_graph@significant <- sig_matrix[keep_intersect, ]
     
-    return(in_graph)
+    return(out_graph)
   } else {
     warning("No matching nodes and annotations found", call. = TRUE)
   }
