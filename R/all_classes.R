@@ -125,3 +125,16 @@ combined_enrichment <- setClass("combined_enrichment",
 cc_graph <- setClass("cc_graph",
                      contains = "graphNEL",
                      slots = list(significant = "matrix"))
+
+#' node_assign
+#' 
+#' The \code{node_assign} class holds the unique annotation combinations and the
+#' assignment of the nodes to those combinations for use in visualization.
+#' 
+#' @slot groups the unique groups, as a logical matrix
+#' @slot assignments named character vector providing association with groups
+#' 
+#' @export
+node_assign <- setClass("node_assign",
+                        slots = list(groups = "matrix",
+                                     assignments = "character"))
