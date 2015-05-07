@@ -43,7 +43,7 @@ setMethod("annotation_combinations",
 #' @param n_color
 #' 
 #' @export
-#' @importFrom colorspace hcl_rainbow
+#' @importFrom colorspace rainbow_hcl
 generate_colors <- function(n_color){
   out_color <- rainbow_hcl(n_color, c = 100)
   
