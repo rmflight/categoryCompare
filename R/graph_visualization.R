@@ -122,3 +122,4 @@ assign_colors <- function(in_assign, type = "experiment"){
   }
   
   return(use_color)
+}
