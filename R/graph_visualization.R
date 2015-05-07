@@ -97,3 +97,28 @@ generate_colors <- function(n_color){
   out_color <- out_color[out_index]
   return(out_color)
 }
+
+#' assign colors
+#' 
+#' given a \linkS4Class{node_assign}, assign colors to either the independent groups
+#' of unique annotations, or to each of the experiments independently.
+#' 
+#' @param in_assign the \linkS4Class{node_assign} object generated from a \linkS4Class{cc_graph}
+#' @param type either "group" or "experiment"
+#' 
+#' @export
+#' @return vector of hex colors
+assign_colors <- function(in_assign, type = "experiment"){
+  grp_matrix <- in_assign@groups
+  
+  if (type == "experiment"){
+    n_color <- ncol(grp_matrix)
+    use_color <- generate_colors(n_color)
+    names(use_color) <- colnames(grp_matrix)
+  } else {
+    n_color <- nrow(grp_matrix)
+    use_color <- generate_colors(n_color)
+    names(use_color) <- rownames(grp_matrix)
+  }
+  
+  return(use_color)
