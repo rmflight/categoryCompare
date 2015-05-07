@@ -31,3 +31,69 @@ setMethod("annotation_combinations",
   }
   new("node_assign", groups = unique_combinations, assignments = combination_assign)
 }
+
+#' generate colors
+#' 
+#' given a bunch of items, generate a set of colors for either single node colorings
+#' or pie-chart annotations. Colors are generated using the \emph{hcl} colorspace,
+#' and for \code{n_color >= 5}, the colors are re-ordered in an attempt to create
+#' the largest contrasts between colors, as they result from being picked on a
+#' circle in \emph{hcl} space.
+#' 
+#' @param n_color
+#' 
+#' @export
+#' @importFrom colorspace hcl_rainbow
+generate_colors <- function(n_color){
+  out_color <- rainbow_hcl(n_color, c = 100)
+  
+  if (n_color <= 4){
+    return(out_color)
+  }
+  
+  out_index <- seq(1, n_color)
+  tmp_index <- out_index
+  
+  if ((n_color %% 2) == 1){
+    swap_index_1 <- seq(2, n_color - 1, 2)
+    swap_index_2 <- swap_index_1 + 1
+    
+    for (i_swap in seq(1, length(swap_index_1))){
+      out_index[swap_index_1[i_swap]] <- tmp_index[swap_index_2[i_swap]]
+      out_index[swap_index_2[i_swap]] <- tmp_index[swap_index_1[i_swap]]
+      tmp_index <- out_index
+    }
+    
+    swap_index_1 <- seq(3, n_color - 1, 2)
+    swap_index_2 <- swap_index_1 + 1
+    
+    for (i_swap in seq(1, length(swap_index_1))){
+      out_index[swap_index_1[i_swap]] <- tmp_index[swap_index_2[i_swap]]
+      out_index[swap_index_2[i_swap]] <- tmp_index[swap_index_1[i_swap]]
+      tmp_index <- out_index
+    }
+    
+  } else {
+    swap_index_1 <- seq(1, n_color, 2)
+    swap_index_2 <- swap_index_1 + 1
+    
+    for (i_swap in seq(1, length(swap_index_1))){
+      out_index[swap_index_1[i_swap]] <- tmp_index[swap_index_2[i_swap]]
+      out_index[swap_index_2[i_swap]] <- tmp_index[swap_index_1[i_swap]]
+      tmp_index <- out_index
+    }
+    
+    swap_index_1 <- seq(2, n_color - 2, 3)
+    swap_index_2 <- seq(n_color - 1, 3, -3)
+    
+    for (i_swap in seq(1, length(swap_index_1))){
+      out_index[swap_index_1[i_swap]] <- tmp_index[swap_index_2[i_swap]]
+      out_index[swap_index_2[i_swap]] <- tmp_index[swap_index_1[i_swap]]
+      tmp_index <- out_index
+    }
+    
+  }
+  
+  out_color <- out_color[out_index]
+  return(out_color)
+}
