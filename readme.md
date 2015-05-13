@@ -1,5 +1,7 @@
 [![Build Status](https://travis-ci.org/rmflight/categoryCompare.svg?branch=master)](https://travis-ci.org/rmflight/categoryCompare)
 
+[![Bioconductor Time](http://bioconductor.org/shields/years-in-bioc/categoryCompare.svg)](http://bioconductor.org/packages/release/bioc/html/categoryCompare.html)
+
 # categoryCompare
 
 A Bioconductor package for meta analysis of high-throughput datasets using 
