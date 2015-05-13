@@ -135,10 +135,12 @@ assign_colors <- function(in_assign, type = "experiment"){
 #' given a group matrix and the colors for each experiment, generate the pie graphs
 #' that will be used as glyphs in Cytoscape
 #' 
+#' this should \emph{not be exported in the final version}
+#' 
 #' @param grp_matrix the group matrix
 #' @param use_color the colors for each experiment
 #' 
-#' @export # we will need to de-export this in the end
+#' @export 
 #' @return list of png files that are pie graphs
 #' @importFrom colorspace desaturate
 #' @import Cairo
@@ -168,4 +170,39 @@ generate_piecharts <- function(grp_matrix, use_color){
     out_file
   })
   return(piecharts)
+}
+
+#' visualize in cytoscape
+#' 
+#' given a graph, and the node assignments, visualize the graph in cytoscape
+#' for manipulation
+#' 
+#' @param in_graph the cc_graph to visualize
+#' @param in_assign the node_assign generated
+#' @param description something descriptive about the vis (useful when lots of different visualizations)
+#' @param ... other parameters for \code{CytoscapeWindow}
+#' 
+#' @import RCytoscape
+#' @export
+#' @return something
+vis_in_cytoscape <- function(in_graph, in_assign, description = "", ...){
+  
+  # initialize and add the visual attribute so we can color according to the
+  # data that lives in in_assign
+  nodeDataDefaults(in_graph, "visattr") <- ""
+  attr(nodeDataDefaults(in_graph, "visattr"), "class") <- 'STRING'
+  nodeData(in_graph, names(in_assign@assignments), "visattr") <- in_assign@assignments
+  
+  cyt_window <- CytoscapeWindow(description, graph = in_graph, ...)
+  displayGraph(cyt_window)
+  setLayoutProperties(cyt_window, 'force-directed', list(edge_attribute='weight'))
+  layoutNetwork(cyt_window, 'force-directed')
+  redraw(cyt_window)
+  
+  if (in_assign@color_type == "solid"){
+    setNodeColorRule(cyt_window, "visattr", names(in_assign@colors), in_assign@colors, mode = "lookup")
+    redraw(cyt_window)
+  } else if (in_assign@color_type == "pie"){
+    
+  }
 }
