@@ -78,7 +78,7 @@ setMethod("generate_annotation_graph", signature = list(comb_enrichment = "combi
 #' 
 #' @return graphNEL
 add_data_to_graph <- function(graph, data){
-  type_convert <- c('STRING','INTEGER','DOUBLE','STRING')
+  type_convert <- c('STRING','INTEGER','FLOATING','STRING')
   type_defaults <- list(character = "NA", integer = NA, numeric = NA, logical = "NA")
   names(type_convert) <- c('character','integer','numeric','logical')
   
@@ -337,6 +337,9 @@ generate_annotation_similarity_graph <- function(annotation_features, similarity
   
   from_edge <- use_annotations[all_comparisons[,1]]
   to_edge <- use_annotations[all_comparisons[,2]]
+  
+  edgeDataDefaults(out_graph, attr = "weight") <- 0
+  attr(edgeDataDefaults(out_graph, attr = "weight"), "class") <- "FLOATING"
   
   out_graph <- addEdge(from_edge, to_edge, out_graph, similarity)
   return(out_graph)
