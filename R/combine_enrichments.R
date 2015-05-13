@@ -70,7 +70,8 @@ setMethod("generate_annotation_graph", signature = list(comb_enrichment = "combi
 #' add table data to graph
 #' 
 #' given the annotation_graph and a data.frame, add all of the data in the data.frame
-#' to the graph so it is available elsewhere.
+#' to the graph so it is available elsewhere. Note that for NA integer and numerics,
+#' the value is modified to -100, and for infinite values, it is modified to 1e100.
 #' 
 #' @param graph the graph to work on
 #' @param data the data to add to it
@@ -98,6 +99,7 @@ add_data_to_graph <- function(graph, data){
     tmp_data <- data[match_entries, i_data]
     if (use_type %in% c("integer", "numeric")){
       tmp_data[is.na(tmp_data)] <- type_defaults[use_type]
+      tmp_data[is.infinite(tmp_data)] <- 1e100
     }
     
     nodeData(graph, match_entries, i_data) <- tmp_data
