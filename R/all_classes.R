@@ -133,8 +133,14 @@ cc_graph <- setClass("cc_graph",
 #' 
 #' @slot groups the unique groups, as a logical matrix
 #' @slot assignments named character vector providing association with groups
+#' @slot colors named character vector of hex colors for groups or experiments
+#' @slot color_type whether doing group or experiment based colors
+#' @slot pie_locs if doing experiment colors, then pie graphs were generated here
 #' 
 #' @export
 node_assign <- setClass("node_assign",
                         slots = list(groups = "matrix",
-                                     assignments = "character"))
+                                     assignments = "character",
+                                     colors = "character",
+                                     color_type = "character",
+                                     pie_locs = "character"))

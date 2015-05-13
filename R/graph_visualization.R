@@ -123,3 +123,28 @@ assign_colors <- function(in_assign, type = "experiment"){
   
   return(use_color)
 }
+
+
+.genPieMatrix <- function(allNodes, allRes, ccOptions){
+  nNode <- length(allNodes)
+  pieMatrix <- do.call(cbind, lapply(names(allRes), function(inName){
+    baseCol <- rep(ccOptions@unsaturatedColor[inName], nNode)
+    changeIndex <- which(allNodes %in% allRes[[inName]]$sigID)
+    baseCol[changeIndex] <- compareColors(ccOptions)[inName]
+    baseCol
+  }))
+  rownames(pieMatrix) <- allNodes
+  pieDir <- file.path(getwd(), "pieGraphs")
+  dir.create(pieDir)
+  
+  pieArea <- rep(1 / length(names(allRes)), length(names(allRes)))
+  names(pieArea) <- ""
+  pieFiles <- sapply(rownames(pieMatrix), function(inRow){
+    filename <- file.path(pieDir, paste(sub(":", "_", inRow, fixed=TRUE), ".png", sep=""))
+    png(filename=filename, bg="transparent")
+    pie(pieArea, col=pieMatrix[inRow,], clockwise=TRUE)
+    dev.off()
+    return(filename)
+  })
+  return(pieFiles)
+}
