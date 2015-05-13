@@ -79,7 +79,7 @@ setMethod("generate_annotation_graph", signature = list(comb_enrichment = "combi
 #' @return graphNEL
 add_data_to_graph <- function(graph, data){
   type_convert <- c('STRING','INTEGER','FLOATING','STRING')
-  type_defaults <- list(character = "NA", integer = NA, numeric = NA, logical = "NA")
+  type_defaults <- list(character = "NA", integer = -100, numeric = -100, logical = "NA")
   names(type_convert) <- c('character','integer','numeric','logical')
   
   data_types <- lapply(data, class)
@@ -93,6 +93,12 @@ add_data_to_graph <- function(graph, data){
     use_type <- data_types[[i_data]][1]
     nodeDataDefaults(graph, i_data) <- type_defaults[[use_type]][1]
     attr(nodeDataDefaults(graph, i_data), "class") <- type_convert[use_type]
+    
+    # NA is not nice in RCy, so convert to the default, which is -100, pretty non-sensical
+    tmp_data <- data[match_entries, i_data]
+    if (use_type %in% c("integer", "numeric")){
+      tmp_data[is.na(tmp_data)] <- type_defaults[use_type]
+    }
     
     nodeData(graph, match_entries, i_data) <- data[match_entries, i_data]
   }
