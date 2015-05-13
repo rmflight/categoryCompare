@@ -107,7 +107,7 @@ generate_colors <- function(n_color){
 #' @param type either "group" or "experiment"
 #' 
 #' @export
-#' @return vector of hex colors
+#' @return node_assign with colors
 assign_colors <- function(in_assign, type = "experiment"){
   grp_matrix <- in_assign@groups
   
@@ -115,36 +115,57 @@ assign_colors <- function(in_assign, type = "experiment"){
     n_color <- ncol(grp_matrix)
     use_color <- generate_colors(n_color)
     names(use_color) <- colnames(grp_matrix)
+    
+    in_assign@colors <- use_color
+    in_assign@color_type <- "pie"
+    in_assign@pie_locs <- generate_piecharts(grp_matrix, use_color)
   } else {
     n_color <- nrow(grp_matrix)
     use_color <- generate_colors(n_color)
     names(use_color) <- rownames(grp_matrix)
+    in_assign@colors <- use_color
+    in_assign@color_type <- "solid"
   }
   
-  return(use_color)
+  return(in_assign)
 }
 
-
-.genPieMatrix <- function(allNodes, allRes, ccOptions){
-  nNode <- length(allNodes)
-  pieMatrix <- do.call(cbind, lapply(names(allRes), function(inName){
-    baseCol <- rep(ccOptions@unsaturatedColor[inName], nNode)
-    changeIndex <- which(allNodes %in% allRes[[inName]]$sigID)
-    baseCol[changeIndex] <- compareColors(ccOptions)[inName]
-    baseCol
-  }))
-  rownames(pieMatrix) <- allNodes
-  pieDir <- file.path(getwd(), "pieGraphs")
-  dir.create(pieDir)
+#' create piecharts for visualization
+#' 
+#' given a group matrix and the colors for each experiment, generate the pie graphs
+#' that will be used as glyphs in Cytoscape
+#' 
+#' @param grp_matrix the group matrix
+#' @param use_color the colors for each experiment
+#' 
+#' @export # we will need to de-export this in the end
+#' @return list of png files that are pie graphs
+#' @importFrom colorspace desaturate
+#' @import Cairo
+generate_piecharts <- function(grp_matrix, use_color){
+  n_grp <- nrow(grp_matrix)
+  n_color <- length(use_color)
   
-  pieArea <- rep(1 / length(names(allRes)), length(names(allRes)))
-  names(pieArea) <- ""
-  pieFiles <- sapply(rownames(pieMatrix), function(inRow){
-    filename <- file.path(pieDir, paste(sub(":", "_", inRow, fixed=TRUE), ".png", sep=""))
-    png(filename=filename, bg="transparent")
-    pie(pieArea, col=pieMatrix[inRow,], clockwise=TRUE)
+  # defines how many pie segments are needed, common to all the pie-charts
+  pie_area <- rep(1 / n_color, n_color)
+  names(pie_area) <- rep("", n_color) # add blank names so nothing gets printed
+  
+  # use desaturated version of colors when there is non-significance
+  desat_color <- desaturate(use_color)
+  names(desat_color) <- names(use_color)
+  piecharts <- sapply(rownames(grp_matrix), function(i_grp){
+    tmp_logical <- grp_matrix[i_grp, ]
+    tmp_color <- use_color
+    
+    # add the proper desaturated versions of the colors
+    tmp_color[!tmp_logical] <- desat_color[!tmp_logical]
+    
+    # use a tempfile so that multiple runs should generate their own files
+    out_file <- tempfile(i_grp, fileext = ".png")
+    Cairo(width = 640, height = 640, file = out_file, type = "png", bg = "transparent")
+    pie(pie_area, col = tmp_color, clockwise = TRUE)
     dev.off()
-    return(filename)
+    out_file
   })
-  return(pieFiles)
+  return(piecharts)
 }
