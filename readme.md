@@ -1,6 +1,6 @@
-* Travis: [![Build Status](https://travis-ci.org/rmflight/categoryCompare.svg?branch=master)](https://travis-ci.org/rmflight/categoryCompare)
+[![Build Status](https://travis-ci.org/rmflight/categoryCompare.svg?branch=master)](https://travis-ci.org/rmflight/categoryCompare "travis build status")
 
-* Bioconductor Status: [![Bioconductor Time](http://bioconductor.org/shields/years-in-bioc/categoryCompare.svg)](http://bioconductor.org/packages/release/bioc/html/categoryCompare.html)
+[![Bioconductor Time](http://bioconductor.org/shields/years-in-bioc/categoryCompare.svg)](http://bioconductor.org/packages/release/bioc/html/categoryCompare.html "Bioconductor status")
 
 # categoryCompare
 
