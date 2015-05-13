@@ -165,6 +165,7 @@ generate_piecharts <- function(grp_matrix, use_color){
     # use a tempfile so that multiple runs should generate their own files
     out_file <- tempfile(i_grp, fileext = ".png")
     Cairo(width = 640, height = 640, file = out_file, type = "png", bg = "transparent")
+    par(mai = c(0, 0, 0, 0))
     pie(pie_area, col = tmp_color, clockwise = TRUE)
     dev.off()
     out_file
@@ -197,12 +198,19 @@ vis_in_cytoscape <- function(in_graph, in_assign, description = "", ...){
   displayGraph(cyt_window)
   setLayoutProperties(cyt_window, 'force-directed', list(edge_attribute='weight'))
   layoutNetwork(cyt_window, 'force-directed')
-  redraw(cyt_window)
   
   if (in_assign@color_type == "solid"){
     setNodeColorRule(cyt_window, "visattr", names(in_assign@colors), in_assign@colors, mode = "lookup")
     redraw(cyt_window)
   } else if (in_assign@color_type == "pie"){
-    
+    pie_images <- in_assign@pie_locs[in_assign@assignments]
+    names(pie_images) <- NULL
+    pie_images <- paste("file://localhost", pie_images, sep = "")
+    setNodeImageDirect(cyt_window, names(in_assign@assignments), pie_images)
+    setDefaultNodeColor(cyt_window, 'transparent')
+    setNodeOpacityDirect(cyt_window, names(in_assign@assignments), 0)
+    setDefaultNodeShape(cyt_window, "diamond")
+    redraw(cyt_window)
   }
+  return(cyt_window)
 }
