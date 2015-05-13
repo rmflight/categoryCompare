@@ -1,6 +1,6 @@
 [![Bioconductor Time](http://bioconductor.org/shields/years-in-bioc/categoryCompare.svg)](http://bioconductor.org/packages/release/bioc/html/categoryCompare.html "Bioconductor status")
 
-[![Bioconductor Availability](http://bioconductor.org/shields/availability/categoryCompare.svg)](http://bioconductor.org/packages/release/bioc/html/categoryCompare.html#archives "Platform availability") 
+[![Bioconductor Availability](http://bioconductor.org/shields/availability/release/categoryCompare.svg)](http://bioconductor.org/packages/release/bioc/html/categoryCompare.html#archives "Platform availability") 
 [![Bioconductor Downloads](http://bioconductor.org/shields/downloads/categoryCompare.svg)](http://bioconductor.org/packages/stats/bioc/categoryCompare.html "Percentile downloads")
 [![Bioconductor Commits](http://bioconductor.org/shields/commits/bioc/categoryCompare.svg)](http://bioconductor.org/packages/release/bioc/html/categoryCompare.html#svn_source "svn commits")
 [![Support posts](http://bioconductor.org/shields/posts/categoryCompare.svg)](https://support.bioconductor.org/t/categorycompare/ "Bioconductor support posts")
