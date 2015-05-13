@@ -1,4 +1,5 @@
 [![Bioconductor Time](http://bioconductor.org/shields/years-in-bioc/categoryCompare.svg)](http://bioconductor.org/packages/release/bioc/html/categoryCompare.html "Bioconductor status")
+
 [![Build Status](https://travis-ci.org/rmflight/categoryCompare.svg?branch=master)](https://travis-ci.org/rmflight/categoryCompare "travis build status") [![Bioconductor Release Build](http://bioconductor.org/shields/build/release/bioc/categoryCompare.svg)](http://bioconductor.org/checkResults/release/bioc-LATEST/categoryCompare/ "Bioconductor release build") [![Bioconductor Devel Build](http://bioconductor.org/shields/build/devel/bioc/categoryCompare.svg)](http://bioconductor.org/checkResults/devel/bioc-LATEST/categoryCompare/ "Bioconductor devel build")
 
 # categoryCompare
