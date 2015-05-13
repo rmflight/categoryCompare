@@ -251,3 +251,34 @@ setMethod("remove_edges", signature=list(edge_obj="CytoscapeWindowClass", cutoff
   
   message("Removed ", length(edge_names), " edges from graph\n")
 }
+
+#' remove graph edges
+#' 
+#' @param edge_obj cc_graph
+#' @param cutoff the cutoff to use
+#' @param edge_attr which attribute to use
+#' @param value_direction remove edges with value under or over
+#' 
+#' @export
+#' @return
+setMethod("remove_edges", signature=list(edge_obj="cc_graph", cutoff="numeric"), function(edge_obj, cutoff, edge_attr, value_direction) 
+  .remove_edges_ccgraph(edge_obj, cutoff, edge_attr, value_direction))
+
+.remove_edges_ccgraph <-	function(in_graph, cutoff, edge_attr = "weight", value_direction = "under"){
+  edge_data <- unlist(edgeData(in_graph, , , edge_attr))
+  
+  switch(value_direction,
+         under = del_edges <- names(edge_data)[edge_data < cutoff],
+         over = del_edges <- names(edge_data)[edge_data > cutoff]
+  )
+  
+  if (length(del_edges) > 0){
+    del_edges <- strsplit(del_edges, "|", fixed = TRUE)
+    from_node <- sapply(del_edges, function(x){x[1]})
+    to_node <- sapply(del_edges, function(x){x[2]})
+    in_graph <- removeEdge(from_node, to_node, in_graph)
+  }
+  
+  message("Removed ", length(del_edges), " edges from graph\n")
+  return(in_graph)
+}
