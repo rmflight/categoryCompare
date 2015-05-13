@@ -260,7 +260,7 @@ setMethod("remove_edges", signature=list(edge_obj="CytoscapeWindowClass", cutoff
 #' @param value_direction remove edges with value under or over
 #' 
 #' @export
-#' @return
+#' @return cc_graph
 setMethod("remove_edges", signature=list(edge_obj="cc_graph", cutoff="numeric"), function(edge_obj, cutoff, edge_attr, value_direction) 
   .remove_edges_ccgraph(edge_obj, cutoff, edge_attr, value_direction))
 
