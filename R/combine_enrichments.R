@@ -98,7 +98,7 @@ add_data_to_graph <- function(graph, data){
     # NA is not nice in RCy, so convert to the default, which is -100, pretty non-sensical
     tmp_data <- data[match_entries, i_data]
     if (use_type %in% c("integer", "numeric")){
-      tmp_data[is.na(tmp_data)] <- type_defaults[use_type]
+      tmp_data[is.na(tmp_data)] <- type_defaults[[use_type]][1]
       tmp_data[is.infinite(tmp_data)] <- 1e100
     }
     
