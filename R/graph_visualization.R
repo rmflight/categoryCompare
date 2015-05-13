@@ -214,3 +214,40 @@ vis_in_cytoscape <- function(in_graph, in_assign, description = "", ...){
   }
   return(cyt_window)
 }
+
+#' remove edges
+#' 
+#' given a \linkS4Class{CytoscapeWindowClass}, remove edges according to provided
+#' values.
+#' 
+#' @param edge_obj a CytoscapeWindowClass
+#' @param cutoff what cutoff to use to remove edges
+#' @param edge_attr what attribute has the values
+#' @param value_direction remove those edges "under" or "over" the value
+#' 
+#' @export
+#' @return nothing
+setMethod("remove_edges", signature=list(edge_obj="CytoscapeWindowClass", cutoff="numeric"), function(edge_obj, cutoff, edge_attr, value_direction) 
+  .remove_edges_cw(edge_obj, cutoff, edge_attr, value_direction))
+
+.remove_edges_cw <-	function(cyt_window, cutoff, edge_attr = "weight", value_direction = "under"){
+  edge_data <- getAllEdgeAttributes(cyt_window)
+  
+  switch(value_direction,
+         under = edge_data <- edge_data[(as.numeric(edge_data[, edge_attr]) < cutoff),],
+         over = edge_data <- edge_data[(as.numeric(edge_data[, edge_attr]) > cutoff),]
+  )
+  
+  attr_names <- names(edge_data)
+  if (!('edgeType' %in% attr_names)){
+    edge_names <- paste(edge_data$source,' (unspecified) ',edge_data$target,sep='')
+  } else {
+    edge_names <- paste(edge_data$source,' (',edge_data$edgeType,') ',edge_data$target, sep='')
+  }
+  selectEdges(cyt_window,edge_names)
+  deleteSelectedEdges(cyt_window)
+  
+  layoutNetwork(cyt_window, 'force-directed')
+  
+  message("Removed ", length(edge_names), " edges from graph\n")
+}

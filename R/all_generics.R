@@ -27,3 +27,5 @@ setGeneric("generate_table", function(comb_enrichment, link_type = "explicit") s
 #' @export
 setGeneric("annotation_combinations", function(in_graph) standardGeneric("annotation_combinations"))
 # we may unexport this eventually
+
+setGeneric("remove_edges", function(edge_obj, cutoff, edge_attr = "weight", value_direction = "under") standardGeneric("remove_edges"))
