@@ -100,7 +100,7 @@ add_data_to_graph <- function(graph, data){
       tmp_data[is.na(tmp_data)] <- type_defaults[use_type]
     }
     
-    nodeData(graph, match_entries, i_data) <- data[match_entries, i_data]
+    nodeData(graph, match_entries, i_data) <- tmp_data
   }
   
   graph
