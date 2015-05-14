@@ -17,9 +17,9 @@ setClass("hypergeom_features",
 #' @param hypergeom_features a hypergeometric_features object
 #' @param direction which direction to do the enrichment (over or under)
 #' @export
-#' @return statistical_results
+#' @return enriched_result
 #' 
-hypergeometric_feature <- function(hypergeom_features, direction = "over"){
+hypergeometric_feature_enrichment <- function(hypergeom_features, direction = "over"){
   
   # cleanup the features and annotations (should be in separate function)
   hypergeom_features@universe <- unique(hypergeom_features@universe)
@@ -72,7 +72,13 @@ hypergeometric_feature <- function(hypergeom_features, direction = "over"){
                    statistic_data = hyper_stats,
                    annotation_id = names(hypergeom_features@annotation@annotation_features))
   
-  out_stats
+  out_enrich <- new("enriched_result",
+                    features = hypergeom_features@significant,
+                    universe = hypergeom_features@universe,
+                    statistics = out_stats,
+                    annotation = hypergeom_features@annotation)
+  
+  out_enrich
   
 }
 
