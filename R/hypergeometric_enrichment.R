@@ -44,8 +44,8 @@ hypergeometric_feature_enrichment <- function(hypergeom_features, direction = "o
     hypergeom_features@annotation@description <- hypergeom_features@annotation@description[names(tmp_annot_feature)]
   }
   
-  if (length(hypergeom_features@annotation@link) != 0){
-    hypergeom_features@annotation@link <- hypergeom_features@annotation@link[names(tmp_annot_feature)]
+  if (length(hypergeom_features@annotation@links) != 0){
+    hypergeom_features@annotation@links <- hypergeom_features@annotation@links[names(tmp_annot_feature)]
   }
   
   # now get the counts annotated
