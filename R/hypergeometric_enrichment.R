@@ -1,16 +1,3 @@
-#' annotation class
-#' 
-#' @slot annotation_to_feature list where each named entry is the features annotated to it
-#' @slot description named character vector
-#' @slot link named character vector
-#' 
-#' @export
-setClass("annotation",
-         slots = list(annotation_to_feature = "list",
-                      description = "character",
-                      link = "character",
-                      stats = "data.frame"))
-
 #' hypergeom feature class
 #' 
 #' class to hold features undergoing hypergeometric enrichment
@@ -30,14 +17,14 @@ setClass("hypergeom_features",
 #' @param hypergeom_features a hypergeometric_features object
 #' @param direction which direction to do the enrichment (over or under)
 #' @export
-#' @return
+#' @return statistical_results
 #' 
 hypergeometric_feature <- function(hypergeom_features, direction = "over"){
   
   # cleanup the features and annotations (should be in separate function)
   hypergeom_features@universe <- unique(hypergeom_features@universe)
   
-  tmp_annot_feature <- hypergeom_features@annotation@annotation_to_feature
+  tmp_annot_feature <- hypergeom_features@annotation@annotation_features
   annotation_universe <- unique(unlist(tmp_annot_feature))
   
   hypergeom_features@universe <- intersect(hypergeom_features@universe, annotation_universe)
@@ -49,7 +36,7 @@ hypergeometric_feature <- function(hypergeom_features, direction = "over"){
   tmp_annot_feature <- tmp_annot_feature[keep_annot]
   
   hypergeom_features@significant <- intersect(hypergeom_features@significant, hypergeom_features@universe)
-  hypergeom_features@annotation@annotation_to_feature <- tmp_annot_feature
+  hypergeom_features@annotation@annotation_features <- tmp_annot_feature
   
   
   # this probably needs its own function eventually
@@ -62,13 +49,13 @@ hypergeometric_feature <- function(hypergeom_features, direction = "over"){
   }
   
   # now get the counts annotated
-  num_white_drawn <- sapply(hypergeom_features@annotation@annotation_to_feature, function(x) sum(hypergeom_features@significant %in% x))
+  num_white_drawn <- sapply(hypergeom_features@annotation@annotation_features, function(x) sum(hypergeom_features@significant %in% x))
   
   if (length(num_white_drawn) == 0){
     num_white_drawn <- 0
   }
   
-  num_white <- Biobase:::listLen(hypergeom_features@annotation@annotation_to_feature)
+  num_white <- Biobase:::listLen(hypergeom_features@annotation@annotation_features)
   
   if (length(num_white) == 0){
     num_white <- 0
@@ -78,16 +65,14 @@ hypergeometric_feature <- function(hypergeom_features, direction = "over"){
   num_drawn <- length(hypergeom_features@significant)
   
   hyper_stats <- hypergeometric_basic(num_white, num_black, num_drawn, num_white_drawn, direction)
-  hyper_stats <- as.data.frame(hyper_stats)
-  hyper_stats <- hyper_stats[(order(hyper_stats$p, decreasing = FALSE)),]
   
-  hyper_stats$counts <- num_white_drawn[rownames(hyper_stats)]
+  hyper_stats$counts <- num_white_drawn[names(hyper_stats$p)]
   
-  hyper_stats$link <- generate_link(hypergeom_features@annotation@link[rownames(hyper_stats)])
+  out_stats <- new("statistical_results",
+                   statistic_data = hyper_stats,
+                   annotation_id = names(hypergeom_features@annotation@annotation_features))
   
-  hypergeom_features@annotation@stats <- hyper_stats
-  
-  hypergeom_features
+  out_stats
   
 }
 
@@ -98,7 +83,7 @@ hypergeometric_feature <- function(hypergeom_features, direction = "over"){
 #' @param links the vector of links
 #' 
 #' @export
-#' @return
+#' @return character
 generate_link <- function(links){
   link_names <- names(links)
   
