@@ -2,17 +2,17 @@ importFrom(BiocGenerics, annotation, "annotation<-")
 
 importMethodsFrom(AnnotationDbi,
 		mget)
-		
+
 importFrom(annotate,
            getAnnMap)
 
 importFrom(colorspace,
 		rainbow_hcl)
-		
+
 importFrom(hwriter,
 		openPage,
 		closePage)
-		
+
 importMethodsFrom(graph,
 		nodeData,
 		"nodeData<-",
@@ -77,14 +77,14 @@ importClassesFrom(Category,
 		HyperGResultBase,
 		HyperGResult)
 
-importClassesFrom(RCytoscape,
+importClassesFrom(RCy3,
 		CytoscapeWindowClass)
 
-importFrom(RCytoscape,
+importFrom(RCy3,
 		CytoscapeWindow,
 		existing.CytoscapeWindow)
 
-importMethodsFrom(RCytoscape,
+importMethodsFrom(RCy3,
 		displayGraph,
 		setLayoutProperties,
 		layoutNetwork,
@@ -145,7 +145,7 @@ exportMethods(
   "pvalueCutoff",
   "pvalueCutoff<-"
 		)
-		
+
 exportClasses(
 	"HyperGParamsCC",
 	"GOHyperGParamsCC",
