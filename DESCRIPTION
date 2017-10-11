@@ -1,5 +1,5 @@
 Package: categoryCompare
-Version: 1.21.1
+Version: 1.21.2
 Title: Meta-analysis of high-throughput experiments using feature
         annotations
 Author: Robert M. Flight <rflight79@gmail.com>
@@ -20,8 +20,8 @@ Description: Calculates significant annotations (categories) in each of
         feature lists the annotations were found to be significant.
         Interactive exploration is facilitated through the use of
         RCytoscape (heavily suggested).
-SystemRequirements: Cytoscape (>= 2.8.0) (if used for visualization of
-        results, heavily suggested), CytoscapeRPC plugin (>= 1.8)
+SystemRequirements: Cytoscape (>= 3.2.1) (if used for visualization of
+        results, heavily suggested)
 TODO: Text and HTML output without graphs.
 biocViews: Annotation, GO, MultipleComparison, Pathways, GeneExpression
 VignetteBuilder: knitr
