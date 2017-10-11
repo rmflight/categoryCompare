@@ -137,7 +137,7 @@ pvalueCutoff(enrichLists$BP) <- 0.001
 enrichLists
 ```
 
-Currently you can see that for T10, there are 141 processes enriched, and 123 for T48. For KEGG, there are much smaller numbers of pathways enriched.
+Currently you can see that for T10, there are `sum(enrichLists$BP$T10@pvalues <= 0.001)` processes enriched, and `sum(enrichLists$BP$T48@pvalues <= 0.001)` for T48. For KEGG, there are `sum(enrichLists$KEGG$T10@pvalues <= 0.05)` and `sum(enrichLists$KEGG$T48@pvalues <= 0.05)` for T10 and T48, respectively.
 
 To see which processes and pathways are enriched, and to compare them, we will run `ccCompare`, after generating a `ccOptions` object to tell the software exactly which comparisons to do.
 
@@ -155,15 +155,14 @@ The `ccResults` is a list object where for each type of category (Gene Ontologie
 
 ## Visualization
 
-Currently the easiest way to visualize and interact with this data is by using Cytoscape and the `RCytoscape` package. To set up `RCytoscape`, see the [`RCytoscape` webiste](http://rcytoscape.systemsbiology.net/versions/current/index.html) .
+Currently the easiest way to visualize and interact with this data is by using Cytoscape and the `RCy3` package. To set up `RCy3`, see the [`RCy3` webiste](https://bioconductor.org/packages/release/bioc/html/RCy3.html) .
 
 ```{r setupRunningCytoscape, echo=FALSE, error=FALSE, results='asis'}
 runCy <- FALSE
 
 try({
-  tmp <- RCytoscape::CytoscapeWindow("tmp")
+  tmp <- RCy3::CytoscapeWindow("tmp")
   runCy <- TRUE
-  RCytoscape::deleteWindow(tmp)
 })
 
 if (!runCy){
@@ -171,28 +170,31 @@ if (!runCy){
 }
 ```
 
-Once you have [Cytoscape](http://cytoscape.org) up and running with the `CytoscapeRPC` plugin running, then we can examine the results from each category of annotations. First up, GO Biological Process.
+Once you have [Cytoscape](http://cytoscape.org) up and running, then we can examine the results from each category of annotations. First up, GO Biological Process. 
+
+**Note on deleting edges in Cytoscape**: As of `RCy3` v 1.7.0 and Cytoscape 3.5.1, deleting nodes *after* putting the graph in Cytoscape is slow. This network contains ~ 20,000 edges to start, most with *very* low weights. Therefore, I recommend removing some low weight edges **before** putting the graph into Cytoscape!
 
 ```{r cwBP, eval=runCy}
-cw.BP <- ccOutCyt(ccResults$BP,ccOpts)
+ccBP <- breakEdges(ccResults$BP, 0.2)
+
+cw.BP <- ccOutCyt(ccBP, ccOpts)
 ```
 
-![cwBP results with all edges](allEdges.png)
+![cwBP results with 0.2 Edges](BP_02_cutoff.png)
 
 You should now see something in Cytoscape that somewhat resembles the above figure. Reddish nodes came from T10, green from T48, and the blue ones from both. The edges determine that some of the genes are shared between annotations (nodes), and are weighted by how many genes are shared. The graph is layed out using a *force-directed* layout, and the force on the edges is determined by the number of shared genes. Right now there are a few groupings of nodes, that are probably functionally related. However, there is also a large mass of interconnected nodes in the middle, due to the shared genes in the annotation. We may get a better picture of this if we **break** the edges between nodes that share lower numbers of genes. The weight of the connections is based on the work of Bader and co-workers.
 
 ```{r breakHighBP, eval=runCy}
-breakEdges(cw.BP,0.2)
 breakEdges(cw.BP,0.4)
 breakEdges(cw.BP,0.6)
 breakEdges(cw.BP,0.8)
 ```
 
 ```{r deleteBP, include=FALSE, eval=runCy}
-RCytoscape::deleteWindow(cw.BP)
+RCy3::deleteWindow(cw.BP)
 ```
 
-![After breaking edges with weight less than 0.8](BP_8.png)
+![After breaking edges with weight less than 0.8](BP_08_cutoff.png)
 
 By the time you get to breaking any edges with a weight less than 0.8, you should see some very distinct groups of nodes (see the above figure). Because the numbers of genes shared between these nodes is high, it is likely that these groups of nodes describe a functional "theme" that will hopefully tell you something about the genes involved in the biological process that you are examining. This view also shows that even if there are no nodes that explicitly show up in both lists, if there are a series of annotations from each list in a well connected group, then perhaps there is still some similarity between the lists in this area.
 
@@ -214,7 +216,7 @@ cw.BP2 <- ccOutCyt(ccResultsBPHier, ccOpts, "BPHier")
 RCytoscape::deleteWindow(cw.BP2)
 ```
 
-![GO BP results using the hierarchical layout](BP2.png)
+![GO BP results using the hierarchical layout](BP_hierarchical.png)
 
 Note that the current hierarchical layout in Cytoscape does not seem to generate layouts that are easy to follow. This layout should only be used when there are small numbers of GO annotations.
 
@@ -228,13 +230,13 @@ cw.KEGG <- ccOutCyt(ccResults$KEGG,ccOpts)
 RCytoscape::deleteWindow(cw.KEGG)
 ```
 
-![KEGG pathway results](KEGG.png)
+![KEGG pathway results](KEGG_network.png)
 
 If you don't feel that there are enough nodes to work with the data, you may want to change the P-value cutoff used using `pvalueCutoff`, or even the type of P-value, using `pvalueType`.
 
 ## Acknowledgements
 
-This package depends heavily on classes and functionality from `Category`, `graph`, and the interactive network visualization capabilities enabled by `RCytoscape`. 
+This package depends heavily on classes and functionality from `Category`, `graph`, and the interactive network visualization capabilities enabled by `RCy3`. 
 
 ```{r sessionInfo}
 sessionInfo()
