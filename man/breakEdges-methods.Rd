@@ -1,5 +1,6 @@
 \name{breakEdges-methods}
 \docType{methods}
+\alias{breakEdges}
 \alias{breakEdges-methods}
 \alias{breakEdges,ccCompareResult,numeric-method}
 \alias{breakEdges,CytoscapeWindowClass,numeric-method}
