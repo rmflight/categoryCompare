@@ -11,11 +11,11 @@ Calculates significant annotations (categories) in each of two (or more) feature
 \details{
 \tabular{ll}{
 Package: \tab categoryCompare\cr
-Version: \tab 0.99.1\cr
+Version: \tab 1.21.2\cr
 License: \tab GPL-2\cr
 Depends: \tab Biobase (>= 1.15.29), AnnotationDbi (>= 0.1.15), Category\cr
 Suggests: \tab methods, GSEABase, hwriter, colorspace, graph, GO.db, KEGG.db, estrogen, org.Hs.eg.db, hgu95av2.db\cr
-Imports: \tab Biobase (>= 1.15.29), AnnotationDbi (>= 0.1.15), hwriter, GSEABase, Category (>= 2.21.2), GOstats, annotate, colorspace, graph, RCytoscape (>= 1.5.11)\cr
+Imports: \tab Biobase (>= 1.15.29), AnnotationDbi (>= 0.1.15), hwriter, GSEABase, Category (>= 2.21.2), GOstats, annotate, colorspace, graph, RCy3\cr
 LazyLoad: \tab yes\cr
 biocViews: \tab Bioinformatics, Annotation, GO, MultipleComparisons, Pathways, GeneExpression\cr
 SystemRequirements: \tab Cytoscape (>= 2.8.0) (if used for visualization of results, heavily suggested), CytoscapeRPC plugin (>= 1.8)\cr

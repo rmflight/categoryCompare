@@ -35,12 +35,12 @@ ccResults$BP <- breakEdges(ccResults$BP, 0.8)
 hasCy <- (if (.Platform$OS.type \%in\% "windows") { (length(grep("Cytoscape", system("tasklist", intern=TRUE))) > 0)})
 
 if hasCy {
-	
+
 	cwObj <- ccOutCyt(ccResults$BP,ccOpts)
 	# now breaking them in the CytoscapeWindow object
 	breakEdges(cwObj, 0.85)
 	Sys.sleep(10)
-	RCytoscape::deleteWindow(cwObj)
+	RCy3::deleteWindow(cwObj)
 	}
 }}
 \keyword{methods}

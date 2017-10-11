@@ -42,7 +42,7 @@ The default is to generate an overlap graph for GO and KEGG, where the overlap i
 
  Only those terms with more than 10 and less than 500 annotated genes (according to the GO annotation file) are included.
 
-When using weighted overlap graphs and \pkg{RCytoscape} for viewing, it is recommended to use \code{breakEdges} and \code{minNodes} to remove edges with low weights and nodes with only a few genes from the dataset annotated to them.
+When using weighted overlap graphs and \pkg{RCy3} for viewing, it is recommended to use \code{breakEdges} and \code{minNodes} to remove edges with low weights and nodes with only a few genes from the dataset annotated to them.
 
 }
 

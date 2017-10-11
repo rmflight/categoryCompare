@@ -40,7 +40,7 @@ if hasCy {
 	ccResults$BP <- breakEdges(ccResults$BP, 0.8)
 	cwObj <- ccOutCyt(ccResults$BP,ccOpts)
 	Sys.sleep(10)
-	RCytoscape::deleteWindow(cwObj)
+	RCy3::deleteWindow(cwObj)
 	}
 }}
 \keyword{methods}

@@ -8,7 +8,7 @@ setMethod("initialize", "ccOptions",
 
 .makeValidccOptions <- function(object){
  # check and set up the ccOptions object so that it is useable by later functions
- # biggest thing is figuring stuff out if the user has put "all" for compareNames or supplied actual stuff 
+ # biggest thing is figuring stuff out if the user has put "all" for compareNames or supplied actual stuff
  # for compareNames and compareColor. Also need to figure out cssClass (not set by user) so we can color our HTML tables
  # correctly.
  currNames <- listNames(object)
@@ -18,7 +18,7 @@ setMethod("initialize", "ccOptions",
  if (class(currNames) != "character"){
    stop("listNames must be a vector of strings to denote which lists will be used in the comparisons.", call.=FALSE)
  }
- 
+
  currCompare <- compareNames(object)
  if (length(currNames) == 0){
    warning('No compareNames specified, assuming "all"')
@@ -30,7 +30,7 @@ setMethod("initialize", "ccOptions",
  compareColors(object) <- currColors
  outType(object) <- outType(object) # this should just set defaults
  return(object)
-  
+
 }
 
 setMethod("makeValidccOptions", "ccOptions", .makeValidccOptions)
@@ -54,9 +54,9 @@ setReplaceMethod("compareNames", "ccOptions", function(object, value) .replaceCo
   # can't use the functions because otherwise we will just enter an infinite recursion, which is not good
   object@compareNames <- compData$name
   object@compareIndx <- compData$indx
-  
+
   object@cssClass <- .classGen(compData$name)
-  
+
   object
 }
 
@@ -68,16 +68,16 @@ setReplaceMethod("compareIndx", "ccOptions", function(object, value) {
 
 # actually does the checking of compareNames against the listNames, and generates new comparisons and indices if required
 .compData <- function(tmpNames,compName=NULL){
-  
+
 	# check if all of our listNames are in the compNames
-	
+
 	# either we have to figure out all of the comparisons, or search through to find the indices
 	if (is.null(compName)){
 		compIndx <- vector("list", 0)
 		compName <- vector("character", 0)
 		nList <- length(tmpNames)
 		listSeq <- seq(1,nList)
-		
+
 		for (iList in 1:nList){
 			compIndx <- append(compIndx,combn(listSeq, iList, simplify=F))
 		}
@@ -117,21 +117,21 @@ setReplaceMethod("compareColors", "ccOptions", function(object,value) {
 # takes potential list of colors, these can be hex, rgb, or colornames
 # checks that we have enouch colors
 .colorData <- function(object,compColor=NULL){
-  
+
   # the comparisons we want to make
   compNames <- compareNames(object)
-  
+
   # what kind of colors did we pass in? Matrix of RGB, or character vector
   colorClass <- class(compColor)
-  
+
   nComp <- length(compNames)
 	allColors <- colors() # these are the colors (text strings) that R knows about
 	makeColor <- TRUE
-		
-  # if nothing, then figure out the colors  
+
+  # if nothing, then figure out the colors
 	if (is.null(compColor)){
 		makeColor <- TRUE
-	} else if (length(grep('#',compColor)) >= nComp){  
+	} else if (length(grep('#',compColor)) >= nComp){
 	# check for hex colors ( and assume they are properly formatted)
 		makeColor <- FALSE
     compColor <- compColor[1:nComp]
@@ -142,11 +142,11 @@ setReplaceMethod("compareColors", "ccOptions", function(object,value) {
 		compColor <- compColor[1:nComp]
 	}
 
-	if (makeColor){	
+	if (makeColor){
 		endCol <- 315 * (nComp - 1) / nComp
 		compColor <- rainbow_hcl(nComp, c=100, start=0, end=endCol)
 	}
-	
+
 	names(compColor) <- compNames
 	object@compareColors <- compColor
   object
@@ -159,7 +159,7 @@ setReplaceMethod("outType", "ccOptions", function(object,value) {
 })
 
 .outType <- function(object,value){
-  validTypes <- c('html','text','rcytoscape')
+  validTypes <- c('html','text','rcy3')
   validNone <- 'none'
   validAll <- c(validTypes,validNone)
   nVal <- length(validAll)
@@ -183,4 +183,3 @@ setReplaceMethod("outType", "ccOptions", function(object,value) {
   object@outType <- value
   object
 }
-  

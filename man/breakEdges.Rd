@@ -53,7 +53,7 @@ Robert M Flight
 }
 \examples{
 \dontrun{
-	require(RCytoscape)
+	require(RCy3)
 	g <- makeSimpleGraph()
 	cw <- CytoscapeWindow('breakEdges',g)
 	displayGraph(cw)

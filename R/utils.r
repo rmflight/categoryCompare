@@ -12,7 +12,7 @@ isPackageLoaded <- function(pkg){
 }
 
 visStatus <- function(verbose=FALSE){
-	isCy <- isPackageLoaded("RCytoscape")
+	isCy <- isPackageLoaded("RCy3")
 	if (verbose){
 		message(getBar())
 		message("Interactive visualization support for categoryCompare: ")
@@ -22,7 +22,7 @@ visStatus <- function(verbose=FALSE){
 			message("Fully Enabled: access to all ")
 		} else {
 			message("Disabled")
-			message("  - Load 'RCytoscape'")
+			message("  - Load 'RCy3'")
 		}
 		message("")
 		message(getBar())
@@ -35,11 +35,11 @@ annStatus <- function(verbose=FALSE){
 	isGODB <- isPackageLoaded("GO.db")
 	isKEGGDB <- isPackageLoaded("KEGG.db")
 # 	isGOSTATS <- isPackageLoaded("GOstats")
-	
+
 	if (verbose){
 		message(getBar())
 		message("Possible annotations using currently loaded packages: ")
-		
+
 		message("Gene Ontology: ", appendLF=FALSE)
 		if (isGODB){
 			message("Enabled")

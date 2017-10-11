@@ -22,10 +22,10 @@ before_install:
 
 install:
   - ./travis-tool.sh aptget_install r-cran-xml
-  - ./travis-tool.sh bioc_install Biobase BiocGenerics AnnotationDbi GSEABase Category GOstats annotate graph RCytoscape GO.db KEGG.db estrogen org.Hs.eg.db hgu95av2.db limma affy genefilter
+  - ./travis-tool.sh bioc_install Biobase BiocGenerics AnnotationDbi GSEABase Category GOstats annotate graph RCy3 GO.db KEGG.db estrogen org.Hs.eg.db hgu95av2.db limma affy genefilter
   - ./travis-tool.sh install_deps
 
-script: 
+script:
   - ./travis-tool.sh run_tests
 
 after_success:

@@ -213,7 +213,7 @@ cw.BP2 <- ccOutCyt(ccResultsBPHier, ccOpts, "BPHier")
 ```
 
 ```{r deleteHier, include=FALSE, eval=runCy}
-RCytoscape::deleteWindow(cw.BP2)
+RCy3::deleteWindow(cw.BP2)
 ```
 
 ![GO BP results using the hierarchical layout](BP_hierarchical.png)
@@ -227,7 +227,7 @@ cw.KEGG <- ccOutCyt(ccResults$KEGG,ccOpts)
 ```
 
 ```{r deleteKEGG, include=FALSE, eval=runCy}
-RCytoscape::deleteWindow(cw.KEGG)
+RCy3::deleteWindow(cw.KEGG)
 ```
 
 ![KEGG pathway results](KEGG_network.png)
