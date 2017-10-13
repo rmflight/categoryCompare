@@ -137,7 +137,7 @@ pvalueCutoff(enrichLists$BP) <- 0.001
 enrichLists
 ```
 
-Currently you can see that for T10, there are `sum(enrichLists$BP$T10@pvalues <= 0.001)` processes enriched, and `sum(enrichLists$BP$T48@pvalues <= 0.001)` for T48. For KEGG, there are `sum(enrichLists$KEGG$T10@pvalues <= 0.05)` and `sum(enrichLists$KEGG$T48@pvalues <= 0.05)` for T10 and T48, respectively.
+Currently you can see that for T10, there are `r sum(enrichLists$BP$T10@pvalues <= 0.001)` processes enriched, and `r sum(enrichLists$BP$T48@pvalues <= 0.001)` for T48. For KEGG, there are `r sum(enrichLists$KEGG$T10@pvalues <= 0.05)` and `r sum(enrichLists$KEGG$T48@pvalues <= 0.05)` for T10 and T48, respectively.
 
 To see which processes and pathways are enriched, and to compare them, we will run `ccCompare`, after generating a `ccOptions` object to tell the software exactly which comparisons to do.
 
@@ -158,14 +158,13 @@ The `ccResults` is a list object where for each type of category (Gene Ontologie
 Currently the easiest way to visualize and interact with this data is by using Cytoscape and the `RCy3` package. To set up `RCy3`, see the [`RCy3` webiste](https://bioconductor.org/packages/release/bioc/html/RCy3.html) .
 
 ```{r setupRunningCytoscape, echo=FALSE, error=FALSE, results='asis'}
-runCy <- FALSE
+tmp <- NULL
+tmp <- RCy3::CytoscapeConnection()
 
-try({
-  tmp <- RCy3::CytoscapeWindow("tmp")
+if (!is.null(tmp)) {
   runCy <- TRUE
-})
-
-if (!runCy){
+} else {
+  runCy <- FALSE
   print("No connection to Cytoscape available, subsequent visualizations were not run")
 }
 ```
