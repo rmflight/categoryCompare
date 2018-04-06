@@ -9,27 +9,18 @@ setMethod("ccOutCyt", signature=list(ccCompRes="ccCompareResult",ccOpts="ccOptio
   if (!(is.null(layout))){
   	graphLayout <- layout
   }
-  cw <- CytoscapeWindow(graphName, graph=ccGraph, ...)
-	displayGraph(cw)
-  if (graphLayout == 'force-directed'){
-		setLayoutProperties(cw, graphLayout, list(edge_attribute='weight'))
-  } else if (graphLayout == "attribute-circle"){
-  	setLayoutProperties(cw, graphLayout, list(attribute='listMembership'))
-  }
-	layoutNetwork(cw, graphLayout)
-	#layout(cw, graphLayout)
-	redraw(cw)
+  cw <- createNetworkFromGraph(ccGraph, title = graphName, ...)
 	tmpCols <- compareColors(ccOpts)
 	names(tmpCols) <- NULL
  	nodeAtts <- names(nodeData(ccGraph,nodes(ccGraph)[1])[[1]])
   toolTipLoc <- grep("tooltip", nodeAtts, ignore.case=TRUE,value=FALSE)
   if (length(toolTipLoc) > 0){
-  	setNodeTooltipRule(cw,nodeAtts[toolTipLoc[1]])
+  	setNodeTooltipMapping(nodeAtts[toolTipLoc[1]], network = cw)
   }
-	setNodeColorRule(cw, node.attribute.name='fillcolor', tmpCols, tmpCols, mode='lookup', default.color='#FF0000')
-	
+	setNodeColorMapping('fillcolor', tmpCols, tmpCols, mapping.type = "passthrough", default.color='#FF0000', network = cw)
+
 	nodeShapes <- unique(unlist(nodeData(ccGraph,,"shape")))
-	setNodeShapeRule(cw, node.attribute.name='shape', nodeShapes, nodeShapes, default.shape='ellipse' )
+	setNodeShapeMapping('shape', nodeShapes, nodeShapes, default.shape='ELLIPSE',  network = cw)
 	return(cw)
 }
 
@@ -38,12 +29,12 @@ setMethod("breakEdges", signature=list(cwObject="CytoscapeWindowClass",cutoff="n
 
 .breakEdges <-	function(cwObject,cutoff,edgeAtt='weight',valDir='under',layout='force-directed'){
 	edgeDat <- getAllEdgeAttributes(cwObject)
-	
+
 	switch(valDir,
 					under = edgeDat <- edgeDat[(as.numeric(edgeDat[,edgeAtt]) < cutoff),],
 					over = edgeDat <- edgeDat[(as.numeric(edgeDat[,edgeAtt]) > cutoff),],
 	)
-	
+
 	attNames <- names(edgeDat)
 	if (!('edgeType' %in% attNames)){
 		edgeNames <- paste(edgeDat$source,' (unspecified) ',edgeDat$target,sep='')
@@ -52,12 +43,12 @@ setMethod("breakEdges", signature=list(cwObject="CytoscapeWindowClass",cutoff="n
 	}
 	selectEdges(cwObject,edgeNames)
 	deleteSelectedEdges(cwObject)
-	
+
 	if (!(is.null(layout)) | !(length(layout) == 0)){
 		layoutNetwork(cwObject, layout)
 		#layout(cwObject, layout)
-	} else { 
-		layoutNetwork(cwObject) 
+	} else {
+		layoutNetwork(cwObject)
 		#layout(cwObject)
 	}
   message("Removed ", length(edgeNames), " edges from graph\n")
@@ -86,7 +77,7 @@ setMethod("breakEdges", signature=list(cwObject="ccCompareResult", cutoff="numer
 
 
 setMethod("cwReload", signature=list(oldCW="CytoscapeWindowClass",windowName="character",ccOpts="ccOptions"), function(oldCW,windowName,ccOpts,...) .cwReload(oldCW,windowName,ccOpts,...))
-	
+
 # Re-connect to Cytoscape containing a graph from an old CytoscapeConnection instance
 .cwReload <-	function(oldCW,windowName,ccOpts,rpcPort=9000,host="localhost"){
 	newCW <- existing.CytoscapeWindow(windowName, rpcPort=rpcPort, host=host, copy.graph.from.cytoscape.to.R=FALSE)
@@ -108,16 +99,16 @@ setMethod("resetColors", signature=list(cwObj="CytoscapeWindowClass",
 }
 
 setMethod("minNodes", signature=list(cwObj="CytoscapeWindowClass",cutoff="numeric"), function(cwObj,cutoff) .minNodes(cwObj,cutoff))
-	
+
 .minNodes <-	function(cwObj,cutoff){
 	nodeAtts <- getAllNodeAttributes(cwObj)
 	hasCount <- grep('[[:punct:]]Count',names(nodeAtts),ignore.case=TRUE)
-	
+
 	nCount <- length(hasCount)
 	throwNode <- vector('logical',nrow(nodeAtts))
 	nodeCount <- nodeAtts[,hasCount] < cutoff
 	nodeCount <- apply(nodeCount,1,'sum')
-	
+
 	selectNodes(cwObj,names(nodeCount)[nodeCount == nCount])
 	deleteSelectedNodes(cwObj)
 	layoutNetwork(cwObj,'force-directed')
@@ -153,7 +144,7 @@ setMethod("cytOutNodes", signature=list(descStr="character", cwObj="CytoscapeWin
  	}
  	return(saveObj)
 }
- 
+
 # and then we need to get out the items annotated to those nodes (if applicable), and the data, and save it to a file if a filename is provided
 setMethod("cytOutData", signature=list(saveObj='list', compareResult="ccCompareResult", mergedData="mergedData"), function(saveObj, compareResult, mergedData, orgType, fileName, displayFile) .cytOutData(saveObj, compareResult, mergedData, orgType, fileName, displayFile))
 
@@ -169,20 +160,20 @@ setMethod("cytOutData", signature=list(saveObj='list', compareResult="ccCompareR
 		if (dirname(fileName) == '.'){
  			currDir <- getwd()
 	 		fileName <- file.path(currDir,fileName)
- 		} 
+ 		}
 	}
 	if (orgType == "header"){
 		outData <- .headerOutData(saveObj,compareResult,mergedData,fileName)
 	} else if (orgType == "annotate"){
 		outData <- .annotateOutData(saveObj,compareResult,mergedData,fileName)
 	}
- 	
+
 	if (displayFile){
 		file.show(fileName,title="ccCompareResults")
 	} else {
 		return(outData)
 	}
-	
+
 }
 
 # this splits the tables up into the chunks that belong in each grouping defined by the user
@@ -208,15 +199,15 @@ setMethod("cytOutData", signature=list(saveObj='list', compareResult="ccCompareR
  		allAnn <- compareResult@allAnnotation
  		useAnn <- TRUE
  	}
-	
+
  	mainTable <- unique(mainTable)
 	fileCon <- file(fileName,open="w+")
  	for (iSave in 1:nSave){
  		useNodes <- saveObj[[iSave]]$nodes
  		keepTable <- mainTable[match(saveObj[[iSave]]$nodes,mainTable$ID,nomatch=0),]
- 		
+
  		returnDat[[iSave]] <- list(AnnotationData=keepTable)
- 		
+
  		cat("\n\n",saveObj[[iSave]]$descStr,"\n","Annotation Data","\n",file=fileCon)
 	 	write.table(keepTable,file=fileCon,sep="\t",row.names=FALSE)
 		if (useAnn && useMerged) {
@@ -229,10 +220,10 @@ setMethod("cytOutData", signature=list(saveObj='list', compareResult="ccCompareR
 			}
 			keepTable <- mergedData[keepRow,]
 			returnDat[[iSave]]$ItemData <- keepTable
-			
+
 			cat("Item Data","\n",file=fileCon)
 			write.table(keepTable,file=fileCon,sep="\t",row.names=FALSE)
-		
+
 		}
  	}
  	close(fileCon)
@@ -240,7 +231,7 @@ setMethod("cytOutData", signature=list(saveObj='list', compareResult="ccCompareR
 	returnDat
 }
 
-# this takes the data tables (both the annotation data and item data if available) and adds columns that indicate which user defined grouping 
+# this takes the data tables (both the annotation data and item data if available) and adds columns that indicate which user defined grouping
 .annotateOutData <- function(saveObj,compareResult,mergedData,fileName){
 	nSave <- length(saveObj)
  	useMerged <- TRUE
@@ -265,14 +256,14 @@ setMethod("cytOutData", signature=list(saveObj='list', compareResult="ccCompareR
 	if (useAnn && useMerged){
 		useID <- unique(mergedData@useIDName)
 	}
-	
+
  	for (iSave in 1:nSave){
  		tableName <- make.names(saveObj[[iSave]]$descStr) # create valid column names
  		mainTable[,tableName] <- FALSE
  		useNodes <- saveObj[[iSave]]$nodes
  		changeIndx <- match(saveObj[[iSave]]$nodes,mainTable$ID,nomatch=0)
  		mainTable[changeIndx,tableName] <- TRUE
- 		
+
 		if (useAnn && useMerged){
 			mergedData[,tableName] <- FALSE
 			tmpAnn <- allAnn[useNodes]
@@ -284,7 +275,7 @@ setMethod("cytOutData", signature=list(saveObj='list', compareResult="ccCompareR
 			mergedData[keepRow,tableName] <- TRUE
 		}
  	}
-	
+
 	fileCon <- file(fileName,open="w+")
 	cat("Annotation Table","\n",file=fileCon)
 	write.table(mainTable,file=fileCon,row.names=FALSE)
@@ -294,9 +285,9 @@ setMethod("cytOutData", signature=list(saveObj='list', compareResult="ccCompareR
 	}
 	close(fileCon)
  	message("Wrote file: ",fileName)
-	
+
 	returnDat <- list(AnnotationData=mainTable, ItemData=mergedData)
-	
+
 }
 
 nodeDat2Table <- function(nodeDat){
@@ -316,9 +307,9 @@ addListMembership <- function(mainTable, allGraph){
 	allNodes <- nodes(allGraph)
 	listMem <- unlist(nodeData(allGraph, allNodes, "listMembership"))
 	tableID <- mainTable$ID
-	
+
 	matchID2Node <- match(allNodes, tableID, nomatch=0)
-	
+
 	mainTable$listMembership <- "NA"
 	mainTable$listMembership[matchID2Node] <- listMem
 	return(mainTable)
