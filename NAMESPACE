@@ -77,8 +77,6 @@ importClassesFrom(Category,
 		HyperGResultBase,
 		HyperGResult)
 
-importClassesFrom(RCy3,
-		CytoscapeWindowClass)
 
 importFrom(RCy3,
 		CytoscapeWindow,
