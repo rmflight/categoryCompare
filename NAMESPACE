@@ -79,8 +79,14 @@ importClassesFrom(Category,
 
 
 importFrom(RCy3,
-		CytoscapeWindow,
-		existing.CytoscapeWindow)
+    createNetworkFromGraph,
+		setNodeShapeMapping,
+		setNodeColorMapping,
+		setNodeTooltipMapping,
+		getTableColumns,
+		selectEdges,
+		deleteSelectedEdges,
+		layoutNetwork)
 
 importMethodsFrom(RCy3,
 		displayGraph,
