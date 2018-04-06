@@ -25,33 +25,28 @@ setMethod("ccOutCyt", signature=list(ccCompRes="ccCompareResult",ccOpts="ccOptio
 }
 
 # used for working with categoryCompare graphs in RCytoscape
-setMethod("breakEdges", signature=list(cwObject="CytoscapeWindowClass",cutoff="numeric"), function(cwObject,cutoff,edgeAtt,valDir,layout) .breakEdges(cwObject,cutoff,edgeAtt,valDir,layout))
+setMethod("breakEdges", signature=list(cwObject="numeric",cutoff="numeric"), function(cwObject,cutoff,edgeAtt,valDir,layout) .breakEdges(cwObject,cutoff,edgeAtt,valDir,layout))
 
 .breakEdges <-	function(cwObject,cutoff,edgeAtt='weight',valDir='under',layout='force-directed'){
-	edgeDat <- getAllEdgeAttributes(cwObject)
+	edgeDat <- getTableColumns(table = "edge", network = cwObject)
 
 	switch(valDir,
 					under = edgeDat <- edgeDat[(as.numeric(edgeDat[,edgeAtt]) < cutoff),],
 					over = edgeDat <- edgeDat[(as.numeric(edgeDat[,edgeAtt]) > cutoff),],
 	)
 
-	attNames <- names(edgeDat)
-	if (!('edgeType' %in% attNames)){
-		edgeNames <- paste(edgeDat$source,' (unspecified) ',edgeDat$target,sep='')
-	} else {
-		edgeNames <- paste(edgeDat$source,' (',edgeDat$edgeType,') ',edgeDat$target, sep='')
-	}
-	selectEdges(cwObject,edgeNames)
-	deleteSelectedEdges(cwObject)
+
+	selectedEdges <- selectEdges(edgeDat$SUID, network = cwObject)
+	deletedEdges <- deleteSelectedEdges(network = cwObject)
 
 	if (!(is.null(layout)) | !(length(layout) == 0)){
-		layoutNetwork(cwObject, layout)
+		layoutNetwork(layout, network = cwObject)
 		#layout(cwObject, layout)
 	} else {
-		layoutNetwork(cwObject)
+		layoutNetwork(network = cwObject)
 		#layout(cwObject)
 	}
-  message("Removed ", length(edgeNames), " edges from graph\n")
+  message("Removed ", nrow(edgeDat), " edges from graph\n")
 }
 
 
