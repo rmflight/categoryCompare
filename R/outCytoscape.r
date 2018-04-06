@@ -21,6 +21,7 @@ setMethod("ccOutCyt", signature=list(ccCompRes="ccCompareResult",ccOpts="ccOptio
 
 	nodeShapes <- unique(unlist(nodeData(ccGraph,,"shape")))
 	setNodeShapeMapping('shape', nodeShapes, nodeShapes, default.shape='ELLIPSE',  network = cw)
+	layoutNetwork(graphLayout, network = cw)
 	return(cw)
 }
 
@@ -36,16 +37,19 @@ setMethod("breakEdges", signature=list(cwObject="numeric",cutoff="numeric"), fun
 	)
 
 
-	selectedEdges <- selectEdges(edgeDat$SUID, network = cwObject)
-	deletedEdges <- deleteSelectedEdges(network = cwObject)
+	if (nrow(edgeDat) > 0) {
+	  selectedEdges <- selectEdges(edgeDat$SUID, network = cwObject)
+	  deletedEdges <- deleteSelectedEdges(network = cwObject)
 
-	if (!(is.null(layout)) | !(length(layout) == 0)){
-		layoutNetwork(layout, network = cwObject)
-		#layout(cwObject, layout)
-	} else {
-		layoutNetwork(network = cwObject)
-		#layout(cwObject)
+	  if (!(is.null(layout)) | !(length(layout) == 0)){
+	    layoutNetwork(layout, network = cwObject)
+	    #layout(cwObject, layout)
+	  } else {
+	    layoutNetwork(network = cwObject)
+	    #layout(cwObject)
+	  }
 	}
+
   message("Removed ", nrow(edgeDat), " edges from graph\n")
 }
 
