@@ -158,14 +158,24 @@ The `ccResults` is a list object where for each type of category (Gene Ontologie
 Currently the easiest way to visualize and interact with this data is by using Cytoscape and the `RCy3` package. To set up `RCy3`, see the [`RCy3` webiste](https://bioconductor.org/packages/release/bioc/html/RCy3.html) .
 
 ```{r setupRunningCytoscape, echo=FALSE, error=FALSE, results='asis'}
-tmp <- NULL
-tmp <- RCy3::CytoscapeConnection()
+push_graph <- try(
+  {
+    # borrowed from createNetworkFromDataFrames
+    nodes <- data.frame(id=c("node 0","node 1","node 2","node 3"),
+           stringsAsFactors=FALSE)
+    edges <- data.frame(source=c("node 0","node 0","node 0","node 2"),
+           target=c("node 1","node 2","node 3","node 3"),
+           stringsAsFactors=FALSE)
 
-if (!is.null(tmp)) {
+    createNetworkFromDataFrames(nodes,edges)
+  }
+)
+
+if (inherits(push_graph, "try-error")) {
   runCy <- TRUE
-} else {
-  runCy <- FALSE
   print("No connection to Cytoscape available, subsequent visualizations were not run")
+} else {
+  runCy <- TRUE
 }
 ```
 
