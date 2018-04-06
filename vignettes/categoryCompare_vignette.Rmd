@@ -167,7 +167,7 @@ push_graph <- try(
            target=c("node 1","node 2","node 3","node 3"),
            stringsAsFactors=FALSE)
 
-    createNetworkFromDataFrames(nodes,edges)
+    RCy3::createNetworkFromDataFrames(nodes,edges)
   }
 )
 
@@ -200,7 +200,7 @@ breakEdges(cw.BP,0.8)
 ```
 
 ```{r deleteBP, include=FALSE, eval=runCy}
-RCy3::deleteWindow(cw.BP)
+RCy3::deleteNetwork(cw.BP)
 ```
 
 ![After breaking edges with weight less than 0.8](BP_08_cutoff.png)
@@ -222,7 +222,7 @@ cw.BP2 <- ccOutCyt(ccResultsBPHier, ccOpts, "BPHier")
 ```
 
 ```{r deleteHier, include=FALSE, eval=runCy}
-RCy3::deleteWindow(cw.BP2)
+RCy3::deleteNetwork(cw.BP2)
 ```
 
 ![GO BP results using the hierarchical layout](BP_hierarchical.png)
@@ -236,7 +236,7 @@ cw.KEGG <- ccOutCyt(ccResults$KEGG,ccOpts)
 ```
 
 ```{r deleteKEGG, include=FALSE, eval=runCy}
-RCy3::deleteWindow(cw.KEGG)
+RCy3::deleteNetwork(cw.KEGG)
 ```
 
 ![KEGG pathway results](KEGG_network.png)
