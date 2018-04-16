@@ -85,8 +85,10 @@ importFrom(RCy3,
 		setNodeTooltipMapping,
 		getTableColumns,
 		selectEdges,
+		selectNodes,
 		deleteSelectedEdges,
-		layoutNetwork)
+		layoutNetwork,
+		exportImage)
 
 importMethodsFrom(RCy3,
 		displayGraph,

@@ -85,20 +85,20 @@ setMethod("cwReload", signature=list(oldCW="numeric",ccOpts="ccOptions"), functi
 	# RCy3::getNetworkSuid
 }
 
-setMethod("resetColors", signature=list(cwObj="CytoscapeWindowClass",
+setMethod("resetColors", signature=list(cwObj="numeric",
 																				ccOpts="ccOptions"),
 					function(cwObj,ccOpts,...) .resetColors(cwObj,ccOpts,...))
 
-.resetColors <- function(cwObj, ccOpts, node.attribute.name='fillcolor', mode='lookup'){
+.resetColors <- function(cwObj, ccOpts, node.attribute.name='fillcolor', mode='passthrough'){
 	tmpCols <- compareColors(ccOpts)
 	names(tmpCols) <- NULL
-	setNodeColorRule(cwObj, node.attribute.name=node.attribute.name, tmpCols, tmpCols, mode=mode)
+	setNodeColorMapping('fillcolor', tmpCols, tmpCols, mapping.type = "passthrough", default.color='#FF0000', network = cwObj)
 }
 
-setMethod("minNodes", signature=list(cwObj="CytoscapeWindowClass",cutoff="numeric"), function(cwObj,cutoff) .minNodes(cwObj,cutoff))
+setMethod("minNodes", signature=list(cwObj="numeric",cutoff="numeric"), function(cwObj,cutoff) .minNodes(cwObj,cutoff))
 
 .minNodes <-	function(cwObj,cutoff){
-	nodeAtts <- getAllNodeAttributes(cwObj)
+	nodeAtts <- getTableColumns(table = "node", network = cwObj)
 	hasCount <- grep('[[:punct:]]Count',names(nodeAtts),ignore.case=TRUE)
 
 	nCount <- length(hasCount)
@@ -106,17 +106,17 @@ setMethod("minNodes", signature=list(cwObj="CytoscapeWindowClass",cutoff="numeri
 	nodeCount <- nodeAtts[,hasCount] < cutoff
 	nodeCount <- apply(nodeCount,1,'sum')
 
-	selectNodes(cwObj,names(nodeCount)[nodeCount == nCount])
-	deleteSelectedNodes(cwObj)
-	layoutNetwork(cwObj,'force-directed')
+	selectNodes(names(nodeCount)[nodeCount == nCount])
+	invisible(deleteSelectedNodes(cwObj))
+	layoutNetwork('force-directed', network = cwObj)
 	#layout(cwObj, 'force-directed')
   message("Removed ", sum(nodeCount == nCount), " nodes from graph")
 }
 
 # this gets which nodes are currently selected
-setMethod("cytOutNodes", signature=list(descStr="character", cwObj="CytoscapeWindowClass", saveObj="list"), function(descStr, cwObj, saveObj, outImages) .cytOutNodes(descStr, cwObj, saveObj, outImages))
+setMethod("cytOutNodes", signature=list(descStr="character", cwObj="numeric", saveObj="list"), function(descStr, cwObj, saveObj, outImages, ...) .cytOutNodes(descStr, cwObj, saveObj, outImages, ...))
 
-setMethod("cytOutNodes", signature=list(descStr="character", cwObj="CytoscapeWindowClass", saveObj="missing"), function(descStr, cwObj, saveObj, outImages) .cytOutNodes(descStr, cwObj, saveObj, outImages))
+setMethod("cytOutNodes", signature=list(descStr="character", cwObj="numeric", saveObj="missing"), function(descStr, cwObj, saveObj, outImages, ...) .cytOutNodes(descStr, cwObj, saveObj, outImages, ...))
 
 .cytOutNodes <- function(descStr,cwObj,saveObj=vector('list',0),outImages=NULL){
 	numEnt <- length(saveObj) + 1
@@ -137,7 +137,7 @@ setMethod("cytOutNodes", signature=list(descStr="character", cwObj="CytoscapeWin
  		} else { fullPath <- outImages }
 	 	dir.create(fullPath,showWarnings=FALSE)
 	 	fileName <- file.path(fullPath,paste(descStr,"png",sep="."))
-	 	saveImage(cwObj,fileName,"png",1)
+	 	exportImage(fileName,"png",network = cwObj, ...)
  	}
  	return(saveObj)
 }
