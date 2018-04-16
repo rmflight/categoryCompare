@@ -75,16 +75,14 @@ setMethod("breakEdges", signature=list(cwObject="ccCompareResult", cutoff="numer
 }
 
 
-setMethod("cwReload", signature=list(oldCW="CytoscapeWindowClass",windowName="character",ccOpts="ccOptions"), function(oldCW,windowName,ccOpts,...) .cwReload(oldCW,windowName,ccOpts,...))
+setMethod("cwReload", signature=list(oldCW="numeric",ccOpts="ccOptions"), function(oldCW,ccOpts,...) {
+  .Deprecated("RCy3::getNetworkSuid")
+})
 
 # Re-connect to Cytoscape containing a graph from an old CytoscapeConnection instance
-.cwReload <-	function(oldCW,windowName,ccOpts,rpcPort=9000,host="localhost"){
-	newCW <- existing.CytoscapeWindow(windowName, rpcPort=rpcPort, host=host, copy.graph.from.cytoscape.to.R=FALSE)
-	newCW@graph <- oldCW@graph # copy the graph from the old Cytoscape instance to the new one
-	tmpCols <- compareColors(ccOpts)
-	names(tmpCols) <- NULL
-	setNodeColorRule(newCW, node.attribute.name='fillcolor', tmpCols, tmpCols, mode='lookup', default.color='#FF0000')
-	return(newCW)
+.cwReload <-	function(oldCW,ccOpts,rpcPort=9000,host="localhost"){
+	# this function is deprecated because reconnecting is really simple now using
+	# RCy3::getNetworkSuid
 }
 
 setMethod("resetColors", signature=list(cwObj="CytoscapeWindowClass",

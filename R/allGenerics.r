@@ -87,7 +87,7 @@ setGeneric("mergeLists", function(ccGeneList,ccOptions,isGene=TRUE) standardGene
 
 setGeneric("breakEdges", function(cwObject,cutoff,edgeAtt='weight',valDir='under',layout='force-directed') standardGeneric("breakEdges"))
 
-setGeneric("cwReload", function(oldCW,windowName,ccOpts,...) standardGeneric("cwReload"))
+setGeneric("cwReload", function(oldCW,ccOpts,...) standardGeneric("cwReload"))
 
 setGeneric("resetColors", function(cwObj,ccOpts,...) standardGeneric("resetColors"))
 
