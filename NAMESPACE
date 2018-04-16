@@ -88,25 +88,8 @@ importFrom(RCy3,
 		selectNodes,
 		deleteSelectedEdges,
 		layoutNetwork,
-		exportImage)
-
-importMethodsFrom(RCy3,
-		displayGraph,
-		setLayoutProperties,
-		layoutNetwork,
-		redraw,
-		setNodeTooltipRule,
-		setNodeColorRule,
-		setNodeShapeRule,
-		getAllEdgeAttributes,
-		getAllNodeAttributes,
-		selectEdges,
-		deleteSelectedEdges,
-		selectNodes,
-		deleteSelectedNodes,
-		getSelectedNodes,
-		deleteWindow,
-		saveImage)
+		exportImage,
+		deleteNetwork)
 
 importClassesFrom(Biobase,
                   AssayData)
