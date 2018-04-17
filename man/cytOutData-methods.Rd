@@ -23,7 +23,8 @@ A text file with the annotations previously saved using \code{cytOutNodes}
 }
 \examples{
 \dontrun{
-hasCy <- (if (.Platform$OS.type \%in\% "windows") { (length(grep("Cytoscape", system("tasklist", intern=TRUE))) > 0)})
+hasCy <- (if (.Platform$OS.type \%in\% "windows") {
+(length(grep("Cytoscape", system("tasklist", intern=TRUE))) > 0)})
 
 if hasCy {
 	data(ccData)
@@ -33,7 +34,9 @@ if hasCy {
 	RCy3::selectNodes(cwObj, c("GO:0007017", "GO:0000226", "GO:0007051", "GO:0007052"))
 	savedNodes <- cytOutNodes("random1", cwObj) # save them
 	# and selects some other nodes
-	RCy3::selectNodes(cwObj, c("GO:0071103", "GO:0034728", "GO:0006323", "GO:0030261", "GO:0006334"), preserve.current.selection=FALSE)
+	RCy3::selectNodes(cwObj,
+	c("GO:0071103", "GO:0034728", "GO:0006323", "GO:0030261", "GO:0006334"),
+	preserve.current.selection=FALSE)
 	savedNodes <- cytOutNodes("random2", cwObj, savedNodes)
 
 	# now spit results out to a file

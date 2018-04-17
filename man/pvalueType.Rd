@@ -15,7 +15,7 @@ Queries or sets the type of p-values to return from objects, either base calcula
 }
 \details{
 	\code{pvalueType(object)} gets the type of \code{p-values} to be returned from \code{HyperGResultCC} and \code{ccEnrichResult} objects
-	
+
 	\code{pvalueType(object)<-} will set the type of \code{p-values} to be returned from \code{HyperGResultCC}, \code{ccEnrichResult}, \code{ccEnrichCollection}. Note that for a \code{ccEnrichCollection}, the type is changed for all contained \code{ccEnrichResults}
 }
 \author{
@@ -34,7 +34,7 @@ pvalueType(enrichLists[[1]])
 pvalueType(enrichLists[[1]][[1]])
 
 # change the type for one of the results
-pvalueType(enrichLists[[1]]) <- 'pval'  # note, I do not recommend changing it for a single result in a category
+pvalueType(enrichLists[[1]]) <- 'pval'  # Not recommended practice
 enrichLists
 
 # change for all of the results

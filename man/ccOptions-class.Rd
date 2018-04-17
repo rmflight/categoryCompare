@@ -66,7 +66,8 @@ c1 <- new("ccOptions", listNames=c('list1','list2'))
 c1
 
 ## Now lets get a little more complicated
-c1 <- new("ccOptions", listNames=c('list1','list2'), compareNames=c('list1,list2','list1,list3'), compareColors=c('red','blue'))
+c1 <- new("ccOptions", listNames=c('list1','list2'),
+compareNames=c('list1,list2','list1,list3'), compareColors=c('red','blue'))
 c1
 
 # set the type of output you want to eventually produce
@@ -79,14 +80,19 @@ c1
 ## Using RGB colors
 ccCols <- matrix(c(255,0,0, 0,0,255), nrow=2, ncol=3)
 ccCols <- rgb(ccCols, maxColorValue=255)
-c1 <- new("ccOptions", listNames=c('list1','list2','list3'), compareNames=c('list1,list2','list1,list3'), compareColors=ccCols)
+c1 <- new("ccOptions", listNames=c('list1','list2','list3'),
+compareNames=c('list1,list2','list1,list3'), compareColors=ccCols)
 
 ## Using Hex colors
-c1 <- new("ccOptions", listNames=c('list1','list2','list3'), compareNames=c('list1,list2','list1,list3'), compareColors=c('#FF0000','#0000FF'))
+c1 <- new("ccOptions", listNames=c('list1','list2','list3'),
+compareNames=c('list1,list2','list1,list3'), compareColors=c('#FF0000','#0000FF'))
 c1
 
-## or even using a color palette from R. Note that you need at least enough colors to cover all of individual and possible permutations (n!) if you use compareNames='all'
-c1 <- new("ccOptions", listNames=c('list1','list2','list3'), compareNames=c('list1,list2','list1,list3'), compareColors=rainbow(4))
+## or even using a color palette from R.
+## Note that you need at least enough colors to cover all of individual and
+## possible permutations (n!) if you use compareNames='all'
+c1 <- new("ccOptions", listNames=c('list1','list2','list3'),
+compareNames=c('list1,list2','list1,list3'), compareColors=rainbow(4))
 c1
 
 

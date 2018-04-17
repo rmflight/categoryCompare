@@ -6,6 +6,21 @@ importMethodsFrom(AnnotationDbi,
 importFrom(annotate,
            getAnnMap)
 
+importFrom(grDevices,
+           colors)
+
+importFrom(methods,
+           .valueClassTest,
+           as,
+           callNextMethod,
+           getGeneric,
+           new,
+           show)
+
+importFrom(utils,
+           combn,
+           write.table)
+
 importFrom(colorspace,
 		rainbow_hcl)
 
@@ -86,7 +101,9 @@ importFrom(RCy3,
 		getTableColumns,
 		selectEdges,
 		selectNodes,
+		getSelectedNodes,
 		deleteSelectedEdges,
+		deleteSelectedNodes,
 		layoutNetwork,
 		exportImage,
 		deleteNetwork)

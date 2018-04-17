@@ -137,7 +137,7 @@ setMethod("cytOutNodes", signature=list(descStr="character", cwObj="numeric", sa
  		} else { fullPath <- outImages }
 	 	dir.create(fullPath,showWarnings=FALSE)
 	 	fileName <- file.path(fullPath,paste(descStr,"png",sep="."))
-	 	exportImage(fileName,"png",network = cwObj, ...)
+	 	exportImage(filename = fileName, type = "png", network = cwObj, ...)
  	}
  	return(saveObj)
 }

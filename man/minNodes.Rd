@@ -23,13 +23,14 @@ Robert M Flight
 }
 \examples{
 \dontrun{
-hasCy <- (if (.Platform$OS.type \%in\% "windows") { (length(grep("Cytoscape", system("tasklist", intern=TRUE))) > 0)})
+hasCy <- (if (.Platform$OS.type \%in\% "windows") {
+(length(grep("Cytoscape", system("tasklist", intern=TRUE))) > 0)})
 
 if hasCy {
 	data(ccData)
 	ccResults$BP <- breakEdges(ccResults$BP, 0.8)
 	cwObj <- ccOutCyt(ccResults$BP,ccOpts)
-	
+
 	minNodes(cwObj, 5)
 
 }}}

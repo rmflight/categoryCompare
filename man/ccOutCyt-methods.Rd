@@ -33,7 +33,8 @@ It should also be noted that deletion of edges via \code{RCy3} is slow, so some 
 }
 \examples{
 \dontrun{
-hasCy <- (if (.Platform$OS.type \%in\% "windows") { (length(grep("Cytoscape", system("tasklist", intern=TRUE))) > 0)})
+hasCy <- (if (.Platform$OS.type \%in\% "windows") {
+(length(grep("Cytoscape", system("tasklist", intern=TRUE))) > 0)})
 
 if hasCy {
 
