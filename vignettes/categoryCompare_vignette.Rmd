@@ -172,7 +172,7 @@ push_graph <- try(
 )
 
 if (inherits(push_graph, "try-error")) {
-  runCy <- TRUE
+  runCy <- FALSE
   print("No connection to Cytoscape available, subsequent visualizations were not run")
 } else {
   runCy <- TRUE
