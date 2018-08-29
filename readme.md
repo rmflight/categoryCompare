@@ -33,8 +33,9 @@ install_github("categoryCompare", "rmflight")
 Alternatively, you can install **categoryCompare** from Bioconductor itself.
 
 ```r
-source("http://bioconductor.org/biocLite.R")
-biocLite("categoryCompare")
+if (!requireNamespace("BiocManager", quietly=TRUE))
+    install.packages("BiocManager")
+BiocManager::install("categoryCompare")
 ```
 
 
