@@ -33,7 +33,7 @@ visStatus <- function(verbose=FALSE){
 
 annStatus <- function(verbose=FALSE){
 	isGODB <- isPackageLoaded("GO.db")
-	isKEGGDB <- isPackageLoaded("KEGG.db")
+	isKEGGDB <- isPackageLoaded("KEGGREST")
 # 	isGOSTATS <- isPackageLoaded("GOstats")
 
 	if (verbose){
@@ -54,7 +54,7 @@ annStatus <- function(verbose=FALSE){
 		} else {
 			message("Disabled")
 			if (!isKEGGDB){
-				message("	- Load 'KEGG.db'")
+				message("	- Load 'KEGGREST'")
 			}
 		}
 		message("")

@@ -163,7 +163,7 @@ setMethod("ccCompare", signature=list(ccEnrichResult="KEGGccEnrichResult",ccOpti
 .ccCompareKEGG <- function(ccEnrichResult, ccOptions){
   annOpt <- annStatus() # what can we do. This will possibly change the type of results we can generate
 	if (!annOpt$keggdb){
-		stop("KEGG.db must be loaded to continue!")
+		stop("KEGGREST must be loaded to continue!")
 	}
   summary <- getGeneric("summary")
   lists <- names(ccEnrichResult)
@@ -185,9 +185,10 @@ setMethod("ccCompare", signature=list(ccEnrichResult="KEGGccEnrichResult",ccOpti
   sigID <- extRes$sigID
   rm(extRes) # free up some memory
 
+  keggPaths = KEGGREST::keggList("pathway")
+  useID = paste0("path:map", allTable$ID)
   # get a more descriptive item for each ID
-  idDat <- unlist(mget(allTable$ID, envir=KEGGPATHID2NAME, ifnotfound=NA))
-  allTable$Desc <- idDat
+  allTable$Desc <- keggPaths[useID]
 
   # now rearrange a few things in the table
   oldIndx <- match(lists,names(allTable))
@@ -233,8 +234,8 @@ setMethod("ccCompare", signature=list(ccEnrichResult="KEGGccEnrichResult",ccOpti
   # now that we know which of the lists we belong to, we can set up some attributes
   allGraph <- .initGraphAtts(allGraph,allTable)
 
-	idDat <- unlist(mget(allNodes, envir=KEGGPATHID2NAME, ifnotfound=NA))
-	nodeData(allGraph, allNodes, attr="Desc") <- idDat
+  useNodes <- paste0("path:map", allNodes)
+	nodeData(allGraph, allNodes, attr="Desc") <- keggPaths[useNodes]
 
   nodeData(allGraph, allNodes, attr="fillcolor") <- sapply(nodeCompVec, function(x){compareColors(ccOptions)[x]}) # this is why we are supposed to do the induced graph from each, and then combine them.
   nodeData(allGraph, allNodes, attr="listMembership") <- sapply(nodeCompVec, function(x){compareNames(ccOptions)[x]})
@@ -283,7 +284,7 @@ setMethod("ccCompare", signature=list(ccEnrichResult="GENccEnrichResult", ccOpti
   				 GO = annStr <- "GO2ALLEG",
   				 NULL) # put in null as an option, should allow simple control of behavior of other functions
   	if ((!annOpt$keggdb) && (categoryName(ccEnrichResult) == "KEGG")){
-  		stop("KEGG requested, but KEGG.db not loaded and no geneAnnMapping supplied!")
+  		stop("KEGG requested, but KEGGREST not loaded and no geneAnnMapping supplied!")
   	} else if ((!annOpt$godb) && (categoryName(ccEnrichResult) == "GO")){
   		stop("GO requested, but GO.db not loaded and no geneAnnMapping supplied!")
   	}
